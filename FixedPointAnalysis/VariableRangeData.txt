@@ -1,0 +1,36 @@
+FPGA Fixed-Point Range Analysis — Algorithm 4 Intermediate Variables
+Dataset: 452 users, 279 features
+Threshold: 0.025, U_MIN: 200
+
+Variable       | Paper Reference    |            Min |            Max |           Mean |   Samples
+---------------+--------------------+----------------+----------------+----------------+----------
+raw_value      | BD_m^k(o,u)        |    -177.000000 |     250.000000 |      16.062613 |     21855
+b_min          | Eq. 5 lower        |    -177.000000 |     148.000000 |      -6.093567 |     21855
+b_max          | Eq. 5 upper        |       0.000000 |     250.000000 |      42.918696 |     21855
+r_j_h          | Alg 3 r_{o|h}      |       0.022727 |       1.000000 |       0.049697 |    445146
+p_h_f          | P(h, f^k_m)        |       0.008368 |       0.140845 |       0.096236 |    445146
+p_h_gt1_f      | P(h>1, f^k_m)      |       0.430962 |       0.488263 |       0.457949 |    445146
+numerator      | p_h_f * r_j_h      |       0.002212 |       0.035211 |       0.004465 |    445146
+delta_AF       | Eq. 7 increment    |       0.004831 |       0.058252 |       0.016749 |     21855
+AF_real        | Eq. 7 cumulative   |       0.004831 |       1.000000 |       0.394058 |    445700
+rw_real        | Eq. 8: 1 - AF      |       0.000000 |       0.995169 |       0.434179 |     21855
+AF_sim         | Alg 4 line 12      |       0.004831 |       0.072115 |       0.009382 |    423291
+rw_sim         | Alg 4 line 13      |      -0.043329 |       0.990338 |       0.606061 |    423291
+best_rw        | Alg 4 line 14      |      -0.043329 |       0.937198 |       0.592405 |    423291
+branch_val     | BranchDef input    |    -177.000000 |     524.000000 |      22.227995 |     60540
+branch_low     | BranchDef low      |    -242.400000 |     367.000000 |      -1.569742 |     60540
+branch_high    | BranchDef high     |     -22.300000 |     780.000000 |      54.697446 |     60540
+rw_final       | Eq. 8 final        |       0.000000 |       0.275362 |       0.122725 |       554
+threshold      | Eq. 3 threshold    |       0.025000 |       0.025000 |       0.025000 |       554
+
+
+Bit-Budget Guidance:
+  raw_value spans the widest range — integer bits must cover [-177.0, 250.0]
+  branch_val/branch_low/branch_high share the same range as raw_value
+  b_min/b_max (healthy range) also share raw feature range
+  Probabilities (p_h_f, p_h_gt1_f, r_j_h) are in [0,1] — need mostly fractional bits
+  numerator = p_h_f * r_j_h — max 0.035211, product of two [0,1] values
+  delta_AF = numerator / p_h_gt1_f — max 0.058252
+  AF_real, rw_real are in [0,1] — 0 integer bits + sign bit sufficient
+  rw_sim can go NEGATIVE (min=-0.043329) — needs sign bit
+  threshold is constant 0.025 — stored as fixed-point literal
