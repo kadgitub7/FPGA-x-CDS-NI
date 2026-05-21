@@ -143,23 +143,6 @@ def _compute_AF_increment(p_h_f: float, r_j_h: float, p_h_gt1_f: float) -> float
 def _update_AF(AF_real: float, delta_AF: float) -> float:
     return min(1.0, max(0.0, AF_real + delta_AF))
 
-
-def _find_applicable_node(
-    user_idx: int, focus_level: int, tree: DecisionTree,
-    data: np.ndarray, valid_node_ids: Optional[set] = None,
-) -> Optional[TreeNode]:
-    if focus_level == 1:
-        return tree.root
-    for node in tree.nodes_by_level.get(focus_level, []):
-        if valid_node_ids is not None and node.node_id not in valid_node_ids:
-            continue
-        if node.branch_def is not None:
-            user_val = data[user_idx, node.branch_def.feature_idx]
-            if node.branch_def.contains(user_val):
-                return node
-    return None
-
-
 def _find_all_applicable_nodes(
     user_idx: int, focus_level: int, tree: DecisionTree,
     data: np.ndarray, valid_node_ids: Optional[set] = None,
@@ -410,11 +393,7 @@ def run_algorithm4(
     record.is_correct = is_correct
     return record
 
-
-# --- LOOCV Pipeline ---
-
-def run_loocv(
-    data: np.ndarray,
+def ten_fold_cv(data: np.ndarray,
     labels: np.ndarray,
     max_users: Optional[int] = None,
     rng_seed: int = 42,
@@ -427,23 +406,21 @@ def run_loocv(
     output = Algorithm4Output()
     random.seed(rng_seed)
 
-    for i in range(n_total):
-        train_mask = np.ones(n_users_total, dtype=bool)
-        train_mask[i] = False
-        train_data = data[train_mask]
-        train_labels = labels[train_mask]
+    indices = list(range(n_total))
+    random.shuffle(indices)
+    fold_size = (n_total + 9) // 10
+
+    for fold in range(10):
+        start_idx = fold * fold_size
+        end_idx = min(start_idx + fold_size, n_total)
+        test_indices = indices[start_idx:end_idx]
+        train_indices = [idx for idx in indices if idx not in test_indices]
+
+        train_data = data[train_indices]
+        train_labels = labels[train_indices]
 
         # Algorithm 1
-        if enable_forced_sex:
-            test_sex = data[i, SEX_FEATURE_IDX]
-            if test_sex == 0:
-                sex_idx = np.where(train_data[:, SEX_FEATURE_IDX] == 0)[0]
-                tree_i = build_sex_specific_tree(train_data, train_labels, sex_idx, "male")
-            else:
-                sex_idx = np.where(train_data[:, SEX_FEATURE_IDX] == 1)[0]
-                tree_i = build_sex_specific_tree(train_data, train_labels, sex_idx, "female")
-        else:
-            tree_i = build_decision_tree(train_data, train_labels)
+        tree_i = build_decision_tree(train_data, train_labels)
 
         root_id = tree_i.root.node_id
         nodes_filter = [root_id]
@@ -462,13 +439,14 @@ def run_loocv(
         # Algorithm 3
         alg3_i = run_algorithm3(alg2_i, tree_i, train_data, train_labels, nodes_filter, reset_per_h=False)
 
-        # Algorithm 4 prediction
-        pred = run_algorithm4(i, data, labels, tree_i, alg2_i, alg3_i, rng_seed)
-        output.records.append(pred)
+        # Algorithm 4 prediction — one record per test user
+        for test_idx in test_indices:
+            pred = run_algorithm4(test_idx, data, labels, tree_i, alg2_i, alg3_i, rng_seed)
+            output.records.append(pred)
 
-        if (i + 1) % 50 == 0 or i == n_total - 1:
-            n_correct = sum(1 for r in output.records if r.is_correct)
-            print(f"  Progress: {i+1}/{n_total}  accuracy={n_correct/(i+1)*100:.1f}%")
+        n_correct = sum(1 for r in output.records if r.is_correct)
+        n_evaluated = len(output.records)
+        print(f"  Fold {fold+1}/10  evaluated={n_evaluated}/{n_total}  accuracy={n_correct/n_evaluated*100:.1f}%")
 
     output._recompute_stats()
     return output
@@ -513,5 +491,5 @@ if __name__ == "__main__":
     data, labels = load_dataset(path)
 
     max_u = int(sys.argv[2]) if len(sys.argv) > 2 else None
-    output = run_loocv(data, labels, max_users=max_u)
+    output = ten_fold_cv(data, labels, max_users=max_u)
     print_results(output)
