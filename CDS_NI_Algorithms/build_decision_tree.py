@@ -36,7 +36,7 @@ class FeatureKind(Enum):
     BINARY = auto()
     CONTINUOUS = auto()
 
-
+# This is a function that is built to map the dataset
 def _build_feature_names() -> Dict[int, str]:
     names: Dict[int, str] = {
         0: "Age", 1: "Sex", 2: "Height", 3: "Weight",
@@ -53,6 +53,7 @@ def _build_feature_names() -> Dict[int, str]:
         "JJ_amp","Q_amp","R_amp","S_amp","Rp_amp","Sp_amp",
         "P_amp","T_amp","QRSA","QRSTA",
     ]
+    # Here we are programatically generating the feature names which are used in the file for arryhthmia names
     for i, ch in enumerate(channels):
         base_w = 15 + i * 12
         for j, lbl in enumerate(wave_labels):
@@ -77,6 +78,7 @@ class BranchDef:
     is_left_closed: bool = True
     is_right_closed: bool = False
 
+    # Here we are creating bounds for branches.
     def contains(self, value: float) -> bool:
         if np.isnan(value):
             return False
@@ -172,7 +174,7 @@ def health_distribution(user_indices: np.ndarray, labels: np.ndarray) -> Dict[in
         dist[int(lbl)] = dist.get(int(lbl), 0) + 1
     return dist
 
-
+# Here we determine the branches for a binary or continuous feature
 def compute_fsd_branches(
     feature_idx: int,
     user_indices: np.ndarray,
@@ -239,11 +241,12 @@ def _compute_child_features(
     parent_features: List[int], branching_k: int, child_level: int
 ) -> List[int]:
     # Line 9: at m > 2, remove features with index <= k
+    # This is to remove redundant branches
     if child_level <= 2:
         return list(parent_features)
     return [f for f in parent_features if f > branching_k]
 
-
+# We split on each feature and go back to check if it meets threshold and prune if it does not.
 def _try_split(parent, feature_k, kind, data, labels, threshold):
     m_child = parent.focus_level + 1
     branch_defs = compute_fsd_branches(feature_k, parent.user_indices, data, kind)
@@ -277,7 +280,7 @@ def _try_split(parent, feature_k, kind, data, labels, threshold):
 
     return created, n_pruned
 
-
+# This is the function used to expand the tree as far as possible to then prune afterwards.
 def _expand_node(parent, data, labels, kinds, threshold, tree):
     m_child = parent.focus_level + 1
     n_created = 0
@@ -297,51 +300,7 @@ def _expand_node(parent, data, labels, kinds, threshold, tree):
 
     return n_created
 
-
-def build_sex_specific_tree(
-    data: np.ndarray,
-    labels: np.ndarray,
-    sex_user_indices: np.ndarray,
-    sex_label: str,
-    threshold: float = DIAGNOSTIC_THRESHOLD,
-    max_m: int = 2,
-) -> DecisionTree:
-    feature_indices = [i for i in range(N_FEATURES) if i != SEX_FEATURE_IDX]
-    kinds = classify_features(data)
-    kinds.pop(SEX_FEATURE_IDX, None)
-
-    root = TreeNode(
-        node_id=f"root_{sex_label}",
-        focus_level=1,
-        branching_feat_k=-1,
-        branch_f=0,
-        branch_def=None,
-        user_indices=sex_user_indices,
-        feature_indices=feature_indices,
-        branch_prob=1.0,
-        health_dist=health_distribution(sex_user_indices, labels),
-    )
-
-    tree = DecisionTree(
-        root=root, feature_kinds=kinds,
-        threshold=threshold, u_min=math.ceil(5 / threshold),
-    )
-    tree.register(root)
-    tree.nodes_by_level[1] = [root]
-
-    current_nodes = [root]
-    for m in range(2, max_m + 1):
-        next_nodes = []
-        for parent in current_nodes:
-            _expand_node(parent, data, labels, kinds, threshold, tree)
-            next_nodes.extend(parent.all_children)
-        if not next_nodes:
-            break
-        current_nodes = next_nodes
-
-    return tree
-
-
+# This is the function that is used to call other functions and build the decision tree. We use some constants that are specific to this dataset
 def build_decision_tree(
     data: np.ndarray,
     labels: np.ndarray,
@@ -382,33 +341,3 @@ def build_decision_tree(
         current_nodes = next_nodes
 
     return tree
-
-
-def build_forced_sex_forest(
-    data: np.ndarray,
-    labels: np.ndarray,
-    threshold: float = DIAGNOSTIC_THRESHOLD,
-    max_m: int = 2,
-) -> ForcedSexForest:
-    male_idx = np.where(data[:, SEX_FEATURE_IDX] == MALE_VALUE)[0]
-    female_idx = np.where(data[:, SEX_FEATURE_IDX] == FEMALE_VALUE)[0]
-
-    male_tree = build_sex_specific_tree(data, labels, male_idx, "male", threshold, max_m)
-    female_tree = build_sex_specific_tree(data, labels, female_idx, "female", threshold, max_m)
-
-    return ForcedSexForest(
-        male_tree=male_tree, female_tree=female_tree,
-        male_indices=male_idx, female_indices=female_idx,
-        n_users=len(labels), threshold=threshold,
-    )
-
-
-def route_user(forest: ForcedSexForest, user_row: np.ndarray) -> Tuple[str, Optional[DecisionTree]]:
-    sex = user_row[SEX_FEATURE_IDX]
-    if np.isnan(sex):
-        return "unknown", None
-    if sex == MALE_VALUE:
-        return "male", forest.male_tree
-    if sex == FEMALE_VALUE:
-        return "female", forest.female_tree
-    return "unknown", None
