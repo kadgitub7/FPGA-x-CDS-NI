@@ -23,6 +23,7 @@ from typing import Dict, List, Optional, Tuple
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).parent))
+# retain information about the decision tree from alg 1
 from build_decision_tree import (
     DecisionTree, TreeNode, FeatureKind,
     FEATURE_NAMES, HEALTHY_CLASS, N_FEATURES,
@@ -161,7 +162,7 @@ class Algorithm2Output:
 
 
 # --- Discretization (Lines 4-7) ---
-
+# This is where we calculate the number of bins, 2 for binary and we use sturges rule for continuous
 def _n_bins_for_node(n_valid: int, is_binary: bool) -> int:
     if is_binary:
         return 2
@@ -185,7 +186,7 @@ def compute_discretization(
 
     if n_valid == 0:
         return None
-
+    # Here the healthy range is determined
     b_raw_min = float(valid_vals.min())
     b_raw_max = float(valid_vals.max())
     is_binary = (feature_kinds[feature_idx] == FeatureKind.BINARY)
