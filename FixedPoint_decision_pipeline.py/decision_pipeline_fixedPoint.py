@@ -24,6 +24,7 @@ from dataclasses import dataclass, field
 from enum import Enum, auto
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
+from xml.parsers.expat import model
 
 import numpy as np
 
@@ -161,32 +162,46 @@ class Algorithm4Output:
 # --- Helper Functions ---
 
 def _is_outside_healthy_range(value: float, b_min: float, b_max: float) -> bool:
+    value = to_fixed(value, 9,4)
+    b_min = to_fixed(b_min, 9,4)
+    b_max = to_fixed(b_max, 9,4)
+    ''' No NaN in Fixed point
     if np.isnan(value) or np.isnan(b_min) or np.isnan(b_max) or b_min > b_max:
         return False
+    '''
     return (value < b_min) or (value > b_max)
 
 
-def _compute_p_h_f(node: TreeNode, disease_h: int) -> float:
+def _compute_p_h_f(node: TreeNode, disease_h: int) -> int:
     if node.n_users == 0:
         return 0.0
-    return node.health_dist.get(disease_h, 0) / node.n_users
+    return fixed_divide(node.health_dist.get(disease_h, 0), node.n_users, 15)
+    #return node.health_dist.get(disease_h, 0) / node.n_users
 
 
 def _compute_p_h_gt1_f(node: TreeNode) -> float:
     if node.n_users == 0:
-        return 1e-9
+        return 1
+        #return 1e-9
     n_diseased = node.n_diseased
-    return n_diseased / node.n_users if n_diseased > 0 else 1e-9
+    return fixed_divide(n_diseased, node.n_users, 15)
+    #return n_diseased / node.n_users if n_diseased > 0 else 1e-9
 
 
-def _compute_AF_increment(p_h_f: float, r_j_h: float, p_h_gt1_f: float) -> float:
-    if p_h_gt1_f < 1e-12:
-        return 0.0
-    return max(0.0, (p_h_f * r_j_h) / p_h_gt1_f)
+def _compute_AF_increment(p_h_f: float, r_j_h: float, p_h_gt1_f: float) -> int:
+    if p_h_gt1_f == 0:
+        return 0
+    #if p_h_gt1_f < 1e-12:
+        #return 0.0
+    numerator = p_h_f * r_j_h
+    denominator = p_h_gt1_f
+    return max(0,fixed_divide(numerator, denominator, 15))
+    #return max(0.0, (p_h_f * r_j_h) / p_h_gt1_f)
 
 
-def _update_AF(AF_real: float, delta_AF: float) -> float:
-    return min(1.0, max(0.0, AF_real + delta_AF))
+def _update_AF(AF_real: float, delta_AF: float) -> int:
+    return min(to_fixed(1.0,2,30), max(0,AF_real + delta_AF))
+    #return min(1.0, max(0.0, AF_real + delta_AF))
 
 def _find_all_applicable_nodes(
     user_idx: int, focus_level: int, tree: DecisionTree,
@@ -201,6 +216,8 @@ def _find_all_applicable_nodes(
             continue
         if node.branch_def is not None:
             user_val = float(data[user_idx, node.branch_def.feature_idx])
+            user_val = to_fixed(user_val, 11,4)
+            # Not sure how to change the branch high and low at root
             if record is not None and not np.isnan(user_val):
                 record.af_trace.append(FPGATraceStep(
                     branch_val=user_val,
@@ -239,15 +256,17 @@ def _rl_select_best_action(
 
     p_h_f = _compute_p_h_f(node, disease_h)
     p_h_gt1_f = _compute_p_h_gt1_f(node)
-    best_action, best_rw = None, float("inf")
+    best_action, best_rw = None, (1 << 31) - 1
+    #best_action, best_rw = None, float("inf")
 
     for action in candidates:
         AF_sim = _compute_AF_increment(p_h_f, action.action_weight, p_h_gt1_f)
-        rw_sim = 1.0 - (AF_sim + AF_real)
+        rw_sim = to_fixed(1.0, 2, 30) - (AF_sim + AF_real)
+        #rw_sim = 1.0 - (AF_sim + AF_real)
         if rw_sim < best_rw:
             best_rw = rw_sim
             best_action = action
-
+        # I want to convert them here every time they are accessed but I don't know how
         if record is not None:
             record.af_trace.append(FPGATraceStep(
                 p_h_f=p_h_f, p_h_gt1_f=p_h_gt1_f,
@@ -301,7 +320,8 @@ def _predict_at_node(
 
             C_buf = [a for a in C_buf if a.feature_idx != selected.feature_idx]
             j = selected.feature_idx
-            V_j = float(data[user_idx, j])
+            V_j = to_fixed(float(data[user_idx, j]), 9, 4)
+            #V_j = float(data[user_idx, j])
 
             if np.isnan(V_j):
                 continue
@@ -315,16 +335,20 @@ def _predict_at_node(
             if model is None:
                 continue
 
-            b_min = model.healthy_range.b_min_healthy
-            b_max = model.healthy_range.b_max_healthy
+            #b_min = model.healthy_range.b_min_healthy
+            #b_max = model.healthy_range.b_max_healthy
+            b_min = to_fixed(model.healthy_range.b_min_healthy, 9, 4)
+            b_max = to_fixed(model.healthy_range.b_max_healthy, 9, 4)
 
             exec_entry = alg2_output.get_action(nid, j, h)
             r_j_h = exec_entry.action_weight if exec_entry else selected.action_weight
+            r_j_h = to_fixed(r_j_h, 1, 15)
 
             numer = p_h_f * r_j_h
             delta_AF = _compute_AF_increment(p_h_f, r_j_h, p_h_gt1_f)
             AF_real = _update_AF(AF_real, delta_AF)
-            rw_real = 1.0 - AF_real
+            #rw_real = 1.0 - AF_real
+            rw_real = (1 << 30) - AF_real
 
             record.af_trace.append(FPGATraceStep(
                 raw_value=V_j, b_min=b_min, b_max=b_max,
@@ -345,7 +369,9 @@ def _predict_at_node(
         AF_real=AF_real, node_id=node.node_id,
         step_type="threshold_check",
     ))
-    if rw_final <= DIAGNOSTIC_THRESHOLD:
+
+    #if rw_final <= DIAGNOSTIC_THRESHOLD:
+    if rw_final <= to_fixed(0.025, 2, 30):
         return HealthDecision.HEALTHY, AF_real, None
 
     # Check if focus can increase
@@ -379,7 +405,8 @@ def run_algorithm4(
     record = PredictionRecord(user_global_idx=user_idx, true_label=true_label)
 
     root_node = tree.root
-    AF_real = 0.0
+    #AF_real = 0.0
+    AF_real = 0
     pac_counter = [0]
     consumed = set()
     h_init = -1
@@ -395,21 +422,27 @@ def run_algorithm4(
         initial_action = random.choice(valid_candidates)
         j_init = initial_action.feature_idx
         h_init = initial_action.disease_class
-        V_init = float(data[user_idx, j_init])
+        #V_init = float(data[user_idx, j_init])
+        V_init = to_fixed(float(data[user_idx, j_init]), 9, 4)
         record.initial_action_feat = j_init
 
         model = alg2_output.get_model(root_node.node_id, j_init)
         if model is not None:
-            b_min = model.healthy_range.b_min_healthy
-            b_max = model.healthy_range.b_max_healthy
+            #b_min = model.healthy_range.b_min_healthy
+            #b_max = model.healthy_range.b_max_healthy
+
+            b_min = to_fixed(model.healthy_range.b_min_healthy, 9, 4)
+            b_max = to_fixed(model.healthy_range.b_max_healthy, 9, 4)
 
             p_h_f = _compute_p_h_f(root_node, h_init)
             p_h_gt1_f = _compute_p_h_gt1_f(root_node)
-            r_j_h_init = initial_action.action_weight
+            #r_j_h_init = initial_action.action_weight
+            r_j_h_init = to_fixed(initial_action.action_weight, 1, 15)
             numer_init = p_h_f * r_j_h_init
             delta_AF = _compute_AF_increment(p_h_f, r_j_h_init, p_h_gt1_f)
             AF_real = _update_AF(AF_real, delta_AF)
-            rw_real = 1.0 - AF_real
+            #rw_real = 1.0 - AF_real
+            rw_real = (1 << 30) - AF_real
 
             record.af_trace.append(FPGATraceStep(
                 raw_value=V_init, b_min=b_min, b_max=b_max,
