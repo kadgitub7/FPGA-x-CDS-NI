@@ -700,6 +700,26 @@ def profile_fixed_point_ranges(
     print(f"\n  Report written to: {output_path}")
     return ranges
 
+# --- Functions used to convert floating point to fixed point values and operations ---
+
+def to_fixed(value, int_bits, frac_bits):
+    shift = 1 << frac_bits # This operation is equal to 2^(frac_bits). We want to know how much we are mulitplying by which we keep track of
+    # The reason we subtract one bit is because it is a signed bit, therefore it does not provide numerical significance
+    max_val = (1 << (int_bits + frac_bits - 1)) - 1 # The maximum possible value is the total number of bits minus 1, 2^(total number of bits) -1
+    min_val = -(1 <<(int_bits + frac_bits -1)) # the minimum possible value is the negative of the max value + 1
+    fixed = int(round(value * shift)) # if we multiply our floating point value by the shift we get our new fixed point value, and we round it to an integer. We just need to keep track of the shift and we can get our value back
+    return max(min_val, min(max_val,fixed)) # We calculate the max and min to ensure we are not exceeding the maximum and minimum values present in the range
+
+def fixed_multiply(a, b, frac_bits):
+    # When multiplying two fixed-point numbers. We need to take the product and divide by 2^(# of frac bits) to get the value which can then be divided by the same shift to get the floating point value, we are adding another factor to the 2^n when we multiply and must get rid of it
+    return (a * b) >> frac_bits
+
+def fixed_divide(num, den, frac_bits):
+    # make sure there is no divide by 0 error
+    if den == 0:
+        return 0
+    # This is how fixed point division works. We need to divide the numerator by 2^(fractional bits) and then integer divide by the denominator to get our answer
+    return (num << frac_bits) // den
 
 # --- Main ---
 
