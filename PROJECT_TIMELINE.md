@@ -32,4 +32,16 @@ This .md file is for people that want to understand what process as well as stug
   Screening count  : 0
  
 
+ b. Deciding the number of bits in Q format to assign to each intermediate value being processed in the FPGA. This is important because we want to minimize the numebr of bits used, but at the same time also make sure that there are enough bits to not affect the calcualtions and later the results. 
+
+ I have attached the appended list of the bits needed for each variable and an explanation to the QFormatBit.txt.
+
+ There are three main criterion which are used to determine the Q format:
+ 1. What is the WORST-CASE magnitude?  →  determines INTEGER bits
+ 2. Can it go NEGATIVE?                →  determines if you need a SIGN bit
+ 3. How SMALL can meaningful values get? →  determines FRACTIONAL bits
+
+ In this project all signed values were used to make sure that there are no hidden bugs when trasitioning to verilog. This is because a mix of signed and unsigned values can be misrepresented in Verilog easily.
+
+ 
 

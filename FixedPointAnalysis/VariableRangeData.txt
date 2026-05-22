@@ -34,3 +34,5 @@ Bit-Budget Guidance:
   AF_real, rw_real are in [0,1] — 0 integer bits + sign bit sufficient
   rw_sim can go NEGATIVE (min=-0.043329) — needs sign bit
   threshold is constant 0.025 — stored as fixed-point literal
+
+
