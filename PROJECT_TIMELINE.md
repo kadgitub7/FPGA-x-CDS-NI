@@ -105,5 +105,5 @@ The fixed-point implementation produces nearly identical classification behavior
 A single user was classified as healthy who was healthy instead of incorrectly unhealthy in the floating point interpretation. This could be due to a rounding error when converting to fixed point, but was favourable. This change is within the expected different and will not be changed.
 
 ## 2. Model Parameter Export
-
+The FPGA has BRAM(Block RAM). This is where all the information is stored. We need to create a system where all the values processed in Algorithm 1-3 is stored in look up tables that can be easily accessed to get the relevant information.
 
