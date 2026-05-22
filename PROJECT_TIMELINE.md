@@ -43,5 +43,67 @@ This .md file is for people that want to understand what process as well as stug
 
  In this project all signed values were used to make sure that there are no hidden bugs when trasitioning to verilog. This is because a mix of signed and unsigned values can be misrepresented in Verilog easily.
 
+ c. Once I ran the fixed point algorithm side by side with the floating point algorithm we got the following results:
  
+ Cross-Validation Fold Accuracy Comparison
+
+| Fold | Fixed Point Accuracy | Floating Point Accuracy |
+|------:|---------------------:|-------------------------:|
+| 1 | 60.9% | 60.9% |
+| 2 | 66.3% | 66.3% |
+| 3 | 68.1% | 68.1% |
+| 4 | 71.2% | 71.2% |
+| 5 | 72.2% | 72.2% |
+| 6 | 71.4% | 71.4% |
+| 7 | 71.1% | 71.1% |
+| 8 | 70.1% | 70.1% |
+| 9 | 71.3% | 71.0% |
+| 10 | 71.7% | 71.5% |
+
+---
+
+Overall Performance Metrics
+
+| Metric | Fixed Point | Floating Point |
+|:------------------|------------:|----------------:|
+| Users Evaluated | 452 | 452 |
+| Overall Accuracy | 71.7% | 71.5% |
+| Sensitivity | 82.1% | 82.1% |
+| Specificity | 62.9% | 62.4% |
+| False Alarm Rate | 37.1% | 37.6% |
+| Screening Count | 0 | 0 |
+
+---
+
+Per-Class Detection Performance
+
+| Class | Total Samples | Fixed Point Detected | Fixed Point Rate | Floating Point Detected | Floating Point Rate |
+|-------:|--------------:|---------------------:|-----------------:|------------------------:|--------------------:|
+| 2 | 44 | 34 | 77.3% | 34 | 77.3% |
+| 3 | 15 | 15 | 100.0% | 15 | 100.0% |
+| 4 | 15 | 11 | 73.3% | 11 | 73.3% |
+| 5 | 13 | 12 | 92.3% | 12 | 92.3% |
+| 6 | 25 | 20 | 80.0% | 20 | 80.0% |
+| 7 | 3 | 2 | 66.7% | 2 | 66.7% |
+| 8 | 2 | 2 | 100.0% | 2 | 100.0% |
+| 9 | 9 | 9 | 100.0% | 9 | 100.0% |
+| 10 | 50 | 40 | 80.0% | 40 | 80.0% |
+| 14 | 4 | 4 | 100.0% | 4 | 100.0% |
+| 15 | 5 | 5 | 100.0% | 5 | 100.0% |
+| 16 | 22 | 16 | 72.7% | 16 | 72.7% |
+
+---
+
+Summary
+
+The fixed-point implementation produces nearly identical classification behavior to the floating-point implementation. Small deviations occur in later folds (Fold 9–10), producing:
+
+- +0.2% overall accuracy for fixed point
+- +0.5% specificity for fixed point
+- −0.5% false alarm rate for fixed point
+
+A single user was classified as healthy who was healthy instead of incorrectly unhealthy in the floating point interpretation. This could be due to a rounding error when converting to fixed point, but was favourable. This change is within the expected different and will not be changed.
+
+## 2. Model Parameter Export
+
 

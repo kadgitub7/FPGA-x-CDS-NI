@@ -30,7 +30,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from CDS_NI_Algorithms.build_decision_tree import (
     DecisionTree, TreeNode,
     FEATURE_NAMES, HEALTHY_CLASS, DIAGNOSTIC_THRESHOLD, U_MIN, N_FEATURES,
-    load_dataset, build_decision_tree, build_sex_specific_tree,
+    load_dataset, build_decision_tree,
     SEX_FEATURE_IDX,
 )
 from CDS_NI_Algorithms.action_normalRange import (
