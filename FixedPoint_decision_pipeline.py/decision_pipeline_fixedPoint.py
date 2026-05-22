@@ -24,11 +24,9 @@ from dataclasses import dataclass, field
 from enum import Enum, auto
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
-from xml.parsers.expat import model
-
 import numpy as np
 
-sys.path.insert(0, str(Path(__file__).parent))
+sys.path.insert(0, str(Path(__file__).parent.parent))
 from CDS_NI_Algorithms.build_decision_tree import (
     DecisionTree, TreeNode,
     FEATURE_NAMES, HEALTHY_CLASS, DIAGNOSTIC_THRESHOLD, U_MIN, N_FEATURES,
@@ -40,6 +38,35 @@ from CDS_NI_Algorithms.action_normalRange import (
     run_algorithm2, DEFAULT_N_BINS,
 )
 from CDS_NI_Algorithms.action_pruning import Algorithm3Output, run_algorithm3
+
+
+# --- Fixed-Point Conversion Functions ---
+
+def to_fixed(value, int_bits, frac_bits):
+    shift = 1 << frac_bits # This operation is equal to 2^(frac_bits). We want to know how much we are mulitplying by which we keep track of
+    # The reason we subtract one bit is because it is a signed bit, therefore it does not provide numerical significance
+    max_val = (1 << (int_bits + frac_bits - 1)) - 1 # The maximum possible value is the total number of bits minus 1, 2^(total number of bits) -1
+    min_val = -(1 <<(int_bits + frac_bits -1)) # the minimum possible value is the negative of the max value + 1
+    fixed = int(round(value * shift)) # if we multiply our floating point value by the shift we get our new fixed point value, and we round it to an integer. We just need to keep track of the shift and we can get our value back
+    return max(min_val, min(max_val,fixed)) # We calculate the max and min to ensure we are not exceeding the maximum and minimum values present in the range
+
+def fixed_multiply(a, b, frac_bits):
+    # When multiplying two fixed-point numbers. We need to take the product and divide by 2^(# of frac bits) to get the value which can then be divided by the same shift to get the floating point value, we are adding another factor to the 2^n when we multiply and must get rid of it
+    return (a * b) >> frac_bits
+
+def fixed_divide(num, den, frac_bits):
+    # make sure there is no divide by 0 error
+    if den == 0:
+        return 0
+    # This is how fixed point division works. We need to divide the numerator by 2^(fractional bits) and then integer divide by the denominator to get our answer
+    return (num << frac_bits) // den
+
+
+# --- Fixed-Point Constants (defined after to_fixed so they can use it) ---
+
+ONE_Q2_30       = 1 << 30                   # 1.0 in Q s2.30 = 1073741824
+THRESHOLD_Q2_30 = to_fixed(0.025, 2, 30)    # 0.025 in Q s2.30 = 26843546
+MAX_INT_Q2_30   = (1 << 31) - 1             # "infinity" for best_rw init
 
 
 # --- Constants ---
@@ -67,31 +94,31 @@ class FPGATraceStep:
       "branch_route"    — node routing comparison
       "threshold_check" — final rw vs threshold comparison
     """
-    # --- Main PAC values ---
-    raw_value: float = float("nan")   # BD_m^k(o,u) — sensor reading
-    b_min: float = float("nan")       # Eq. 5 — lower healthy boundary
-    b_max: float = float("nan")       # Eq. 5 — upper healthy boundary
-    r_j_h: float = float("nan")       # Algorithm 3 — action weight
-    p_h_f: float = float("nan")       # P(h, f^k_m) — disease prevalence in node
-    p_h_gt1_f: float = float("nan")   # P(h>1, f^k_m) — denominator term
-    numerator: float = float("nan")   # p_h_f * r_j_h — intermediate product before division
-    delta_AF: float = float("nan")    # numerator / p_h_gt1_f — AF increment this step
-    AF_real: float = float("nan")     # Eq. 7 cumulative — running assurance factor
-    rw_real: float = float("nan")     # Eq. 8: 1 - AF — remaining risk
+    # --- Main PAC values (stored as fixed-point integers) ---
+    raw_value: int = 0    # BD_m^k(o,u) — sensor reading (Q s9.4)
+    b_min: int = 0        # Eq. 5 — lower healthy boundary (Q s9.4)
+    b_max: int = 0        # Eq. 5 — upper healthy boundary (Q s9.4)
+    r_j_h: int = 0        # Algorithm 3 — action weight (Q s1.15)
+    p_h_f: int = 0        # P(h, f^k_m) — disease prevalence in node (Q s1.15)
+    p_h_gt1_f: int = 0    # P(h>1, f^k_m) — denominator term (Q s1.15)
+    numerator: int = 0    # p_h_f * r_j_h — intermediate product (Q s2.30)
+    delta_AF: int = 0     # numerator / p_h_gt1_f — AF increment this step (Q s2.30)
+    AF_real: int = 0      # Eq. 7 cumulative — running assurance factor (Q s2.30)
+    rw_real: int = 0      # Eq. 8: 1 - AF — remaining risk (Q s2.30)
 
     # --- RL lookahead values (lines 11-17 of Algorithm 4) ---
-    AF_sim: float = float("nan")      # simulated AF increment for candidate
-    rw_sim: float = float("nan")      # 1 - (AF_sim + AF_real) — can go negative
-    best_rw: float = float("nan")     # running minimum rw_sim across candidates
+    AF_sim: int = 0       # simulated AF increment for candidate (Q s2.30)
+    rw_sim: int = 0       # 1 - (AF_sim + AF_real) — can go negative (Q s2.30)
+    best_rw: int = 0      # running minimum rw_sim across candidates (Q s2.30)
 
     # --- Node routing values (BranchDef.contains) ---
-    branch_val: float = float("nan")  # sensor value used for tree routing
-    branch_low: float = float("nan")  # tree partition lower bound
-    branch_high: float = float("nan") # tree partition upper bound
+    branch_val: int = 0   # sensor value used for tree routing (Q s11.4)
+    branch_low: int = 0   # tree partition lower bound (Q s11.4)
+    branch_high: int = 0  # tree partition upper bound (Q s11.4)
 
     # --- Threshold comparison ---
-    rw_final: float = float("nan")    # final 1 - AF compared to threshold
-    threshold: float = float("nan")   # DIAGNOSTIC_THRESHOLD constant
+    rw_final: int = 0     # final 1 - AF compared to threshold (Q s2.30)
+    threshold: int = 0    # DIAGNOSTIC_THRESHOLD constant (Q s2.30)
 
     # --- Metadata (not profiled, just for traceability) ---
     feature_idx: int = -1
@@ -161,47 +188,46 @@ class Algorithm4Output:
 
 # --- Helper Functions ---
 
-def _is_outside_healthy_range(value: float, b_min: float, b_max: float) -> bool:
-    value = to_fixed(value, 9,4)
-    b_min = to_fixed(b_min, 9,4)
-    b_max = to_fixed(b_max, 9,4)
-    ''' No NaN in Fixed point
-    if np.isnan(value) or np.isnan(b_min) or np.isnan(b_max) or b_min > b_max:
+def _is_outside_healthy_range(value: int, b_min: int, b_max: int) -> bool:
+    """All inputs are already fixed-point integers (Q s9.4).
+    No NaN in fixed-point — just check the range guard."""
+    if b_min > b_max:
         return False
-    '''
     return (value < b_min) or (value > b_max)
 
 
 def _compute_p_h_f(node: TreeNode, disease_h: int) -> int:
+    """Returns P(h, node) as Q s1.15 fixed-point integer."""
     if node.n_users == 0:
-        return 0.0
+        return 0
     return fixed_divide(node.health_dist.get(disease_h, 0), node.n_users, 15)
-    #return node.health_dist.get(disease_h, 0) / node.n_users
 
 
-def _compute_p_h_gt1_f(node: TreeNode) -> float:
+def _compute_p_h_gt1_f(node: TreeNode) -> int:
+    """Returns P(h>1, node) as Q s1.15 fixed-point integer.
+    Returns 1 (one LSB = 1/32768) when zero to prevent divide-by-zero."""
     if node.n_users == 0:
         return 1
-        #return 1e-9
     n_diseased = node.n_diseased
+    if n_diseased == 0:
+        return 1    # one LSB prevents divide-by-zero downstream
     return fixed_divide(n_diseased, node.n_users, 15)
-    #return n_diseased / node.n_users if n_diseased > 0 else 1e-9
 
 
-def _compute_AF_increment(p_h_f: float, r_j_h: float, p_h_gt1_f: float) -> int:
+def _compute_AF_increment(p_h_f: int, r_j_h: int, p_h_gt1_f: int) -> int:
+    """Compute delta_AF = (p_h_f * r_j_h) / p_h_gt1_f in fixed-point.
+    p_h_f, r_j_h: Q s1.15.  p_h_gt1_f: Q s1.15.
+    numerator = p_h_f * r_j_h -> Q s2.30 (no shift, 15+15=30 frac bits).
+    fixed_divide(Q s2.30, Q s1.15, 15) -> result has (30+15)-15 = 30 frac bits = Q s2.30."""
     if p_h_gt1_f == 0:
         return 0
-    #if p_h_gt1_f < 1e-12:
-        #return 0.0
-    numerator = p_h_f * r_j_h
-    denominator = p_h_gt1_f
-    return max(0,fixed_divide(numerator, denominator, 15))
-    #return max(0.0, (p_h_f * r_j_h) / p_h_gt1_f)
+    numerator = p_h_f * r_j_h   # Q s1.15 × Q s1.15 = Q s2.30
+    return max(0, fixed_divide(numerator, p_h_gt1_f, 15))
 
 
-def _update_AF(AF_real: float, delta_AF: float) -> int:
-    return min(to_fixed(1.0,2,30), max(0,AF_real + delta_AF))
-    #return min(1.0, max(0.0, AF_real + delta_AF))
+def _update_AF(AF_real: int, delta_AF: int) -> int:
+    """Both inputs Q s2.30. Clamp result to [0, 1.0] in Q s2.30."""
+    return min(ONE_Q2_30, max(0, AF_real + delta_AF))
 
 def _find_all_applicable_nodes(
     user_idx: int, focus_level: int, tree: DecisionTree,
@@ -215,18 +241,25 @@ def _find_all_applicable_nodes(
         if valid_node_ids is not None and node.node_id not in valid_node_ids:
             continue
         if node.branch_def is not None:
-            user_val = float(data[user_idx, node.branch_def.feature_idx])
-            user_val = to_fixed(user_val, 11,4)
-            # Not sure how to change the branch high and low at root
-            if record is not None and not np.isnan(user_val):
+            user_val_raw = float(data[user_idx, node.branch_def.feature_idx])
+            if np.isnan(user_val_raw):
+                continue
+            # Convert all three to Q s11.4 for fixed-point comparison
+            user_val = to_fixed(user_val_raw, 11, 4)
+            branch_low_fixed = to_fixed(node.branch_def.low, 11, 4)
+            branch_high_fixed = to_fixed(node.branch_def.high, 11, 4)
+
+            if record is not None:
                 record.af_trace.append(FPGATraceStep(
                     branch_val=user_val,
-                    branch_low=node.branch_def.low,
-                    branch_high=node.branch_def.high,
+                    branch_low=branch_low_fixed,
+                    branch_high=branch_high_fixed,
                     feature_idx=node.branch_def.feature_idx,
                     node_id=node.node_id, step_type="branch_route",
                 ))
-            if node.branch_def.contains(user_val):
+            # Fixed-point comparison instead of branch_def.contains()
+            # Original: low <= val < high  (all Q s11.4 integers now)
+            if branch_low_fixed <= user_val < branch_high_fixed:
                 matches.append(node)
     return matches
 
@@ -246,32 +279,33 @@ def _rl_select_best_action(
     candidates: List[ExecutiveActionEntry],
     node: TreeNode,
     disease_h: int,
-    AF_real: float,
+    AF_real: int,
     alg2_output: Algorithm2Output,
     record: Optional[PredictionRecord] = None,
 ) -> Optional[ExecutiveActionEntry]:
-    """RL lookahead: select action minimizing rw_sim (lines 11-17)."""
+    """RL lookahead: select action minimizing rw_sim (lines 11-17).
+    AF_real is Q s2.30. All internal math is fixed-point."""
     if not candidates:
         return None
 
-    p_h_f = _compute_p_h_f(node, disease_h)
-    p_h_gt1_f = _compute_p_h_gt1_f(node)
-    best_action, best_rw = None, (1 << 31) - 1
-    #best_action, best_rw = None, float("inf")
+    p_h_f = _compute_p_h_f(node, disease_h)       # Q s1.15
+    p_h_gt1_f = _compute_p_h_gt1_f(node)           # Q s1.15
+    best_action, best_rw = None, MAX_INT_Q2_30     # "infinity" in Q s2.30
 
     for action in candidates:
-        AF_sim = _compute_AF_increment(p_h_f, action.action_weight, p_h_gt1_f)
-        rw_sim = to_fixed(1.0, 2, 30) - (AF_sim + AF_real)
-        #rw_sim = 1.0 - (AF_sim + AF_real)
+        # Convert action weight from float to Q s1.15 each time it's accessed
+        r_j_h_fixed = to_fixed(action.action_weight, 1, 15)
+        AF_sim = _compute_AF_increment(p_h_f, r_j_h_fixed, p_h_gt1_f)  # Q s2.30
+        rw_sim = ONE_Q2_30 - (AF_sim + AF_real)    # Q s2.30
         if rw_sim < best_rw:
             best_rw = rw_sim
             best_action = action
-        # I want to convert them here every time they are accessed but I don't know how
+
         if record is not None:
             record.af_trace.append(FPGATraceStep(
                 p_h_f=p_h_f, p_h_gt1_f=p_h_gt1_f,
-                r_j_h=action.action_weight,
-                numerator=p_h_f * action.action_weight,
+                r_j_h=r_j_h_fixed,
+                numerator=p_h_f * r_j_h_fixed,    # Q s2.30
                 AF_sim=AF_sim, rw_sim=rw_sim, best_rw=best_rw,
                 AF_real=AF_real,
                 feature_idx=action.feature_idx, disease_class=disease_h,
@@ -290,12 +324,12 @@ def _predict_at_node(
     data: np.ndarray,
     alg2_output: Algorithm2Output,
     alg3_output: Algorithm3Output,
-    AF_real: float,
+    AF_real: int,
     pac_counter: List[int],
     record: PredictionRecord,
     consumed: Optional[Set[Tuple[int, int]]] = None,
     init_action_h: Optional[int] = None,
-) -> Tuple[HealthDecision, float, Optional[int]]:
+) -> Tuple[HealthDecision, int, Optional[int]]:
     nid = node.node_id
     p_h_gt1_f = _compute_p_h_gt1_f(node)
 
@@ -320,11 +354,11 @@ def _predict_at_node(
 
             C_buf = [a for a in C_buf if a.feature_idx != selected.feature_idx]
             j = selected.feature_idx
-            V_j = to_fixed(float(data[user_idx, j]), 9, 4)
-            #V_j = float(data[user_idx, j])
+            V_j_raw = float(data[user_idx, j])
 
-            if np.isnan(V_j):
+            if np.isnan(V_j_raw):
                 continue
+            V_j = to_fixed(V_j_raw, 9, 4)
 
             pac_counter[0] += 1
             record.total_actions_applied += 1
@@ -335,8 +369,6 @@ def _predict_at_node(
             if model is None:
                 continue
 
-            #b_min = model.healthy_range.b_min_healthy
-            #b_max = model.healthy_range.b_max_healthy
             b_min = to_fixed(model.healthy_range.b_min_healthy, 9, 4)
             b_max = to_fixed(model.healthy_range.b_max_healthy, 9, 4)
 
@@ -347,8 +379,7 @@ def _predict_at_node(
             numer = p_h_f * r_j_h
             delta_AF = _compute_AF_increment(p_h_f, r_j_h, p_h_gt1_f)
             AF_real = _update_AF(AF_real, delta_AF)
-            #rw_real = 1.0 - AF_real
-            rw_real = (1 << 30) - AF_real
+            rw_real = ONE_Q2_30 - AF_real
 
             record.af_trace.append(FPGATraceStep(
                 raw_value=V_j, b_min=b_min, b_max=b_max,
@@ -363,15 +394,14 @@ def _predict_at_node(
                 return HealthDecision.UNHEALTHY, AF_real, h
 
     # Post-disease-loop threshold check
-    rw_final = 1.0 - AF_real
+    rw_final = ONE_Q2_30 - AF_real
     record.af_trace.append(FPGATraceStep(
-        rw_final=rw_final, threshold=DIAGNOSTIC_THRESHOLD,
+        rw_final=rw_final, threshold=THRESHOLD_Q2_30,
         AF_real=AF_real, node_id=node.node_id,
         step_type="threshold_check",
     ))
 
-    #if rw_final <= DIAGNOSTIC_THRESHOLD:
-    if rw_final <= to_fixed(0.025, 2, 30):
+    if rw_final <= THRESHOLD_Q2_30:
         return HealthDecision.HEALTHY, AF_real, None
 
     # Check if focus can increase
@@ -405,8 +435,7 @@ def run_algorithm4(
     record = PredictionRecord(user_global_idx=user_idx, true_label=true_label)
 
     root_node = tree.root
-    #AF_real = 0.0
-    AF_real = 0
+    AF_real = 0    # Q s2.30: zero
     pac_counter = [0]
     consumed = set()
     h_init = -1
@@ -422,27 +451,21 @@ def run_algorithm4(
         initial_action = random.choice(valid_candidates)
         j_init = initial_action.feature_idx
         h_init = initial_action.disease_class
-        #V_init = float(data[user_idx, j_init])
         V_init = to_fixed(float(data[user_idx, j_init]), 9, 4)
         record.initial_action_feat = j_init
 
         model = alg2_output.get_model(root_node.node_id, j_init)
         if model is not None:
-            #b_min = model.healthy_range.b_min_healthy
-            #b_max = model.healthy_range.b_max_healthy
-
             b_min = to_fixed(model.healthy_range.b_min_healthy, 9, 4)
             b_max = to_fixed(model.healthy_range.b_max_healthy, 9, 4)
 
             p_h_f = _compute_p_h_f(root_node, h_init)
             p_h_gt1_f = _compute_p_h_gt1_f(root_node)
-            #r_j_h_init = initial_action.action_weight
             r_j_h_init = to_fixed(initial_action.action_weight, 1, 15)
             numer_init = p_h_f * r_j_h_init
             delta_AF = _compute_AF_increment(p_h_f, r_j_h_init, p_h_gt1_f)
             AF_real = _update_AF(AF_real, delta_AF)
-            #rw_real = 1.0 - AF_real
-            rw_real = (1 << 30) - AF_real
+            rw_real = ONE_Q2_30 - AF_real
 
             record.af_trace.append(FPGATraceStep(
                 raw_value=V_init, b_min=b_min, b_max=b_max,
@@ -647,6 +670,18 @@ FPGA_FIELD_PAPER_REF: Dict[str, str] = {
 }
 
 
+# Which trace fields are meaningful for each step type
+# (used to distinguish "real zero" from "not-set default zero")
+_FIELDS_FOR_STEP_TYPE: Dict[str, set] = {
+    "pac": {"raw_value", "b_min", "b_max", "r_j_h", "p_h_f", "p_h_gt1_f",
+            "numerator", "delta_AF", "AF_real", "rw_real"},
+    "rl_sim": {"p_h_f", "p_h_gt1_f", "r_j_h", "numerator",
+               "AF_sim", "rw_sim", "best_rw", "AF_real"},
+    "branch_route": {"branch_val", "branch_low", "branch_high"},
+    "threshold_check": {"rw_final", "threshold", "AF_real"},
+}
+
+
 def profile_fixed_point_ranges(
     data: np.ndarray,
     labels: np.ndarray,
@@ -670,7 +705,11 @@ def profile_fixed_point_ranges(
         for step in record.af_trace:
             for fname in FPGA_TRACE_FIELDS:
                 val = getattr(step, fname)
-                if np.isnan(val):
+                # In fixed-point mode, values are integers (default 0).
+                # Skip fields that weren't set for this step_type
+                # by checking if the value is the default (0) and this
+                # field isn't relevant to the step's type.
+                if val == 0 and fname not in _FIELDS_FOR_STEP_TYPE.get(step.step_type, set()):
                     continue
                 entry = ranges[fname]
                 entry["min"] = min(entry["min"], val)
@@ -733,31 +772,10 @@ def profile_fixed_point_ranges(
     print(f"\n  Report written to: {output_path}")
     return ranges
 
-# --- Functions used to convert floating point to fixed point values and operations ---
-
-def to_fixed(value, int_bits, frac_bits):
-    shift = 1 << frac_bits # This operation is equal to 2^(frac_bits). We want to know how much we are mulitplying by which we keep track of
-    # The reason we subtract one bit is because it is a signed bit, therefore it does not provide numerical significance
-    max_val = (1 << (int_bits + frac_bits - 1)) - 1 # The maximum possible value is the total number of bits minus 1, 2^(total number of bits) -1
-    min_val = -(1 <<(int_bits + frac_bits -1)) # the minimum possible value is the negative of the max value + 1
-    fixed = int(round(value * shift)) # if we multiply our floating point value by the shift we get our new fixed point value, and we round it to an integer. We just need to keep track of the shift and we can get our value back
-    return max(min_val, min(max_val,fixed)) # We calculate the max and min to ensure we are not exceeding the maximum and minimum values present in the range
-
-def fixed_multiply(a, b, frac_bits):
-    # When multiplying two fixed-point numbers. We need to take the product and divide by 2^(# of frac bits) to get the value which can then be divided by the same shift to get the floating point value, we are adding another factor to the 2^n when we multiply and must get rid of it
-    return (a * b) >> frac_bits
-
-def fixed_divide(num, den, frac_bits):
-    # make sure there is no divide by 0 error
-    if den == 0:
-        return 0
-    # This is how fixed point division works. We need to divide the numerator by 2^(fractional bits) and then integer divide by the denominator to get our answer
-    return (num << frac_bits) // den
-
 # --- Main ---
 
 if __name__ == "__main__":
-    path = sys.argv[1] if len(sys.argv) > 1 else str(Path(__file__).parent / "data" / "arrhythmia.data")
+    path = sys.argv[1] if len(sys.argv) > 1 else str(Path(__file__).parent.parent / "CDS_NI_Algorithms" / "data" / "arrhythmia.data")
     data, labels = load_dataset(path)
 
     max_u = int(sys.argv[2]) if len(sys.argv) > 2 else None
