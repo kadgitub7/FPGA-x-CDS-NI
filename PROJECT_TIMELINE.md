@@ -109,3 +109,17 @@ The FPGA has BRAM(Block RAM). This is where all the information is stored. We ne
 
 We can store all of these values in .mem files which can store the values and be accessed on run time with the FPGA synthesis.
 
+
+## 3. FPGA setup
+I plan on running a small test file to test if the entire process of building the HDL, testing, and simulating the project will work properly.
+If we assume that the clock frequency is 50 MHz and we want the LED to blink at 1Hz, then we need to find the number of bits in the counter to accomodate for that. The formula:
+
+f(blinking) = f(clk)/(2^n+1)
+1Hz = 50 MHz / 2^(n+1)
+1Hz = 50,000,000 Hz  / 2^n+1
+2^n+1 = 50,000,000
+n+1 = log_2(50,000,000)
+n+1 ~ 25.58
+n ~ 24.58
+n ~ 25
+
