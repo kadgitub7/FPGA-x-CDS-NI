@@ -127,3 +127,16 @@ Here is the waveform extracted from the simulation of the LED 1 Hz blinking:
 
 <img src=/FPA_Files/waveforms/LED_Blinking_waveform.png width="40%">
 
+Next stages:
+Create Constraint file
+    ↓
+Flow Navigator
+    ↓
+Run Synthesis
+    ↓
+Run Implementation
+    ↓
+Generate Bitstream
+
+
+

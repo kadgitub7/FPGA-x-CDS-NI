@@ -10,7 +10,7 @@ module blinkLED(
         if (reset) begin
             counter <= 0; // This is to rest the counter to 0
             led <= 0; // This is to turn off the LED when reset is asserted
-        end else if (counter == 26'd24999999) begin // This is to set the counter to 0 after it reaches 50 million, which will make the LED blink at a rate of 1Hz
+        end else if (counter == 26'd49999999) begin // This is to set the counter to 0 after it reaches 50 million, which will make the LED blink at a rate of 1Hz
             counter <= 0;
             led <= ~led; // toggle the LED state
         end else begin
