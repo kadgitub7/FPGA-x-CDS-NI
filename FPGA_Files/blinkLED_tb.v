@@ -17,13 +17,18 @@ module blinkLED_tb();
     // Testing
 
     initial begin
-        //initial reset
-        reset = 1; # 10
-        reset = 0; # 1000000000 // Run the simulation for a long time to observe multiple LED blinks
+    reset = 1;
+    #20;
 
-        // Assert reset again to see if the LED turns off
-        reset = 1; # 10
-        reset = 0; # 1000000000 // Run the simulation for a long time to observe multiple LED blinks
-        $finish;
+    reset = 0;
+    #2000000000; //2 seconds
+
+    reset = 1;
+    #20;
+
+    reset = 0;
+    #2000000000;
+
+    $finish;
     end
 endmodule

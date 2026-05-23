@@ -123,3 +123,7 @@ n+1 ~ 25.58
 n ~ 24.58
 n ~ 25
 
+Here is the waveform extracted from the simulation of the LED 1 Hz blinking:
+
+<img src=/FPA_Files/waveforms/LED_Blinking_waveform.png width="40%">
+
