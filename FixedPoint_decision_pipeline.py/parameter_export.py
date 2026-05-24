@@ -18,7 +18,9 @@ All float values are converted to fixed-point integers before export:
 from __future__ import annotations
 
 import os
+import random
 import sys
+from collections import defaultdict
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
@@ -517,51 +519,213 @@ def export_model_parameters(
 
 
 # =====================================================================
+# Export Test Vectors (stimulus for FPGA testbench)
+# =====================================================================
+
+def export_test_vectors(
+    data: np.ndarray,
+    labels: np.ndarray,
+    test_indices: List[int],
+    output_path: str,
+) -> None:
+    """Export test user feature vectors and expected labels to .mem file.
+
+    Each test user occupies N_FEATURES + 1 words:
+        Words 0..N_FEATURES-1: feature values in Q s11.4 (16 bits each)
+        Word N_FEATURES:       ground truth label (16 bits unsigned)
+
+    First line is the number of test users.
+    """
+    n_test = len(test_indices)
+
+    with open(output_path, 'w', encoding='utf-8') as f:
+        f.write(f"// Test Vectors — {n_test} users, {N_FEATURES} features each\n")
+        f.write(f"// Format per user: {N_FEATURES} x feature (Q s11.4) + 1 x label\n")
+        f.write(f"//\n")
+        f.write(f"// User count:\n")
+        f.write(f"{to_hex_16(n_test)}\n")
+
+        for user_idx in test_indices:
+            label = int(labels[user_idx])
+            f.write(f"// User {user_idx} (label={label})\n")
+
+            for feat_j in range(N_FEATURES):
+                val = float(data[user_idx, feat_j])
+                fixed_val = to_fixed(val, 11, 4)
+                f.write(f"{to_hex_16(fixed_val)}\n")
+
+            f.write(f"{to_hex_16(label)}\n")
+
+    print(f"  Test vectors: {n_test} users -> {output_path}")
+
+
+# =====================================================================
+# 10-Fold Cross Validation Export
+# =====================================================================
+
+def export_all_folds(
+    data: np.ndarray,
+    labels: np.ndarray,
+    output_dir: str,
+    rng_seed: int = 42,
+    max_users: Optional[int] = None,
+) -> None:
+    """Train 10 models (one per fold) and export each to its own subdirectory.
+
+    For each fold k (0-9):
+      - Trains Algorithms 1-3 on the 90% training partition
+      - Exports model .mem files to output_dir/fold_k/
+      - Exports the 10% test partition as test_vectors.mem
+
+    The FPGA testbench loads fold_k/ model files, feeds test_vectors.mem
+    as stimulus, and collects predictions. Aggregating across all 10 folds
+    gives the full cross-validated accuracy.
+
+    Uses the same deterministic split logic as decision_pipeline.ten_fold_cv().
+    """
+    n_total = data.shape[0] if max_users is None else min(max_users, data.shape[0])
+
+    random.seed(rng_seed)
+    indices = list(range(n_total))
+    random.shuffle(indices)
+    fold_size = (n_total + 9) // 10
+
+    print(f"\n{'='*60}")
+    print(f"10-FOLD CROSS VALIDATION EXPORT")
+    print(f"  Users: {n_total}, Fold size: ~{fold_size}")
+    print(f"  Output: {output_dir}/fold_0/ .. fold_9/")
+    print(f"{'='*60}\n")
+
+    for fold in range(10):
+        start_idx = fold * fold_size
+        end_idx = min(start_idx + fold_size, n_total)
+        test_indices = indices[start_idx:end_idx]
+        train_indices = [idx for idx in indices if idx not in test_indices]
+
+        train_data = data[train_indices]
+        train_labels = labels[train_indices]
+
+        fold_dir = os.path.join(output_dir, f"fold_{fold}")
+        os.makedirs(fold_dir, exist_ok=True)
+
+        print(f"--- Fold {fold}/9: train={len(train_indices)}, test={len(test_indices)} ---")
+
+        # Algorithm 1: Build decision tree on training partition
+        tree_i = build_decision_tree(train_data, train_labels)
+
+        root_id = tree_i.root.node_id
+        nodes_filter = [root_id]
+        level2_by_feat: Dict[int, List] = defaultdict(list)
+        for n in tree_i.nodes_by_level.get(2, []):
+            if not n.is_leaf:
+                level2_by_feat[n.branching_feat_k].append(n)
+        for feat_k, children in level2_by_feat.items():
+            if len(children) >= 2:
+                nodes_filter.extend(c.node_id for c in children)
+
+        print(f"  Tree: {tree_i.count_nodes()} nodes, {len(nodes_filter)} active")
+
+        # Algorithm 2: Train perceptor/executive on training partition
+        alg2_i = run_algorithm2(tree_i, train_data, train_labels, DEFAULT_N_BINS, nodes_filter)
+        print(f"  Alg2: {alg2_i.n_perceptor_entries} perceptor, {alg2_i.n_executive_entries} executive")
+
+        # Algorithm 3: Refine actions on training partition
+        alg3_i = run_algorithm3(alg2_i, tree_i, train_data, train_labels, nodes_filter, reset_per_h=False)
+        print(f"  Alg3: {len(alg3_i.refined_actions)} retained, {len(alg3_i.removed_actions)} removed")
+
+        # Export model parameters for this fold
+        export_model_parameters(tree_i, alg2_i, alg3_i, nodes_filter, fold_dir)
+
+        # Export test vectors (using original full data so indices map correctly)
+        export_test_vectors(data, labels, test_indices,
+                           os.path.join(fold_dir, "test_vectors.mem"))
+
+        print()
+
+    # Write a manifest summarizing all folds
+    manifest_path = os.path.join(output_dir, "cv_manifest.txt")
+    with open(manifest_path, 'w', encoding='utf-8') as f:
+        f.write(f"// 10-Fold Cross Validation Manifest\n")
+        f.write(f"// Generated with rng_seed={rng_seed}, n_users={n_total}\n")
+        f.write(f"// Each fold_k/ directory contains:\n")
+        f.write(f"//   tree_topology.mem   - decision tree structure\n")
+        f.write(f"//   healthy_ranges.mem  - perceptor boundaries\n")
+        f.write(f"//   action_library.mem  - pruned action weights\n")
+        f.write(f"//   prob_tables.mem     - precomputed probabilities\n")
+        f.write(f"//   cds_params.vh       - Verilog constants header\n")
+        f.write(f"//   test_vectors.mem    - test user stimulus\n")
+        f.write(f"//\n")
+        for fold in range(10):
+            s = fold * fold_size
+            e = min(s + fold_size, n_total)
+            f.write(f"fold_{fold}: test_users={e - s}\n")
+
+    print(f"{'='*60}")
+    print(f"  All 10 folds exported to: {output_dir}/")
+    print(f"  Manifest: {manifest_path}")
+    print(f"{'='*60}\n")
+
+
+# =====================================================================
 # Standalone entry point
 # =====================================================================
 
 if __name__ == "__main__":
-    from collections import defaultdict
+    import argparse
 
-    # Load dataset
-    data_path = sys.argv[1] if len(sys.argv) > 1 else str(
+    parser = argparse.ArgumentParser(
+        description="Export trained CDS model to FPGA-loadable .mem files"
+    )
+    parser.add_argument("--data", type=str, default=None,
+                        help="Path to arrhythmia.data (default: auto-detect)")
+    parser.add_argument("--output", type=str, default=None,
+                        help="Output directory (default: FixedPointAnalysis/fpga_mem)")
+    parser.add_argument("--mode", choices=["full", "cv"], default="full",
+                        help="'full' = train on all data, export one model; "
+                             "'cv' = 10-fold cross validation, export 10 models + test vectors")
+    parser.add_argument("--seed", type=int, default=42,
+                        help="RNG seed for fold splits (default: 42)")
+    parser.add_argument("--max-users", type=int, default=None,
+                        help="Limit number of users (for faster debug runs)")
+    args = parser.parse_args()
+
+    data_path = args.data or str(
         Path(__file__).parent.parent / "CDS_NI_Algorithms" / "data" / "arrhythmia.data"
     )
     data, labels = load_dataset(data_path)
 
-    output_dir = sys.argv[2] if len(sys.argv) > 2 else str(
+    output_dir = args.output or str(
         Path(__file__).parent.parent / "FixedPointAnalysis" / "fpga_mem"
     )
 
     print(f"Dataset: {data.shape[0]} users, {data.shape[1]} features")
     print(f"Output:  {output_dir}")
+    print(f"Mode:    {args.mode}")
 
-    # Train on ALL data (no cross-validation — export a single trained model)
-    print(f"\nTraining Algorithms 1-3 on full dataset...")
+    if args.mode == "cv":
+        export_all_folds(data, labels, output_dir,
+                         rng_seed=args.seed, max_users=args.max_users)
+    else:
+        print(f"\nTraining Algorithms 1-3 on full dataset...")
 
-    # Algorithm 1: Build decision tree
-    tree = build_decision_tree(data, labels)
+        tree = build_decision_tree(data, labels)
 
-    # Determine active nodes (same logic as ten_fold_cv)
-    root_id = tree.root.node_id
-    nodes_filter = [root_id]
-    level2_by_feat: Dict[int, List[TreeNode]] = defaultdict(list)
-    for n in tree.nodes_by_level.get(2, []):
-        if not n.is_leaf:
-            level2_by_feat[n.branching_feat_k].append(n)
-    for feat_k, children in level2_by_feat.items():
-        if len(children) >= 2:
-            nodes_filter.extend(c.node_id for c in children)
+        root_id = tree.root.node_id
+        nodes_filter = [root_id]
+        level2_by_feat: Dict[int, List] = defaultdict(list)
+        for n in tree.nodes_by_level.get(2, []):
+            if not n.is_leaf:
+                level2_by_feat[n.branching_feat_k].append(n)
+        for feat_k, children in level2_by_feat.items():
+            if len(children) >= 2:
+                nodes_filter.extend(c.node_id for c in children)
 
-    print(f"  Tree: {tree.count_nodes()} nodes, {len(nodes_filter)} active")
+        print(f"  Tree: {tree.count_nodes()} nodes, {len(nodes_filter)} active")
 
-    # Algorithm 2: Train perceptor/executive
-    alg2 = run_algorithm2(tree, data, labels, DEFAULT_N_BINS, nodes_filter)
-    print(f"  Alg2: {alg2.n_perceptor_entries} perceptor, {alg2.n_executive_entries} executive")
+        alg2 = run_algorithm2(tree, data, labels, DEFAULT_N_BINS, nodes_filter)
+        print(f"  Alg2: {alg2.n_perceptor_entries} perceptor, {alg2.n_executive_entries} executive")
 
-    # Algorithm 3: Refine actions
-    alg3 = run_algorithm3(alg2, tree, data, labels, nodes_filter, reset_per_h=False)
-    print(f"  Alg3: {len(alg3.refined_actions)} retained, {len(alg3.removed_actions)} removed")
+        alg3 = run_algorithm3(alg2, tree, data, labels, nodes_filter, reset_per_h=False)
+        print(f"  Alg3: {len(alg3.refined_actions)} retained, {len(alg3.removed_actions)} removed")
 
-    # Export
-    export_model_parameters(tree, alg2, alg3, nodes_filter, output_dir)
+        export_model_parameters(tree, alg2, alg3, nodes_filter, output_dir)
