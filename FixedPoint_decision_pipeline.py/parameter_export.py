@@ -349,7 +349,7 @@ def export_probability_tables(
 ) -> None:
     """Export precomputed probability tables to .mem file.
 
-    Two sub-tables:
+    Three sub-tables:
 
     TABLE A — P(h, f) for each (node, disease) pair:
         Indexed by: node_index * N_DISEASES + disease_offset
@@ -358,6 +358,11 @@ def export_probability_tables(
     TABLE B — P(h>1, f) for each node:
         Indexed by: node_index
         Value: P(h>1, f) = n_diseased / n_users, stored as Q s1.15
+
+    TABLE C — 1/P(h>1, f) reciprocal for each node:
+        Indexed by: node_index
+        Value: 1.0 / P(h>1, f), stored as Q s2.14 (16-bit signed)
+        Used by FPGA to replace division with multiply + shift.
 
     Precomputing avoids division on the FPGA entirely.
     """
@@ -413,7 +418,32 @@ def export_probability_tables(
             f.write(f"// [{idx:4d}] node={idx} ({nid}): {n_diseased}/{n_users}\n")
             f.write(f"{to_hex_16(p_gt1)}\n")
 
-    total_entries = n_nodes * N_DISEASES + n_nodes
+        # --- Table C: 1/P(h>1, f) reciprocal ---
+        f.write(f"//\n")
+        f.write(f"// === TABLE C: 1/P(h>1, f) reciprocal ===\n")
+        f.write(f"// {n_nodes} entries (one per node)\n")
+        f.write(f"// Each entry: Q s2.14 (16 bits)\n")
+        f.write(f"// FPGA usage: quotient = (numerator * recip) >>> 14\n")
+        f.write(f"//\n")
+
+        for idx in range(n_nodes):
+            nid = idx_to_nid[idx]
+            node = tree.all_nodes[nid]
+            n_users = node.n_users
+            n_diseased = node.n_diseased
+
+            if n_users == 0 or n_diseased == 0:
+                p_gt1_float = 1.0  # fallback: reciprocal of 1.0 = 1.0
+            else:
+                p_gt1_float = n_diseased / n_users
+
+            recip = to_fixed(1.0 / p_gt1_float, 2, 14)
+
+            f.write(f"// [{idx:4d}] node={idx} ({nid}): 1/({n_diseased}/{n_users})"
+                    f" = {1.0 / p_gt1_float:.6f}\n")
+            f.write(f"{to_hex_16(recip)}\n")
+
+    total_entries = n_nodes * N_DISEASES + n_nodes + n_nodes
     print(f"  Probability tables: {total_entries} entries -> {output_path}")
 
 
