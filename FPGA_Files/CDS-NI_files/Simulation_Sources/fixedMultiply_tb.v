@@ -54,7 +54,7 @@ module fixedMultiply_tb();
         valid=1;
 
         @(posedge clk);
-        #1;
+        #3;
 
         $display(
         "product=%h valid=%b",
@@ -69,7 +69,7 @@ module fixedMultiply_tb();
         b=16'shC000;
 
         @(posedge clk);
-        #1;
+        #3;
 
         $display(
         "product=%h valid=%b",
@@ -84,7 +84,7 @@ module fixedMultiply_tb();
         b=16'sh4000;
 
         @(posedge clk);
-        #1;
+        #3;
 
         $display(
         "product=%h valid=%b",

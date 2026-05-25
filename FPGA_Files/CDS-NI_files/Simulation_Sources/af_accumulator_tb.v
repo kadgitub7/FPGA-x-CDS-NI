@@ -44,6 +44,8 @@ module af_accumulator_tb();
 
         @(posedge clk);
         delta_valid = 0;
+        
+        #1;
 
         $display("AF=%h rw=%h", AF_real, rw_real);
 
@@ -56,6 +58,8 @@ module af_accumulator_tb();
         @(posedge clk);
         delta_valid = 0;
 
+        #1;
+
         $display("AF=%h rw=%h", AF_real, rw_real);
 
         // -------------------
@@ -65,6 +69,8 @@ module af_accumulator_tb();
 
         @(posedge clk);
         clear = 0;
+        
+        #1;
 
         $display("AF=%h rw=%h", AF_real, rw_real);
 
