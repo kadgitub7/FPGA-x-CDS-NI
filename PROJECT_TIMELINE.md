@@ -136,6 +136,18 @@ Naviatage to the file, go to <file name>.runs and then go into impl_1 and search
 Then:
 Plug in Your FPGA, Turn board power on, Open: Flow Navigator, Open Hardware Manager, Open Target, Auto Connect -> You should see the FPGA device. Then: Program Device, Select the generated .bit file.
 
+Once this is done the FPGA will do what the programming says, here is a video of FPGA blinking LED: U16 at 1Hz, I also press button U18 to reset according to the constraints file:
+<video width="640" height="480" controls>
+  <source src="FPGA_Files/LED_Blinking_files/LED_Blinking_Video.MOV" type="video/quicktime">
+</video>
+
+## 4. CDS-NI Module Coding
+
+First developed the module for range comparison, this module was one of the more simpler ones as is was purely combinational.
+The fixed mulitply and fixed divide were implemented next and were similar due to their combinational and simple sequential logic.
+The af_accumulate module was a little more tricky and needed both combinational, sequential(clock based) methods.
+
+
 
 
 
