@@ -147,6 +147,14 @@ First developed the module for range comparison, this module was one of the more
 The fixed mulitply and fixed divide were implemented next and were similar due to their combinational and simple sequential logic.
 The af_accumulate module was a little more tricky and needed both combinational, sequential(clock based) methods.
 
+The af_engine module is complex and represent a full flow of how a user may be checked with regards to assurance factor. It involves multiple of the previous modules and combines then in the form of a FSM(Finite State Machine). Below is a diagram drawn to represent the different states, and actions that transition the machine.
+
+<img src=/FPGA_Files/Diagrams/af_engine_FSM_Diagram.png width="40%">
+
+
+
+
+
 
 
 
