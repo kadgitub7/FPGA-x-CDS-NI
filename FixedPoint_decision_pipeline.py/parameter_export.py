@@ -249,17 +249,18 @@ def export_action_library(
     """Export refined action library to .mem file.
 
     Structure:
-      HEADER SECTION — one entry per (node, disease) pair:
-        Word 0: [node_index(8) | disease_offset(4) | action_count(4)] = 16 bits
+      HEADER SECTION — direct-addressed by (node_index * 12 + disease_offset):
+        n_nodes * 12 total slots (empty slots have count=0)
+        Word 0: action_count (full 16 bits, supports counts > 15)
         Word 1: start_address in the DATA section (16 bits)
 
       DATA SECTION — flat list of (feature_idx, r_j_h) pairs:
         Word 0: feature_idx (16 bits, 9 significant)
         Word 1: r_j_h in Q s1.15 (16 bits)
 
-    The FPGA reads the header to find where a (node, disease) pair's
-    actions start and how many there are, then reads sequentially from
-    the data section.
+    The FPGA computes addr = node_idx * 12 + disease_offset to
+    directly look up count and start_address, then reads sequentially
+    from the data section. No scanning required.
     """
     # Collect all (node, disease) -> sorted action list
     action_groups: Dict[Tuple[int, int], List[Tuple[int, int]]] = {}
@@ -284,42 +285,56 @@ def export_action_library(
                 action_groups[(n_idx, d_off)] = fixed_actions
                 max_actions_seen = max(max_actions_seen, len(fixed_actions))
 
-    # Build header and data sections
-    headers = []
+    # Build data section (flat list of actions, same as before)
     data_words = []
-    data_addr = 0  # current write position in data section
+    data_addr = 0
 
-    # Sort by (node_index, disease_offset) for predictable layout
+    # Build a dense lookup: header_table[n_idx * 12 + d_off] = (count, start_addr)
+    n_nodes = max(n_idx for n_idx, _ in action_groups.keys()) + 1 if action_groups else 0
+    # Ensure we cover all nodes that might be referenced
+    for nid, idx in node_index.items():
+        n_nodes = max(n_nodes, idx + 1)
+
+    header_table: Dict[int, Tuple[int, int]] = {}  # flat_addr -> (count, start_addr)
+
     for (n_idx, d_off) in sorted(action_groups.keys()):
         actions = action_groups[(n_idx, d_off)]
         count = len(actions)
+        flat_addr = n_idx * N_DISEASES + d_off
 
-        headers.append((n_idx, d_off, count, data_addr))
+        header_table[flat_addr] = (count, data_addr)
 
         for feat, weight in actions:
-            data_words.append((feat, weight, n_idx, d_off))  # last two for comments
+            data_words.append((feat, weight, n_idx, d_off))
             data_addr += 1
 
+    total_header_slots = n_nodes * N_DISEASES
+    populated_groups = len(header_table)
+
     with open(output_path, 'w', encoding='utf-8') as f:
-        f.write(f"// Action Library — {len(headers)} groups, {len(data_words)} total actions\n")
+        f.write(f"// Action Library — {populated_groups} active groups, "
+                f"{len(data_words)} total actions\n")
         f.write(f"// Max actions per (node, disease): {max_actions_seen}\n")
         f.write(f"//\n")
-        f.write(f"// === HEADER SECTION ===\n")
-        f.write(f"// Format: 2 x 16-bit words per group\n")
-        f.write(f"//   Word 0: [node_index(8) | disease_offset(4) | count(4)]\n")
+        f.write(f"// === HEADER SECTION (direct-addressed) ===\n")
+        f.write(f"// {total_header_slots} entries ({n_nodes} nodes x {N_DISEASES} diseases)\n")
+        f.write(f"// Address = node_index * {N_DISEASES} + disease_offset\n")
+        f.write(f"// Format: 2 x 16-bit words per slot\n")
+        f.write(f"//   Word 0: action_count (full 16-bit, no truncation)\n")
         f.write(f"//   Word 1: start_address in data section\n")
+        f.write(f"// Empty slots have count=0, start_addr=0\n")
         f.write(f"//\n")
 
-        # Write header count first
-        f.write(f"// Number of header entries:\n")
-        f.write(f"{to_hex_16(len(headers))}\n")
+        for slot in range(total_header_slots):
+            n_idx = slot // N_DISEASES
+            d_off = slot % N_DISEASES
+            count, start_addr = header_table.get(slot, (0, 0))
 
-        for n_idx, d_off, count, start_addr in headers:
-            # Pack: node(8) | disease(4) | count(4)
-            header_word = ((n_idx & 0xFF) << 8) | ((d_off & 0xF) << 4) | (count & 0xF)
-            f.write(f"// node={n_idx}, disease_off={d_off} (class={DISEASE_CLASSES[d_off]}), "
-                    f"count={count}, data@{start_addr}\n")
-            f.write(f"{to_hex_16(header_word)}\n")
+            if count > 0:
+                f.write(f"// [{slot}] node={n_idx}, disease_off={d_off} "
+                        f"(class={DISEASE_CLASSES[d_off]}), "
+                        f"count={count}, data@{start_addr}\n")
+            f.write(f"{to_hex_16(count)}\n")
             f.write(f"{to_hex_16(start_addr)}\n")
 
         f.write(f"//\n")
@@ -334,7 +349,8 @@ def export_action_library(
             f.write(f"{to_hex_16(feat)}\n")
             f.write(f"{to_hex_16(weight)}\n")
 
-    print(f"  Action library: {len(headers)} groups, {len(data_words)} actions -> {output_path}")
+    print(f"  Action library: {total_header_slots} header slots "
+          f"({populated_groups} active), {len(data_words)} actions -> {output_path}")
     print(f"    Max actions per (node,disease): {max_actions_seen}")
 
 

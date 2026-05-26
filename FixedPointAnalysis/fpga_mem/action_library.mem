@@ -1,2368 +1,5959 @@
-// Action Library — 785 groups, 7344 total actions
+// Action Library — 785 active groups, 7344 total actions
 // Max actions per (node, disease): 47
 //
-// === HEADER SECTION ===
-// Format: 2 x 16-bit words per group
-//   Word 0: [node_index(8) | disease_offset(4) | count(4)]
+// === HEADER SECTION (direct-addressed) ===
+// 2580 entries (215 nodes x 12 diseases)
+// Address = node_index * 12 + disease_offset
+// Format: 2 x 16-bit words per slot
+//   Word 0: action_count (full 16-bit, no truncation)
 //   Word 1: start_address in data section
+// Empty slots have count=0, start_addr=0
 //
-// Number of header entries:
-0311
-// node=0, disease_off=0 (class=2), count=47, data@0
-000F
-0000
-// node=0, disease_off=1 (class=3), count=4, data@47
-0014
+// [0] node=0, disease_off=0 (class=2), count=47, data@0
 002F
-// node=0, disease_off=3 (class=5), count=1, data@51
-0031
+0000
+// [1] node=0, disease_off=1 (class=3), count=4, data@47
+0004
+002F
+0000
+0000
+// [3] node=0, disease_off=3 (class=5), count=1, data@51
+0001
 0033
-// node=1, disease_off=0 (class=2), count=27, data@52
-010B
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [12] node=1, disease_off=0 (class=2), count=27, data@52
+001B
 0034
-// node=1, disease_off=1 (class=3), count=1, data@79
-0111
+// [13] node=1, disease_off=1 (class=3), count=1, data@79
+0001
 004F
-// node=1, disease_off=3 (class=5), count=3, data@80
-0133
+0000
+0000
+// [15] node=1, disease_off=3 (class=5), count=3, data@80
+0003
 0050
-// node=1, disease_off=4 (class=6), count=1, data@83
-0141
+// [16] node=1, disease_off=4 (class=6), count=1, data@83
+0001
 0053
-// node=1, disease_off=7 (class=9), count=1, data@84
-0171
+0000
+0000
+0000
+0000
+// [19] node=1, disease_off=7 (class=9), count=1, data@84
+0001
 0054
-// node=2, disease_off=0 (class=2), count=25, data@85
-0209
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [24] node=2, disease_off=0 (class=2), count=25, data@85
+0019
 0055
-// node=2, disease_off=1 (class=3), count=4, data@110
-0214
+// [25] node=2, disease_off=1 (class=3), count=4, data@110
+0004
 006E
-// node=2, disease_off=5 (class=7), count=1, data@114
-0251
+0000
+0000
+0000
+0000
+0000
+0000
+// [29] node=2, disease_off=5 (class=7), count=1, data@114
+0001
 0072
-// node=2, disease_off=6 (class=8), count=1, data@115
-0261
+// [30] node=2, disease_off=6 (class=8), count=1, data@115
+0001
 0073
-// node=3, disease_off=0 (class=2), count=34, data@116
-0302
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [36] node=3, disease_off=0 (class=2), count=34, data@116
+0022
 0074
-// node=4, disease_off=0 (class=2), count=22, data@150
-0406
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [48] node=4, disease_off=0 (class=2), count=22, data@150
+0016
 0096
-// node=4, disease_off=2 (class=4), count=1, data@172
-0421
+0000
+0000
+// [50] node=4, disease_off=2 (class=4), count=1, data@172
+0001
 00AC
-// node=4, disease_off=3 (class=5), count=2, data@173
-0432
+// [51] node=4, disease_off=3 (class=5), count=2, data@173
+0002
 00AD
-// node=4, disease_off=4 (class=6), count=2, data@175
-0442
+// [52] node=4, disease_off=4 (class=6), count=2, data@175
+0002
 00AF
-// node=4, disease_off=7 (class=9), count=1, data@177
-0471
+0000
+0000
+0000
+0000
+// [55] node=4, disease_off=7 (class=9), count=1, data@177
+0001
 00B1
-// node=4, disease_off=8 (class=10), count=1, data@178
-0481
+// [56] node=4, disease_off=8 (class=10), count=1, data@178
+0001
 00B2
-// node=5, disease_off=0 (class=2), count=23, data@179
-0507
+0000
+0000
+0000
+0000
+0000
+0000
+// [60] node=5, disease_off=0 (class=2), count=23, data@179
+0017
 00B3
-// node=5, disease_off=2 (class=4), count=1, data@202
-0521
+0000
+0000
+// [62] node=5, disease_off=2 (class=4), count=1, data@202
+0001
 00CA
-// node=5, disease_off=3 (class=5), count=2, data@203
-0532
+// [63] node=5, disease_off=3 (class=5), count=2, data@203
+0002
 00CB
-// node=5, disease_off=8 (class=10), count=1, data@205
-0581
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [68] node=5, disease_off=8 (class=10), count=1, data@205
+0001
 00CD
-// node=6, disease_off=0 (class=2), count=37, data@206
-0605
+0000
+0000
+0000
+0000
+0000
+0000
+// [72] node=6, disease_off=0 (class=2), count=37, data@206
+0025
 00CE
-// node=6, disease_off=1 (class=3), count=2, data@243
-0612
+// [73] node=6, disease_off=1 (class=3), count=2, data@243
+0002
 00F3
-// node=6, disease_off=4 (class=6), count=1, data@245
-0641
+0000
+0000
+0000
+0000
+// [76] node=6, disease_off=4 (class=6), count=1, data@245
+0001
 00F5
-// node=7, disease_off=0 (class=2), count=31, data@246
-070F
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [84] node=7, disease_off=0 (class=2), count=31, data@246
+001F
 00F6
-// node=7, disease_off=7 (class=9), count=1, data@277
-0771
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [91] node=7, disease_off=7 (class=9), count=1, data@277
+0001
 0115
-// node=8, disease_off=0 (class=2), count=33, data@278
-0801
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [96] node=8, disease_off=0 (class=2), count=33, data@278
+0021
 0116
-// node=8, disease_off=1 (class=3), count=2, data@311
-0812
+// [97] node=8, disease_off=1 (class=3), count=2, data@311
+0002
 0137
-// node=9, disease_off=0 (class=2), count=17, data@313
-0901
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [108] node=9, disease_off=0 (class=2), count=17, data@313
+0011
 0139
-// node=9, disease_off=1 (class=3), count=6, data@330
-0916
+// [109] node=9, disease_off=1 (class=3), count=6, data@330
+0006
 014A
-// node=9, disease_off=2 (class=4), count=2, data@336
-0922
+// [110] node=9, disease_off=2 (class=4), count=2, data@336
+0002
 0150
-// node=9, disease_off=3 (class=5), count=5, data@338
-0935
+// [111] node=9, disease_off=3 (class=5), count=5, data@338
+0005
 0152
-// node=9, disease_off=4 (class=6), count=1, data@343
-0941
+// [112] node=9, disease_off=4 (class=6), count=1, data@343
+0001
 0157
-// node=10, disease_off=0 (class=2), count=36, data@344
-0A04
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [120] node=10, disease_off=0 (class=2), count=36, data@344
+0024
 0158
-// node=10, disease_off=1 (class=3), count=2, data@380
-0A12
+// [121] node=10, disease_off=1 (class=3), count=2, data@380
+0002
 017C
-// node=10, disease_off=3 (class=5), count=1, data@382
-0A31
+0000
+0000
+// [123] node=10, disease_off=3 (class=5), count=1, data@382
+0001
 017E
-// node=10, disease_off=4 (class=6), count=1, data@383
-0A41
+// [124] node=10, disease_off=4 (class=6), count=1, data@383
+0001
 017F
-// node=10, disease_off=6 (class=8), count=1, data@384
-0A61
+0000
+0000
+// [126] node=10, disease_off=6 (class=8), count=1, data@384
+0001
 0180
-// node=11, disease_off=0 (class=2), count=26, data@385
-0B0A
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [132] node=11, disease_off=0 (class=2), count=26, data@385
+001A
 0181
-// node=11, disease_off=1 (class=3), count=2, data@411
-0B12
+// [133] node=11, disease_off=1 (class=3), count=2, data@411
+0002
 019B
-// node=11, disease_off=3 (class=5), count=2, data@413
-0B32
+0000
+0000
+// [135] node=11, disease_off=3 (class=5), count=2, data@413
+0002
 019D
-// node=12, disease_off=0 (class=2), count=35, data@415
-0C03
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [144] node=12, disease_off=0 (class=2), count=35, data@415
+0023
 019F
-// node=12, disease_off=1 (class=3), count=1, data@450
-0C11
+// [145] node=12, disease_off=1 (class=3), count=1, data@450
+0001
 01C2
-// node=12, disease_off=3 (class=5), count=1, data@451
-0C31
+0000
+0000
+// [147] node=12, disease_off=3 (class=5), count=1, data@451
+0001
 01C3
-// node=12, disease_off=4 (class=6), count=1, data@452
-0C41
+// [148] node=12, disease_off=4 (class=6), count=1, data@452
+0001
 01C4
-// node=13, disease_off=0 (class=2), count=31, data@453
-0D0F
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [156] node=13, disease_off=0 (class=2), count=31, data@453
+001F
 01C5
-// node=13, disease_off=1 (class=3), count=2, data@484
-0D12
+// [157] node=13, disease_off=1 (class=3), count=2, data@484
+0002
 01E4
-// node=13, disease_off=2 (class=4), count=1, data@486
-0D21
+// [158] node=13, disease_off=2 (class=4), count=1, data@486
+0001
 01E6
-// node=13, disease_off=3 (class=5), count=1, data@487
-0D31
+// [159] node=13, disease_off=3 (class=5), count=1, data@487
+0001
 01E7
-// node=14, disease_off=0 (class=2), count=24, data@488
-0E08
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [168] node=14, disease_off=0 (class=2), count=24, data@488
+0018
 01E8
-// node=14, disease_off=1 (class=3), count=3, data@512
-0E13
+// [169] node=14, disease_off=1 (class=3), count=3, data@512
+0003
 0200
-// node=14, disease_off=2 (class=4), count=1, data@515
-0E21
+// [170] node=14, disease_off=2 (class=4), count=1, data@515
+0001
 0203
-// node=14, disease_off=4 (class=6), count=2, data@516
-0E42
+0000
+0000
+// [172] node=14, disease_off=4 (class=6), count=2, data@516
+0002
 0204
-// node=15, disease_off=0 (class=2), count=27, data@518
-0F0B
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [180] node=15, disease_off=0 (class=2), count=27, data@518
+001B
 0206
-// node=15, disease_off=1 (class=3), count=4, data@545
-0F14
+// [181] node=15, disease_off=1 (class=3), count=4, data@545
+0004
 0221
-// node=15, disease_off=2 (class=4), count=1, data@549
-0F21
+// [182] node=15, disease_off=2 (class=4), count=1, data@549
+0001
 0225
-// node=15, disease_off=3 (class=5), count=1, data@550
-0F31
+// [183] node=15, disease_off=3 (class=5), count=1, data@550
+0001
 0226
-// node=15, disease_off=4 (class=6), count=1, data@551
-0F41
+// [184] node=15, disease_off=4 (class=6), count=1, data@551
+0001
 0227
-// node=16, disease_off=0 (class=2), count=38, data@552
-1006
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [192] node=16, disease_off=0 (class=2), count=38, data@552
+0026
 0228
-// node=16, disease_off=5 (class=7), count=1, data@590
-1051
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [197] node=16, disease_off=5 (class=7), count=1, data@590
+0001
 024E
-// node=17, disease_off=0 (class=2), count=30, data@591
-110E
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [204] node=17, disease_off=0 (class=2), count=30, data@591
+001E
 024F
-// node=17, disease_off=1 (class=3), count=2, data@621
-1112
+// [205] node=17, disease_off=1 (class=3), count=2, data@621
+0002
 026D
-// node=17, disease_off=2 (class=4), count=1, data@623
-1121
+// [206] node=17, disease_off=2 (class=4), count=1, data@623
+0001
 026F
-// node=17, disease_off=3 (class=5), count=4, data@624
-1134
+// [207] node=17, disease_off=3 (class=5), count=4, data@624
+0004
 0270
-// node=17, disease_off=4 (class=6), count=1, data@628
-1141
+// [208] node=17, disease_off=4 (class=6), count=1, data@628
+0001
 0274
-// node=18, disease_off=0 (class=2), count=31, data@629
-120F
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [216] node=18, disease_off=0 (class=2), count=31, data@629
+001F
 0275
-// node=18, disease_off=1 (class=3), count=3, data@660
-1213
+// [217] node=18, disease_off=1 (class=3), count=3, data@660
+0003
 0294
-// node=18, disease_off=3 (class=5), count=2, data@663
-1232
+0000
+0000
+// [219] node=18, disease_off=3 (class=5), count=2, data@663
+0002
 0297
-// node=19, disease_off=0 (class=2), count=32, data@665
-1300
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [228] node=19, disease_off=0 (class=2), count=32, data@665
+0020
 0299
-// node=19, disease_off=1 (class=3), count=1, data@697
-1311
+// [229] node=19, disease_off=1 (class=3), count=1, data@697
+0001
 02B9
-// node=19, disease_off=3 (class=5), count=3, data@698
-1333
+0000
+0000
+// [231] node=19, disease_off=3 (class=5), count=3, data@698
+0003
 02BA
-// node=20, disease_off=0 (class=2), count=26, data@701
-140A
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [240] node=20, disease_off=0 (class=2), count=26, data@701
+001A
 02BD
-// node=20, disease_off=1 (class=3), count=5, data@727
-1415
+// [241] node=20, disease_off=1 (class=3), count=5, data@727
+0005
 02D7
-// node=20, disease_off=3 (class=5), count=2, data@732
-1432
+0000
+0000
+// [243] node=20, disease_off=3 (class=5), count=2, data@732
+0002
 02DC
-// node=21, disease_off=0 (class=2), count=27, data@734
-150B
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [252] node=21, disease_off=0 (class=2), count=27, data@734
+001B
 02DE
-// node=21, disease_off=1 (class=3), count=1, data@761
-1511
+// [253] node=21, disease_off=1 (class=3), count=1, data@761
+0001
 02F9
-// node=22, disease_off=0 (class=2), count=29, data@762
-160D
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [264] node=22, disease_off=0 (class=2), count=29, data@762
+001D
 02FA
-// node=22, disease_off=1 (class=3), count=5, data@791
-1615
+// [265] node=22, disease_off=1 (class=3), count=5, data@791
+0005
 0317
-// node=22, disease_off=2 (class=4), count=1, data@796
-1621
+// [266] node=22, disease_off=2 (class=4), count=1, data@796
+0001
 031C
-// node=22, disease_off=7 (class=9), count=2, data@797
-1672
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [271] node=22, disease_off=7 (class=9), count=2, data@797
+0002
 031D
-// node=22, disease_off=8 (class=10), count=1, data@799
-1681
+// [272] node=22, disease_off=8 (class=10), count=1, data@799
+0001
 031F
-// node=23, disease_off=0 (class=2), count=29, data@800
-170D
+0000
+0000
+0000
+0000
+0000
+0000
+// [276] node=23, disease_off=0 (class=2), count=29, data@800
+001D
 0320
-// node=23, disease_off=1 (class=3), count=1, data@829
-1711
+// [277] node=23, disease_off=1 (class=3), count=1, data@829
+0001
 033D
-// node=23, disease_off=2 (class=4), count=2, data@830
-1722
+// [278] node=23, disease_off=2 (class=4), count=2, data@830
+0002
 033E
-// node=24, disease_off=0 (class=2), count=28, data@832
-180C
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [288] node=24, disease_off=0 (class=2), count=28, data@832
+001C
 0340
-// node=24, disease_off=1 (class=3), count=4, data@860
-1814
+// [289] node=24, disease_off=1 (class=3), count=4, data@860
+0004
 035C
-// node=24, disease_off=3 (class=5), count=3, data@864
-1833
+0000
+0000
+// [291] node=24, disease_off=3 (class=5), count=3, data@864
+0003
 0360
-// node=24, disease_off=4 (class=6), count=1, data@867
-1841
+// [292] node=24, disease_off=4 (class=6), count=1, data@867
+0001
 0363
-// node=25, disease_off=0 (class=2), count=28, data@868
-190C
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [300] node=25, disease_off=0 (class=2), count=28, data@868
+001C
 0364
-// node=25, disease_off=1 (class=3), count=1, data@896
-1911
+// [301] node=25, disease_off=1 (class=3), count=1, data@896
+0001
 0380
-// node=25, disease_off=2 (class=4), count=1, data@897
-1921
+// [302] node=25, disease_off=2 (class=4), count=1, data@897
+0001
 0381
-// node=25, disease_off=5 (class=7), count=1, data@898
-1951
+0000
+0000
+0000
+0000
+// [305] node=25, disease_off=5 (class=7), count=1, data@898
+0001
 0382
-// node=26, disease_off=0 (class=2), count=28, data@899
-1A0C
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [312] node=26, disease_off=0 (class=2), count=28, data@899
+001C
 0383
-// node=26, disease_off=1 (class=3), count=4, data@927
-1A14
+// [313] node=26, disease_off=1 (class=3), count=4, data@927
+0004
 039F
-// node=26, disease_off=3 (class=5), count=2, data@931
-1A32
+0000
+0000
+// [315] node=26, disease_off=3 (class=5), count=2, data@931
+0002
 03A3
-// node=27, disease_off=0 (class=2), count=26, data@933
-1B0A
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [324] node=27, disease_off=0 (class=2), count=26, data@933
+001A
 03A5
-// node=27, disease_off=1 (class=3), count=5, data@959
-1B15
+// [325] node=27, disease_off=1 (class=3), count=5, data@959
+0005
 03BF
-// node=27, disease_off=4 (class=6), count=1, data@964
-1B41
+0000
+0000
+0000
+0000
+// [328] node=27, disease_off=4 (class=6), count=1, data@964
+0001
 03C4
-// node=27, disease_off=8 (class=10), count=2, data@965
-1B82
+0000
+0000
+0000
+0000
+0000
+0000
+// [332] node=27, disease_off=8 (class=10), count=2, data@965
+0002
 03C5
-// node=28, disease_off=0 (class=2), count=33, data@967
-1C01
+0000
+0000
+0000
+0000
+0000
+0000
+// [336] node=28, disease_off=0 (class=2), count=33, data@967
+0021
 03C7
-// node=28, disease_off=1 (class=3), count=1, data@1000
-1C11
+// [337] node=28, disease_off=1 (class=3), count=1, data@1000
+0001
 03E8
-// node=29, disease_off=0 (class=2), count=29, data@1001
-1D0D
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [348] node=29, disease_off=0 (class=2), count=29, data@1001
+001D
 03E9
-// node=29, disease_off=1 (class=3), count=4, data@1030
-1D14
+// [349] node=29, disease_off=1 (class=3), count=4, data@1030
+0004
 0406
-// node=29, disease_off=2 (class=4), count=1, data@1034
-1D21
+// [350] node=29, disease_off=2 (class=4), count=1, data@1034
+0001
 040A
-// node=29, disease_off=4 (class=6), count=1, data@1035
-1D41
+0000
+0000
+// [352] node=29, disease_off=4 (class=6), count=1, data@1035
+0001
 040B
-// node=30, disease_off=0 (class=2), count=33, data@1036
-1E01
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [360] node=30, disease_off=0 (class=2), count=33, data@1036
+0021
 040C
-// node=30, disease_off=1 (class=3), count=2, data@1069
-1E12
+// [361] node=30, disease_off=1 (class=3), count=2, data@1069
+0002
 042D
-// node=31, disease_off=0 (class=2), count=28, data@1071
-1F0C
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [372] node=31, disease_off=0 (class=2), count=28, data@1071
+001C
 042F
-// node=31, disease_off=1 (class=3), count=2, data@1099
-1F12
+// [373] node=31, disease_off=1 (class=3), count=2, data@1099
+0002
 044B
-// node=31, disease_off=3 (class=5), count=1, data@1101
-1F31
+0000
+0000
+// [375] node=31, disease_off=3 (class=5), count=1, data@1101
+0001
 044D
-// node=31, disease_off=4 (class=6), count=3, data@1102
-1F43
+// [376] node=31, disease_off=4 (class=6), count=3, data@1102
+0003
 044E
-// node=32, disease_off=0 (class=2), count=22, data@1105
-2006
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [384] node=32, disease_off=0 (class=2), count=22, data@1105
+0016
 0451
-// node=32, disease_off=1 (class=3), count=2, data@1127
-2012
+// [385] node=32, disease_off=1 (class=3), count=2, data@1127
+0002
 0467
-// node=32, disease_off=7 (class=9), count=1, data@1129
-2071
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [391] node=32, disease_off=7 (class=9), count=1, data@1129
+0001
 0469
-// node=33, disease_off=0 (class=2), count=23, data@1130
-2107
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [396] node=33, disease_off=0 (class=2), count=23, data@1130
+0017
 046A
-// node=33, disease_off=1 (class=3), count=4, data@1153
-2114
+// [397] node=33, disease_off=1 (class=3), count=4, data@1153
+0004
 0481
-// node=34, disease_off=0 (class=2), count=37, data@1157
-2205
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [408] node=34, disease_off=0 (class=2), count=37, data@1157
+0025
 0485
-// node=34, disease_off=1 (class=3), count=1, data@1194
-2211
+// [409] node=34, disease_off=1 (class=3), count=1, data@1194
+0001
 04AA
-// node=34, disease_off=3 (class=5), count=1, data@1195
-2231
+0000
+0000
+// [411] node=34, disease_off=3 (class=5), count=1, data@1195
+0001
 04AB
-// node=34, disease_off=7 (class=9), count=1, data@1196
-2271
+0000
+0000
+0000
+0000
+0000
+0000
+// [415] node=34, disease_off=7 (class=9), count=1, data@1196
+0001
 04AC
-// node=34, disease_off=8 (class=10), count=1, data@1197
-2281
+// [416] node=34, disease_off=8 (class=10), count=1, data@1197
+0001
 04AD
-// node=35, disease_off=0 (class=2), count=35, data@1198
-2303
+0000
+0000
+0000
+0000
+0000
+0000
+// [420] node=35, disease_off=0 (class=2), count=35, data@1198
+0023
 04AE
-// node=35, disease_off=1 (class=3), count=3, data@1233
-2313
+// [421] node=35, disease_off=1 (class=3), count=3, data@1233
+0003
 04D1
-// node=35, disease_off=3 (class=5), count=1, data@1236
-2331
+0000
+0000
+// [423] node=35, disease_off=3 (class=5), count=1, data@1236
+0001
 04D4
-// node=36, disease_off=0 (class=2), count=28, data@1237
-240C
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [432] node=36, disease_off=0 (class=2), count=28, data@1237
+001C
 04D5
-// node=36, disease_off=1 (class=3), count=2, data@1265
-2412
+// [433] node=36, disease_off=1 (class=3), count=2, data@1265
+0002
 04F1
-// node=37, disease_off=0 (class=2), count=30, data@1267
-250E
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [444] node=37, disease_off=0 (class=2), count=30, data@1267
+001E
 04F3
-// node=37, disease_off=1 (class=3), count=3, data@1297
-2513
+// [445] node=37, disease_off=1 (class=3), count=3, data@1297
+0003
 0511
-// node=37, disease_off=3 (class=5), count=2, data@1300
-2532
+0000
+0000
+// [447] node=37, disease_off=3 (class=5), count=2, data@1300
+0002
 0514
-// node=38, disease_off=0 (class=2), count=27, data@1302
-260B
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [456] node=38, disease_off=0 (class=2), count=27, data@1302
+001B
 0516
-// node=38, disease_off=1 (class=3), count=3, data@1329
-2613
+// [457] node=38, disease_off=1 (class=3), count=3, data@1329
+0003
 0531
-// node=38, disease_off=3 (class=5), count=2, data@1332
-2632
+0000
+0000
+// [459] node=38, disease_off=3 (class=5), count=2, data@1332
+0002
 0534
-// node=39, disease_off=0 (class=2), count=30, data@1334
-270E
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [468] node=39, disease_off=0 (class=2), count=30, data@1334
+001E
 0536
-// node=39, disease_off=2 (class=4), count=2, data@1364
-2722
+0000
+0000
+// [470] node=39, disease_off=2 (class=4), count=2, data@1364
+0002
 0554
-// node=39, disease_off=3 (class=5), count=1, data@1366
-2731
+// [471] node=39, disease_off=3 (class=5), count=1, data@1366
+0001
 0556
-// node=39, disease_off=4 (class=6), count=1, data@1367
-2741
+// [472] node=39, disease_off=4 (class=6), count=1, data@1367
+0001
 0557
-// node=40, disease_off=0 (class=2), count=30, data@1368
-280E
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [480] node=40, disease_off=0 (class=2), count=30, data@1368
+001E
 0558
-// node=40, disease_off=1 (class=3), count=2, data@1398
-2812
+// [481] node=40, disease_off=1 (class=3), count=2, data@1398
+0002
 0576
-// node=41, disease_off=0 (class=2), count=27, data@1400
-290B
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [492] node=41, disease_off=0 (class=2), count=27, data@1400
+001B
 0578
-// node=41, disease_off=1 (class=3), count=4, data@1427
-2914
+// [493] node=41, disease_off=1 (class=3), count=4, data@1427
+0004
 0593
-// node=42, disease_off=0 (class=2), count=32, data@1431
-2A00
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [504] node=42, disease_off=0 (class=2), count=32, data@1431
+0020
 0597
-// node=42, disease_off=1 (class=3), count=3, data@1463
-2A13
+// [505] node=42, disease_off=1 (class=3), count=3, data@1463
+0003
 05B7
-// node=42, disease_off=2 (class=4), count=1, data@1466
-2A21
+// [506] node=42, disease_off=2 (class=4), count=1, data@1466
+0001
 05BA
-// node=42, disease_off=3 (class=5), count=3, data@1467
-2A33
+// [507] node=42, disease_off=3 (class=5), count=3, data@1467
+0003
 05BB
-// node=42, disease_off=7 (class=9), count=1, data@1470
-2A71
+0000
+0000
+0000
+0000
+0000
+0000
+// [511] node=42, disease_off=7 (class=9), count=1, data@1470
+0001
 05BE
-// node=43, disease_off=0 (class=2), count=27, data@1471
-2B0B
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [516] node=43, disease_off=0 (class=2), count=27, data@1471
+001B
 05BF
-// node=43, disease_off=1 (class=3), count=3, data@1498
-2B13
+// [517] node=43, disease_off=1 (class=3), count=3, data@1498
+0003
 05DA
-// node=43, disease_off=2 (class=4), count=2, data@1501
-2B22
+// [518] node=43, disease_off=2 (class=4), count=2, data@1501
+0002
 05DD
-// node=43, disease_off=7 (class=9), count=1, data@1503
-2B71
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [523] node=43, disease_off=7 (class=9), count=1, data@1503
+0001
 05DF
-// node=43, disease_off=8 (class=10), count=1, data@1504
-2B81
+// [524] node=43, disease_off=8 (class=10), count=1, data@1504
+0001
 05E0
-// node=44, disease_off=0 (class=2), count=38, data@1505
-2C06
+0000
+0000
+0000
+0000
+0000
+0000
+// [528] node=44, disease_off=0 (class=2), count=38, data@1505
+0026
 05E1
-// node=44, disease_off=1 (class=3), count=3, data@1543
-2C13
+// [529] node=44, disease_off=1 (class=3), count=3, data@1543
+0003
 0607
-// node=44, disease_off=3 (class=5), count=2, data@1546
-2C32
+0000
+0000
+// [531] node=44, disease_off=3 (class=5), count=2, data@1546
+0002
 060A
-// node=44, disease_off=7 (class=9), count=1, data@1548
-2C71
+0000
+0000
+0000
+0000
+0000
+0000
+// [535] node=44, disease_off=7 (class=9), count=1, data@1548
+0001
 060C
-// node=45, disease_off=0 (class=2), count=29, data@1549
-2D0D
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [540] node=45, disease_off=0 (class=2), count=29, data@1549
+001D
 060D
-// node=45, disease_off=1 (class=3), count=5, data@1578
-2D15
+// [541] node=45, disease_off=1 (class=3), count=5, data@1578
+0005
 062A
-// node=45, disease_off=2 (class=4), count=1, data@1583
-2D21
+// [542] node=45, disease_off=2 (class=4), count=1, data@1583
+0001
 062F
-// node=46, disease_off=0 (class=2), count=37, data@1584
-2E05
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [552] node=46, disease_off=0 (class=2), count=37, data@1584
+0025
 0630
-// node=46, disease_off=1 (class=3), count=1, data@1621
-2E11
+// [553] node=46, disease_off=1 (class=3), count=1, data@1621
+0001
 0655
-// node=46, disease_off=5 (class=7), count=1, data@1622
-2E51
+0000
+0000
+0000
+0000
+0000
+0000
+// [557] node=46, disease_off=5 (class=7), count=1, data@1622
+0001
 0656
-// node=46, disease_off=8 (class=10), count=1, data@1623
-2E81
+0000
+0000
+0000
+0000
+// [560] node=46, disease_off=8 (class=10), count=1, data@1623
+0001
 0657
-// node=47, disease_off=0 (class=2), count=22, data@1624
-2F06
+0000
+0000
+0000
+0000
+0000
+0000
+// [564] node=47, disease_off=0 (class=2), count=22, data@1624
+0016
 0658
-// node=47, disease_off=1 (class=3), count=4, data@1646
-2F14
+// [565] node=47, disease_off=1 (class=3), count=4, data@1646
+0004
 066E
-// node=47, disease_off=3 (class=5), count=2, data@1650
-2F32
+0000
+0000
+// [567] node=47, disease_off=3 (class=5), count=2, data@1650
+0002
 0672
-// node=47, disease_off=8 (class=10), count=1, data@1652
-2F81
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [572] node=47, disease_off=8 (class=10), count=1, data@1652
+0001
 0674
-// node=48, disease_off=0 (class=2), count=32, data@1653
-3000
+0000
+0000
+0000
+0000
+0000
+0000
+// [576] node=48, disease_off=0 (class=2), count=32, data@1653
+0020
 0675
-// node=48, disease_off=1 (class=3), count=1, data@1685
-3011
+// [577] node=48, disease_off=1 (class=3), count=1, data@1685
+0001
 0695
-// node=48, disease_off=2 (class=4), count=1, data@1686
-3021
+// [578] node=48, disease_off=2 (class=4), count=1, data@1686
+0001
 0696
-// node=48, disease_off=3 (class=5), count=1, data@1687
-3031
+// [579] node=48, disease_off=3 (class=5), count=1, data@1687
+0001
 0697
-// node=48, disease_off=5 (class=7), count=1, data@1688
-3051
+0000
+0000
+// [581] node=48, disease_off=5 (class=7), count=1, data@1688
+0001
 0698
-// node=49, disease_off=0 (class=2), count=21, data@1689
-3105
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [588] node=49, disease_off=0 (class=2), count=21, data@1689
+0015
 0699
-// node=49, disease_off=1 (class=3), count=9, data@1710
-3119
+// [589] node=49, disease_off=1 (class=3), count=9, data@1710
+0009
 06AE
-// node=49, disease_off=3 (class=5), count=2, data@1719
-3132
+0000
+0000
+// [591] node=49, disease_off=3 (class=5), count=2, data@1719
+0002
 06B7
-// node=49, disease_off=6 (class=8), count=1, data@1721
-3161
+0000
+0000
+0000
+0000
+// [594] node=49, disease_off=6 (class=8), count=1, data@1721
+0001
 06B9
-// node=49, disease_off=8 (class=10), count=2, data@1722
-3182
+0000
+0000
+// [596] node=49, disease_off=8 (class=10), count=2, data@1722
+0002
 06BA
-// node=50, disease_off=0 (class=2), count=33, data@1724
-3201
+0000
+0000
+0000
+0000
+0000
+0000
+// [600] node=50, disease_off=0 (class=2), count=33, data@1724
+0021
 06BC
-// node=50, disease_off=1 (class=3), count=1, data@1757
-3211
+// [601] node=50, disease_off=1 (class=3), count=1, data@1757
+0001
 06DD
-// node=50, disease_off=3 (class=5), count=1, data@1758
-3231
+0000
+0000
+// [603] node=50, disease_off=3 (class=5), count=1, data@1758
+0001
 06DE
-// node=50, disease_off=8 (class=10), count=1, data@1759
-3281
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [608] node=50, disease_off=8 (class=10), count=1, data@1759
+0001
 06DF
-// node=51, disease_off=0 (class=2), count=29, data@1760
-330D
+0000
+0000
+0000
+0000
+0000
+0000
+// [612] node=51, disease_off=0 (class=2), count=29, data@1760
+001D
 06E0
-// node=51, disease_off=1 (class=3), count=1, data@1789
-3311
+// [613] node=51, disease_off=1 (class=3), count=1, data@1789
+0001
 06FD
-// node=51, disease_off=3 (class=5), count=1, data@1790
-3331
+0000
+0000
+// [615] node=51, disease_off=3 (class=5), count=1, data@1790
+0001
 06FE
-// node=51, disease_off=8 (class=10), count=1, data@1791
-3381
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [620] node=51, disease_off=8 (class=10), count=1, data@1791
+0001
 06FF
-// node=51, disease_off=11 (class=16), count=1, data@1792
-33B1
+0000
+0000
+0000
+0000
+// [623] node=51, disease_off=11 (class=16), count=1, data@1792
+0001
 0700
-// node=52, disease_off=0 (class=2), count=32, data@1793
-3400
+// [624] node=52, disease_off=0 (class=2), count=32, data@1793
+0020
 0701
-// node=52, disease_off=1 (class=3), count=1, data@1825
-3411
+// [625] node=52, disease_off=1 (class=3), count=1, data@1825
+0001
 0721
-// node=52, disease_off=2 (class=4), count=3, data@1826
-3423
+// [626] node=52, disease_off=2 (class=4), count=3, data@1826
+0003
 0722
-// node=52, disease_off=3 (class=5), count=2, data@1829
-3432
+// [627] node=52, disease_off=3 (class=5), count=2, data@1829
+0002
 0725
-// node=53, disease_off=0 (class=2), count=31, data@1831
-350F
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [636] node=53, disease_off=0 (class=2), count=31, data@1831
+001F
 0727
-// node=53, disease_off=1 (class=3), count=2, data@1862
-3512
+// [637] node=53, disease_off=1 (class=3), count=2, data@1862
+0002
 0746
-// node=53, disease_off=2 (class=4), count=1, data@1864
-3521
+// [638] node=53, disease_off=2 (class=4), count=1, data@1864
+0001
 0748
-// node=53, disease_off=3 (class=5), count=3, data@1865
-3533
+// [639] node=53, disease_off=3 (class=5), count=3, data@1865
+0003
 0749
-// node=53, disease_off=4 (class=6), count=1, data@1868
-3541
+// [640] node=53, disease_off=4 (class=6), count=1, data@1868
+0001
 074C
-// node=54, disease_off=0 (class=2), count=18, data@1869
-3602
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [648] node=54, disease_off=0 (class=2), count=18, data@1869
+0012
 074D
-// node=54, disease_off=1 (class=3), count=3, data@1887
-3613
+// [649] node=54, disease_off=1 (class=3), count=3, data@1887
+0003
 075F
-// node=54, disease_off=3 (class=5), count=2, data@1890
-3632
+0000
+0000
+// [651] node=54, disease_off=3 (class=5), count=2, data@1890
+0002
 0762
-// node=55, disease_off=0 (class=2), count=24, data@1892
-3708
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [660] node=55, disease_off=0 (class=2), count=24, data@1892
+0018
 0764
-// node=55, disease_off=1 (class=3), count=2, data@1916
-3712
+// [661] node=55, disease_off=1 (class=3), count=2, data@1916
+0002
 077C
-// node=55, disease_off=2 (class=4), count=1, data@1918
-3721
+// [662] node=55, disease_off=2 (class=4), count=1, data@1918
+0001
 077E
-// node=56, disease_off=0 (class=2), count=33, data@1919
-3801
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [672] node=56, disease_off=0 (class=2), count=33, data@1919
+0021
 077F
-// node=56, disease_off=1 (class=3), count=1, data@1952
-3811
+// [673] node=56, disease_off=1 (class=3), count=1, data@1952
+0001
 07A0
-// node=56, disease_off=3 (class=5), count=1, data@1953
-3831
+0000
+0000
+// [675] node=56, disease_off=3 (class=5), count=1, data@1953
+0001
 07A1
-// node=56, disease_off=7 (class=9), count=1, data@1954
-3871
+0000
+0000
+0000
+0000
+0000
+0000
+// [679] node=56, disease_off=7 (class=9), count=1, data@1954
+0001
 07A2
-// node=56, disease_off=8 (class=10), count=1, data@1955
-3881
+// [680] node=56, disease_off=8 (class=10), count=1, data@1955
+0001
 07A3
-// node=57, disease_off=0 (class=2), count=30, data@1956
-390E
+0000
+0000
+0000
+0000
+0000
+0000
+// [684] node=57, disease_off=0 (class=2), count=30, data@1956
+001E
 07A4
-// node=57, disease_off=1 (class=3), count=2, data@1986
-3912
+// [685] node=57, disease_off=1 (class=3), count=2, data@1986
+0002
 07C2
-// node=58, disease_off=0 (class=2), count=32, data@1988
-3A00
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [696] node=58, disease_off=0 (class=2), count=32, data@1988
+0020
 07C4
-// node=58, disease_off=1 (class=3), count=4, data@2020
-3A14
+// [697] node=58, disease_off=1 (class=3), count=4, data@2020
+0004
 07E4
-// node=58, disease_off=2 (class=4), count=1, data@2024
-3A21
+// [698] node=58, disease_off=2 (class=4), count=1, data@2024
+0001
 07E8
-// node=58, disease_off=3 (class=5), count=2, data@2025
-3A32
+// [699] node=58, disease_off=3 (class=5), count=2, data@2025
+0002
 07E9
-// node=59, disease_off=0 (class=2), count=28, data@2027
-3B0C
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [708] node=59, disease_off=0 (class=2), count=28, data@2027
+001C
 07EB
-// node=59, disease_off=1 (class=3), count=1, data@2055
-3B11
+// [709] node=59, disease_off=1 (class=3), count=1, data@2055
+0001
 0807
-// node=59, disease_off=2 (class=4), count=1, data@2056
-3B21
+// [710] node=59, disease_off=2 (class=4), count=1, data@2056
+0001
 0808
-// node=59, disease_off=4 (class=6), count=1, data@2057
-3B41
+0000
+0000
+// [712] node=59, disease_off=4 (class=6), count=1, data@2057
+0001
 0809
-// node=60, disease_off=0 (class=2), count=28, data@2058
-3C0C
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [720] node=60, disease_off=0 (class=2), count=28, data@2058
+001C
 080A
-// node=60, disease_off=2 (class=4), count=2, data@2086
-3C22
+0000
+0000
+// [722] node=60, disease_off=2 (class=4), count=2, data@2086
+0002
 0826
-// node=60, disease_off=3 (class=5), count=3, data@2088
-3C33
+// [723] node=60, disease_off=3 (class=5), count=3, data@2088
+0003
 0828
-// node=60, disease_off=8 (class=10), count=2, data@2091
-3C82
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [728] node=60, disease_off=8 (class=10), count=2, data@2091
+0002
 082B
-// node=61, disease_off=0 (class=2), count=40, data@2093
-3D08
+0000
+0000
+0000
+0000
+0000
+0000
+// [732] node=61, disease_off=0 (class=2), count=40, data@2093
+0028
 082D
-// node=61, disease_off=1 (class=3), count=3, data@2133
-3D13
+// [733] node=61, disease_off=1 (class=3), count=3, data@2133
+0003
 0855
-// node=61, disease_off=3 (class=5), count=1, data@2136
-3D31
+0000
+0000
+// [735] node=61, disease_off=3 (class=5), count=1, data@2136
+0001
 0858
-// node=62, disease_off=0 (class=2), count=20, data@2137
-3E04
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [744] node=62, disease_off=0 (class=2), count=20, data@2137
+0014
 0859
-// node=62, disease_off=1 (class=3), count=1, data@2157
-3E11
+// [745] node=62, disease_off=1 (class=3), count=1, data@2157
+0001
 086D
-// node=62, disease_off=5 (class=7), count=1, data@2158
-3E51
+0000
+0000
+0000
+0000
+0000
+0000
+// [749] node=62, disease_off=5 (class=7), count=1, data@2158
+0001
 086E
-// node=62, disease_off=11 (class=16), count=1, data@2159
-3EB1
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [755] node=62, disease_off=11 (class=16), count=1, data@2159
+0001
 086F
-// node=63, disease_off=0 (class=2), count=21, data@2160
-3F05
+// [756] node=63, disease_off=0 (class=2), count=21, data@2160
+0015
 0870
-// node=63, disease_off=1 (class=3), count=5, data@2181
-3F15
+// [757] node=63, disease_off=1 (class=3), count=5, data@2181
+0005
 0885
-// node=63, disease_off=2 (class=4), count=1, data@2186
-3F21
+// [758] node=63, disease_off=2 (class=4), count=1, data@2186
+0001
 088A
-// node=63, disease_off=4 (class=6), count=2, data@2187
-3F42
+0000
+0000
+// [760] node=63, disease_off=4 (class=6), count=2, data@2187
+0002
 088B
-// node=63, disease_off=7 (class=9), count=2, data@2189
-3F72
+0000
+0000
+0000
+0000
+// [763] node=63, disease_off=7 (class=9), count=2, data@2189
+0002
 088D
-// node=63, disease_off=8 (class=10), count=1, data@2191
-3F81
+// [764] node=63, disease_off=8 (class=10), count=1, data@2191
+0001
 088F
-// node=64, disease_off=0 (class=2), count=33, data@2192
-4001
+0000
+0000
+0000
+0000
+0000
+0000
+// [768] node=64, disease_off=0 (class=2), count=33, data@2192
+0021
 0890
-// node=64, disease_off=1 (class=3), count=2, data@2225
-4012
+// [769] node=64, disease_off=1 (class=3), count=2, data@2225
+0002
 08B1
-// node=64, disease_off=2 (class=4), count=1, data@2227
-4021
+// [770] node=64, disease_off=2 (class=4), count=1, data@2227
+0001
 08B3
-// node=65, disease_off=0 (class=2), count=24, data@2228
-4108
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [780] node=65, disease_off=0 (class=2), count=24, data@2228
+0018
 08B4
-// node=65, disease_off=1 (class=3), count=3, data@2252
-4113
+// [781] node=65, disease_off=1 (class=3), count=3, data@2252
+0003
 08CC
-// node=65, disease_off=3 (class=5), count=2, data@2255
-4132
+0000
+0000
+// [783] node=65, disease_off=3 (class=5), count=2, data@2255
+0002
 08CF
-// node=65, disease_off=4 (class=6), count=1, data@2257
-4141
+// [784] node=65, disease_off=4 (class=6), count=1, data@2257
+0001
 08D1
-// node=66, disease_off=0 (class=2), count=31, data@2258
-420F
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [792] node=66, disease_off=0 (class=2), count=31, data@2258
+001F
 08D2
-// node=66, disease_off=3 (class=5), count=3, data@2289
-4233
+0000
+0000
+0000
+0000
+// [795] node=66, disease_off=3 (class=5), count=3, data@2289
+0003
 08F1
-// node=67, disease_off=0 (class=2), count=37, data@2292
-4305
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [804] node=67, disease_off=0 (class=2), count=37, data@2292
+0025
 08F4
-// node=67, disease_off=1 (class=3), count=2, data@2329
-4312
+// [805] node=67, disease_off=1 (class=3), count=2, data@2329
+0002
 0919
-// node=67, disease_off=2 (class=4), count=1, data@2331
-4321
+// [806] node=67, disease_off=2 (class=4), count=1, data@2331
+0001
 091B
-// node=67, disease_off=3 (class=5), count=2, data@2332
-4332
+// [807] node=67, disease_off=3 (class=5), count=2, data@2332
+0002
 091C
-// node=68, disease_off=0 (class=2), count=27, data@2334
-440B
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [816] node=68, disease_off=0 (class=2), count=27, data@2334
+001B
 091E
-// node=68, disease_off=1 (class=3), count=2, data@2361
-4412
+// [817] node=68, disease_off=1 (class=3), count=2, data@2361
+0002
 0939
-// node=68, disease_off=2 (class=4), count=1, data@2363
-4421
+// [818] node=68, disease_off=2 (class=4), count=1, data@2363
+0001
 093B
-// node=68, disease_off=4 (class=6), count=1, data@2364
-4441
+0000
+0000
+// [820] node=68, disease_off=4 (class=6), count=1, data@2364
+0001
 093C
-// node=69, disease_off=0 (class=2), count=27, data@2365
-450B
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [828] node=69, disease_off=0 (class=2), count=27, data@2365
+001B
 093D
-// node=69, disease_off=1 (class=3), count=5, data@2392
-4515
+// [829] node=69, disease_off=1 (class=3), count=5, data@2392
+0005
 0958
-// node=69, disease_off=3 (class=5), count=3, data@2397
-4533
+0000
+0000
+// [831] node=69, disease_off=3 (class=5), count=3, data@2397
+0003
 095D
-// node=69, disease_off=4 (class=6), count=1, data@2400
-4541
+// [832] node=69, disease_off=4 (class=6), count=1, data@2400
+0001
 0960
-// node=69, disease_off=9 (class=14), count=1, data@2401
-4591
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [837] node=69, disease_off=9 (class=14), count=1, data@2401
+0001
 0961
-// node=70, disease_off=0 (class=2), count=31, data@2402
-460F
+0000
+0000
+0000
+0000
+// [840] node=70, disease_off=0 (class=2), count=31, data@2402
+001F
 0962
-// node=70, disease_off=1 (class=3), count=1, data@2433
-4611
+// [841] node=70, disease_off=1 (class=3), count=1, data@2433
+0001
 0981
-// node=70, disease_off=2 (class=4), count=1, data@2434
-4621
+// [842] node=70, disease_off=2 (class=4), count=1, data@2434
+0001
 0982
-// node=70, disease_off=3 (class=5), count=3, data@2435
-4633
+// [843] node=70, disease_off=3 (class=5), count=3, data@2435
+0003
 0983
-// node=71, disease_off=0 (class=2), count=35, data@2438
-4703
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [852] node=71, disease_off=0 (class=2), count=35, data@2438
+0023
 0986
-// node=71, disease_off=1 (class=3), count=3, data@2473
-4713
+// [853] node=71, disease_off=1 (class=3), count=3, data@2473
+0003
 09A9
-// node=71, disease_off=3 (class=5), count=1, data@2476
-4731
+0000
+0000
+// [855] node=71, disease_off=3 (class=5), count=1, data@2476
+0001
 09AC
-// node=72, disease_off=0 (class=2), count=35, data@2477
-4803
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [864] node=72, disease_off=0 (class=2), count=35, data@2477
+0023
 09AD
-// node=72, disease_off=1 (class=3), count=1, data@2512
-4811
+// [865] node=72, disease_off=1 (class=3), count=1, data@2512
+0001
 09D0
-// node=72, disease_off=2 (class=4), count=1, data@2513
-4821
+// [866] node=72, disease_off=2 (class=4), count=1, data@2513
+0001
 09D1
-// node=72, disease_off=3 (class=5), count=2, data@2514
-4832
+// [867] node=72, disease_off=3 (class=5), count=2, data@2514
+0002
 09D2
-// node=72, disease_off=4 (class=6), count=1, data@2516
-4841
+// [868] node=72, disease_off=4 (class=6), count=1, data@2516
+0001
 09D4
-// node=72, disease_off=8 (class=10), count=1, data@2517
-4881
+0000
+0000
+0000
+0000
+0000
+0000
+// [872] node=72, disease_off=8 (class=10), count=1, data@2517
+0001
 09D5
-// node=73, disease_off=0 (class=2), count=27, data@2518
-490B
+0000
+0000
+0000
+0000
+0000
+0000
+// [876] node=73, disease_off=0 (class=2), count=27, data@2518
+001B
 09D6
-// node=73, disease_off=1 (class=3), count=4, data@2545
-4914
+// [877] node=73, disease_off=1 (class=3), count=4, data@2545
+0004
 09F1
-// node=73, disease_off=3 (class=5), count=1, data@2549
-4931
+0000
+0000
+// [879] node=73, disease_off=3 (class=5), count=1, data@2549
+0001
 09F5
-// node=74, disease_off=0 (class=2), count=33, data@2550
-4A01
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [888] node=74, disease_off=0 (class=2), count=33, data@2550
+0021
 09F6
-// node=74, disease_off=1 (class=3), count=3, data@2583
-4A13
+// [889] node=74, disease_off=1 (class=3), count=3, data@2583
+0003
 0A17
-// node=74, disease_off=3 (class=5), count=1, data@2586
-4A31
+0000
+0000
+// [891] node=74, disease_off=3 (class=5), count=1, data@2586
+0001
 0A1A
-// node=75, disease_off=0 (class=2), count=30, data@2587
-4B0E
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [900] node=75, disease_off=0 (class=2), count=30, data@2587
+001E
 0A1B
-// node=75, disease_off=1 (class=3), count=5, data@2617
-4B15
+// [901] node=75, disease_off=1 (class=3), count=5, data@2617
+0005
 0A39
-// node=76, disease_off=0 (class=2), count=34, data@2622
-4C02
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [912] node=76, disease_off=0 (class=2), count=34, data@2622
+0022
 0A3E
-// node=76, disease_off=1 (class=3), count=1, data@2656
-4C11
+// [913] node=76, disease_off=1 (class=3), count=1, data@2656
+0001
 0A60
-// node=76, disease_off=2 (class=4), count=1, data@2657
-4C21
+// [914] node=76, disease_off=2 (class=4), count=1, data@2657
+0001
 0A61
-// node=77, disease_off=0 (class=2), count=29, data@2658
-4D0D
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [924] node=77, disease_off=0 (class=2), count=29, data@2658
+001D
 0A62
-// node=77, disease_off=1 (class=3), count=3, data@2687
-4D13
+// [925] node=77, disease_off=1 (class=3), count=3, data@2687
+0003
 0A7F
-// node=78, disease_off=0 (class=2), count=25, data@2690
-4E09
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [936] node=78, disease_off=0 (class=2), count=25, data@2690
+0019
 0A82
-// node=78, disease_off=1 (class=3), count=4, data@2715
-4E14
+// [937] node=78, disease_off=1 (class=3), count=4, data@2715
+0004
 0A9B
-// node=78, disease_off=2 (class=4), count=1, data@2719
-4E21
+// [938] node=78, disease_off=2 (class=4), count=1, data@2719
+0001
 0A9F
-// node=79, disease_off=0 (class=2), count=33, data@2720
-4F01
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [948] node=79, disease_off=0 (class=2), count=33, data@2720
+0021
 0AA0
-// node=79, disease_off=1 (class=3), count=3, data@2753
-4F13
+// [949] node=79, disease_off=1 (class=3), count=3, data@2753
+0003
 0AC1
-// node=79, disease_off=3 (class=5), count=1, data@2756
-4F31
+0000
+0000
+// [951] node=79, disease_off=3 (class=5), count=1, data@2756
+0001
 0AC4
-// node=80, disease_off=0 (class=2), count=20, data@2757
-5004
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [960] node=80, disease_off=0 (class=2), count=20, data@2757
+0014
 0AC5
-// node=80, disease_off=3 (class=5), count=5, data@2777
-5035
+0000
+0000
+0000
+0000
+// [963] node=80, disease_off=3 (class=5), count=5, data@2777
+0005
 0AD9
-// node=80, disease_off=4 (class=6), count=1, data@2782
-5041
+// [964] node=80, disease_off=4 (class=6), count=1, data@2782
+0001
 0ADE
-// node=80, disease_off=8 (class=10), count=1, data@2783
-5081
+0000
+0000
+0000
+0000
+0000
+0000
+// [968] node=80, disease_off=8 (class=10), count=1, data@2783
+0001
 0ADF
-// node=81, disease_off=0 (class=2), count=31, data@2784
-510F
+0000
+0000
+0000
+0000
+0000
+0000
+// [972] node=81, disease_off=0 (class=2), count=31, data@2784
+001F
 0AE0
-// node=81, disease_off=1 (class=3), count=2, data@2815
-5112
+// [973] node=81, disease_off=1 (class=3), count=2, data@2815
+0002
 0AFF
-// node=81, disease_off=3 (class=5), count=1, data@2817
-5131
+0000
+0000
+// [975] node=81, disease_off=3 (class=5), count=1, data@2817
+0001
 0B01
-// node=81, disease_off=4 (class=6), count=1, data@2818
-5141
+// [976] node=81, disease_off=4 (class=6), count=1, data@2818
+0001
 0B02
-// node=82, disease_off=0 (class=2), count=31, data@2819
-520F
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [984] node=82, disease_off=0 (class=2), count=31, data@2819
+001F
 0B03
-// node=82, disease_off=1 (class=3), count=2, data@2850
-5212
+// [985] node=82, disease_off=1 (class=3), count=2, data@2850
+0002
 0B22
-// node=82, disease_off=2 (class=4), count=2, data@2852
-5222
+// [986] node=82, disease_off=2 (class=4), count=2, data@2852
+0002
 0B24
-// node=82, disease_off=8 (class=10), count=1, data@2854
-5281
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [992] node=82, disease_off=8 (class=10), count=1, data@2854
+0001
 0B26
-// node=83, disease_off=0 (class=2), count=28, data@2855
-530C
+0000
+0000
+0000
+0000
+0000
+0000
+// [996] node=83, disease_off=0 (class=2), count=28, data@2855
+001C
 0B27
-// node=83, disease_off=1 (class=3), count=2, data@2883
-5312
+// [997] node=83, disease_off=1 (class=3), count=2, data@2883
+0002
 0B43
-// node=84, disease_off=0 (class=2), count=27, data@2885
-540B
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1008] node=84, disease_off=0 (class=2), count=27, data@2885
+001B
 0B45
-// node=84, disease_off=2 (class=4), count=3, data@2912
-5423
+0000
+0000
+// [1010] node=84, disease_off=2 (class=4), count=3, data@2912
+0003
 0B60
-// node=84, disease_off=7 (class=9), count=1, data@2915
-5471
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1015] node=84, disease_off=7 (class=9), count=1, data@2915
+0001
 0B63
-// node=85, disease_off=0 (class=2), count=34, data@2916
-5502
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1020] node=85, disease_off=0 (class=2), count=34, data@2916
+0022
 0B64
-// node=85, disease_off=4 (class=6), count=1, data@2950
-5541
+0000
+0000
+0000
+0000
+0000
+0000
+// [1024] node=85, disease_off=4 (class=6), count=1, data@2950
+0001
 0B86
-// node=85, disease_off=7 (class=9), count=1, data@2951
-5571
+0000
+0000
+0000
+0000
+// [1027] node=85, disease_off=7 (class=9), count=1, data@2951
+0001
 0B87
-// node=85, disease_off=8 (class=10), count=1, data@2952
-5581
+// [1028] node=85, disease_off=8 (class=10), count=1, data@2952
+0001
 0B88
-// node=86, disease_off=0 (class=2), count=15, data@2953
-560F
+0000
+0000
+0000
+0000
+0000
+0000
+// [1032] node=86, disease_off=0 (class=2), count=15, data@2953
+000F
 0B89
-// node=86, disease_off=1 (class=3), count=5, data@2968
-5615
+// [1033] node=86, disease_off=1 (class=3), count=5, data@2968
+0005
 0B98
-// node=86, disease_off=2 (class=4), count=1, data@2973
-5621
+// [1034] node=86, disease_off=2 (class=4), count=1, data@2973
+0001
 0B9D
-// node=86, disease_off=3 (class=5), count=1, data@2974
-5631
+// [1035] node=86, disease_off=3 (class=5), count=1, data@2974
+0001
 0B9E
-// node=87, disease_off=0 (class=2), count=36, data@2975
-5704
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1044] node=87, disease_off=0 (class=2), count=36, data@2975
+0024
 0B9F
-// node=87, disease_off=1 (class=3), count=1, data@3011
-5711
+// [1045] node=87, disease_off=1 (class=3), count=1, data@3011
+0001
 0BC3
-// node=87, disease_off=2 (class=4), count=1, data@3012
-5721
+// [1046] node=87, disease_off=2 (class=4), count=1, data@3012
+0001
 0BC4
-// node=87, disease_off=3 (class=5), count=1, data@3013
-5731
+// [1047] node=87, disease_off=3 (class=5), count=1, data@3013
+0001
 0BC5
-// node=87, disease_off=4 (class=6), count=1, data@3014
-5741
+// [1048] node=87, disease_off=4 (class=6), count=1, data@3014
+0001
 0BC6
-// node=88, disease_off=0 (class=2), count=21, data@3015
-5805
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1056] node=88, disease_off=0 (class=2), count=21, data@3015
+0015
 0BC7
-// node=88, disease_off=1 (class=3), count=3, data@3036
-5813
+// [1057] node=88, disease_off=1 (class=3), count=3, data@3036
+0003
 0BDC
-// node=88, disease_off=7 (class=9), count=1, data@3039
-5871
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1063] node=88, disease_off=7 (class=9), count=1, data@3039
+0001
 0BDF
-// node=88, disease_off=8 (class=10), count=2, data@3040
-5882
+// [1064] node=88, disease_off=8 (class=10), count=2, data@3040
+0002
 0BE0
-// node=89, disease_off=0 (class=2), count=31, data@3042
-590F
+0000
+0000
+0000
+0000
+0000
+0000
+// [1068] node=89, disease_off=0 (class=2), count=31, data@3042
+001F
 0BE2
-// node=89, disease_off=1 (class=3), count=1, data@3073
-5911
+// [1069] node=89, disease_off=1 (class=3), count=1, data@3073
+0001
 0C01
-// node=89, disease_off=3 (class=5), count=1, data@3074
-5931
+0000
+0000
+// [1071] node=89, disease_off=3 (class=5), count=1, data@3074
+0001
 0C02
-// node=89, disease_off=7 (class=9), count=1, data@3075
-5971
+0000
+0000
+0000
+0000
+0000
+0000
+// [1075] node=89, disease_off=7 (class=9), count=1, data@3075
+0001
 0C03
-// node=89, disease_off=8 (class=10), count=1, data@3076
-5981
+// [1076] node=89, disease_off=8 (class=10), count=1, data@3076
+0001
 0C04
-// node=90, disease_off=0 (class=2), count=26, data@3077
-5A0A
+0000
+0000
+0000
+0000
+0000
+0000
+// [1080] node=90, disease_off=0 (class=2), count=26, data@3077
+001A
 0C05
-// node=90, disease_off=1 (class=3), count=1, data@3103
-5A11
+// [1081] node=90, disease_off=1 (class=3), count=1, data@3103
+0001
 0C1F
-// node=90, disease_off=8 (class=10), count=1, data@3104
-5A81
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1088] node=90, disease_off=8 (class=10), count=1, data@3104
+0001
 0C20
-// node=91, disease_off=0 (class=2), count=31, data@3105
-5B0F
+0000
+0000
+0000
+0000
+0000
+0000
+// [1092] node=91, disease_off=0 (class=2), count=31, data@3105
+001F
 0C21
-// node=91, disease_off=4 (class=6), count=1, data@3136
-5B41
+0000
+0000
+0000
+0000
+0000
+0000
+// [1096] node=91, disease_off=4 (class=6), count=1, data@3136
+0001
 0C40
-// node=92, disease_off=0 (class=2), count=24, data@3137
-5C08
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1104] node=92, disease_off=0 (class=2), count=24, data@3137
+0018
 0C41
-// node=92, disease_off=1 (class=3), count=2, data@3161
-5C12
+// [1105] node=92, disease_off=1 (class=3), count=2, data@3161
+0002
 0C59
-// node=92, disease_off=2 (class=4), count=2, data@3163
-5C22
+// [1106] node=92, disease_off=2 (class=4), count=2, data@3163
+0002
 0C5B
-// node=92, disease_off=3 (class=5), count=4, data@3165
-5C34
+// [1107] node=92, disease_off=3 (class=5), count=4, data@3165
+0004
 0C5D
-// node=93, disease_off=0 (class=2), count=34, data@3169
-5D02
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1116] node=93, disease_off=0 (class=2), count=34, data@3169
+0022
 0C61
-// node=94, disease_off=0 (class=2), count=1, data@3203
-5E01
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1128] node=94, disease_off=0 (class=2), count=1, data@3203
+0001
 0C83
-// node=94, disease_off=1 (class=3), count=25, data@3204
-5E19
+// [1129] node=94, disease_off=1 (class=3), count=25, data@3204
+0019
 0C84
-// node=94, disease_off=3 (class=5), count=7, data@3229
-5E37
+0000
+0000
+// [1131] node=94, disease_off=3 (class=5), count=7, data@3229
+0007
 0C9D
-// node=94, disease_off=8 (class=10), count=2, data@3236
-5E82
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1136] node=94, disease_off=8 (class=10), count=2, data@3236
+0002
 0CA4
-// node=95, disease_off=0 (class=2), count=34, data@3238
-5F02
+0000
+0000
+0000
+0000
+0000
+0000
+// [1140] node=95, disease_off=0 (class=2), count=34, data@3238
+0022
 0CA6
-// node=95, disease_off=1 (class=3), count=2, data@3272
-5F12
+// [1141] node=95, disease_off=1 (class=3), count=2, data@3272
+0002
 0CC8
-// node=95, disease_off=3 (class=5), count=3, data@3274
-5F33
+0000
+0000
+// [1143] node=95, disease_off=3 (class=5), count=3, data@3274
+0003
 0CCA
-// node=95, disease_off=4 (class=6), count=1, data@3277
-5F41
+// [1144] node=95, disease_off=4 (class=6), count=1, data@3277
+0001
 0CCD
-// node=96, disease_off=0 (class=2), count=22, data@3278
-6006
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1152] node=96, disease_off=0 (class=2), count=22, data@3278
+0016
 0CCE
-// node=96, disease_off=1 (class=3), count=2, data@3300
-6012
+// [1153] node=96, disease_off=1 (class=3), count=2, data@3300
+0002
 0CE4
-// node=96, disease_off=8 (class=10), count=1, data@3302
-6081
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1160] node=96, disease_off=8 (class=10), count=1, data@3302
+0001
 0CE6
-// node=97, disease_off=0 (class=2), count=39, data@3303
-6107
+0000
+0000
+0000
+0000
+0000
+0000
+// [1164] node=97, disease_off=0 (class=2), count=39, data@3303
+0027
 0CE7
-// node=97, disease_off=1 (class=3), count=1, data@3342
-6111
+// [1165] node=97, disease_off=1 (class=3), count=1, data@3342
+0001
 0D0E
-// node=98, disease_off=0 (class=2), count=21, data@3343
-6205
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1176] node=98, disease_off=0 (class=2), count=21, data@3343
+0015
 0D0F
-// node=98, disease_off=1 (class=3), count=5, data@3364
-6215
+// [1177] node=98, disease_off=1 (class=3), count=5, data@3364
+0005
 0D24
-// node=98, disease_off=3 (class=5), count=2, data@3369
-6232
+0000
+0000
+// [1179] node=98, disease_off=3 (class=5), count=2, data@3369
+0002
 0D29
-// node=98, disease_off=7 (class=9), count=1, data@3371
-6271
+0000
+0000
+0000
+0000
+0000
+0000
+// [1183] node=98, disease_off=7 (class=9), count=1, data@3371
+0001
 0D2B
-// node=98, disease_off=8 (class=10), count=2, data@3372
-6282
+// [1184] node=98, disease_off=8 (class=10), count=2, data@3372
+0002
 0D2C
-// node=99, disease_off=0 (class=2), count=28, data@3374
-630C
+0000
+0000
+0000
+0000
+0000
+0000
+// [1188] node=99, disease_off=0 (class=2), count=28, data@3374
+001C
 0D2E
-// node=99, disease_off=1 (class=3), count=3, data@3402
-6313
+// [1189] node=99, disease_off=1 (class=3), count=3, data@3402
+0003
 0D4A
-// node=99, disease_off=2 (class=4), count=1, data@3405
-6321
+// [1190] node=99, disease_off=2 (class=4), count=1, data@3405
+0001
 0D4D
-// node=99, disease_off=3 (class=5), count=1, data@3406
-6331
+// [1191] node=99, disease_off=3 (class=5), count=1, data@3406
+0001
 0D4E
-// node=99, disease_off=7 (class=9), count=1, data@3407
-6371
+0000
+0000
+0000
+0000
+0000
+0000
+// [1195] node=99, disease_off=7 (class=9), count=1, data@3407
+0001
 0D4F
-// node=99, disease_off=8 (class=10), count=2, data@3408
-6382
+// [1196] node=99, disease_off=8 (class=10), count=2, data@3408
+0002
 0D50
-// node=100, disease_off=0 (class=2), count=31, data@3410
-640F
+0000
+0000
+0000
+0000
+0000
+0000
+// [1200] node=100, disease_off=0 (class=2), count=31, data@3410
+001F
 0D52
-// node=100, disease_off=1 (class=3), count=2, data@3441
-6412
+// [1201] node=100, disease_off=1 (class=3), count=2, data@3441
+0002
 0D71
-// node=100, disease_off=3 (class=5), count=1, data@3443
-6431
+0000
+0000
+// [1203] node=100, disease_off=3 (class=5), count=1, data@3443
+0001
 0D73
-// node=100, disease_off=6 (class=8), count=1, data@3444
-6461
+0000
+0000
+0000
+0000
+// [1206] node=100, disease_off=6 (class=8), count=1, data@3444
+0001
 0D74
-// node=101, disease_off=0 (class=2), count=29, data@3445
-650D
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1212] node=101, disease_off=0 (class=2), count=29, data@3445
+001D
 0D75
-// node=101, disease_off=1 (class=3), count=2, data@3474
-6512
+// [1213] node=101, disease_off=1 (class=3), count=2, data@3474
+0002
 0D92
-// node=101, disease_off=3 (class=5), count=1, data@3476
-6531
+0000
+0000
+// [1215] node=101, disease_off=3 (class=5), count=1, data@3476
+0001
 0D94
-// node=102, disease_off=0 (class=2), count=24, data@3477
-6608
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1224] node=102, disease_off=0 (class=2), count=24, data@3477
+0018
 0D95
-// node=102, disease_off=1 (class=3), count=3, data@3501
-6613
+// [1225] node=102, disease_off=1 (class=3), count=3, data@3501
+0003
 0DAD
-// node=102, disease_off=2 (class=4), count=1, data@3504
-6621
+// [1226] node=102, disease_off=2 (class=4), count=1, data@3504
+0001
 0DB0
-// node=102, disease_off=3 (class=5), count=1, data@3505
-6631
+// [1227] node=102, disease_off=3 (class=5), count=1, data@3505
+0001
 0DB1
-// node=103, disease_off=0 (class=2), count=30, data@3506
-670E
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1236] node=103, disease_off=0 (class=2), count=30, data@3506
+001E
 0DB2
-// node=103, disease_off=1 (class=3), count=1, data@3536
-6711
+// [1237] node=103, disease_off=1 (class=3), count=1, data@3536
+0001
 0DD0
-// node=103, disease_off=7 (class=9), count=1, data@3537
-6771
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1243] node=103, disease_off=7 (class=9), count=1, data@3537
+0001
 0DD1
-// node=103, disease_off=11 (class=16), count=1, data@3538
-67B1
+0000
+0000
+0000
+0000
+0000
+0000
+// [1247] node=103, disease_off=11 (class=16), count=1, data@3538
+0001
 0DD2
-// node=104, disease_off=0 (class=2), count=29, data@3539
-680D
+// [1248] node=104, disease_off=0 (class=2), count=29, data@3539
+001D
 0DD3
-// node=104, disease_off=1 (class=3), count=5, data@3568
-6815
+// [1249] node=104, disease_off=1 (class=3), count=5, data@3568
+0005
 0DF0
-// node=104, disease_off=2 (class=4), count=1, data@3573
-6821
+// [1250] node=104, disease_off=2 (class=4), count=1, data@3573
+0001
 0DF5
-// node=104, disease_off=7 (class=9), count=3, data@3574
-6873
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1255] node=104, disease_off=7 (class=9), count=3, data@3574
+0003
 0DF6
-// node=104, disease_off=8 (class=10), count=1, data@3577
-6881
+// [1256] node=104, disease_off=8 (class=10), count=1, data@3577
+0001
 0DF9
-// node=104, disease_off=10 (class=15), count=1, data@3578
-68A1
+0000
+0000
+// [1258] node=104, disease_off=10 (class=15), count=1, data@3578
+0001
 0DFA
-// node=105, disease_off=0 (class=2), count=33, data@3579
-6901
+0000
+0000
+// [1260] node=105, disease_off=0 (class=2), count=33, data@3579
+0021
 0DFB
-// node=105, disease_off=1 (class=3), count=1, data@3612
-6911
+// [1261] node=105, disease_off=1 (class=3), count=1, data@3612
+0001
 0E1C
-// node=105, disease_off=3 (class=5), count=2, data@3613
-6932
+0000
+0000
+// [1263] node=105, disease_off=3 (class=5), count=2, data@3613
+0002
 0E1D
-// node=106, disease_off=0 (class=2), count=27, data@3615
-6A0B
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1272] node=106, disease_off=0 (class=2), count=27, data@3615
+001B
 0E1F
-// node=106, disease_off=1 (class=3), count=4, data@3642
-6A14
+// [1273] node=106, disease_off=1 (class=3), count=4, data@3642
+0004
 0E3A
-// node=106, disease_off=3 (class=5), count=2, data@3646
-6A32
+0000
+0000
+// [1275] node=106, disease_off=3 (class=5), count=2, data@3646
+0002
 0E3E
-// node=107, disease_off=0 (class=2), count=29, data@3648
-6B0D
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1284] node=107, disease_off=0 (class=2), count=29, data@3648
+001D
 0E40
-// node=107, disease_off=1 (class=3), count=1, data@3677
-6B11
+// [1285] node=107, disease_off=1 (class=3), count=1, data@3677
+0001
 0E5D
-// node=107, disease_off=3 (class=5), count=1, data@3678
-6B31
+0000
+0000
+// [1287] node=107, disease_off=3 (class=5), count=1, data@3678
+0001
 0E5E
-// node=108, disease_off=0 (class=2), count=32, data@3679
-6C00
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1296] node=108, disease_off=0 (class=2), count=32, data@3679
+0020
 0E5F
-// node=108, disease_off=1 (class=3), count=5, data@3711
-6C15
+// [1297] node=108, disease_off=1 (class=3), count=5, data@3711
+0005
 0E7F
-// node=108, disease_off=3 (class=5), count=2, data@3716
-6C32
+0000
+0000
+// [1299] node=108, disease_off=3 (class=5), count=2, data@3716
+0002
 0E84
-// node=109, disease_off=0 (class=2), count=29, data@3718
-6D0D
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1308] node=109, disease_off=0 (class=2), count=29, data@3718
+001D
 0E86
-// node=109, disease_off=1 (class=3), count=1, data@3747
-6D11
+// [1309] node=109, disease_off=1 (class=3), count=1, data@3747
+0001
 0EA3
-// node=109, disease_off=3 (class=5), count=2, data@3748
-6D32
+0000
+0000
+// [1311] node=109, disease_off=3 (class=5), count=2, data@3748
+0002
 0EA4
-// node=109, disease_off=7 (class=9), count=1, data@3750
-6D71
+0000
+0000
+0000
+0000
+0000
+0000
+// [1315] node=109, disease_off=7 (class=9), count=1, data@3750
+0001
 0EA6
-// node=109, disease_off=8 (class=10), count=1, data@3751
-6D81
+// [1316] node=109, disease_off=8 (class=10), count=1, data@3751
+0001
 0EA7
-// node=110, disease_off=0 (class=2), count=25, data@3752
-6E09
+0000
+0000
+0000
+0000
+0000
+0000
+// [1320] node=110, disease_off=0 (class=2), count=25, data@3752
+0019
 0EA8
-// node=110, disease_off=1 (class=3), count=2, data@3777
-6E12
+// [1321] node=110, disease_off=1 (class=3), count=2, data@3777
+0002
 0EC1
-// node=110, disease_off=3 (class=5), count=2, data@3779
-6E32
+0000
+0000
+// [1323] node=110, disease_off=3 (class=5), count=2, data@3779
+0002
 0EC3
-// node=111, disease_off=0 (class=2), count=29, data@3781
-6F0D
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1332] node=111, disease_off=0 (class=2), count=29, data@3781
+001D
 0EC5
-// node=111, disease_off=7 (class=9), count=1, data@3810
-6F71
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1339] node=111, disease_off=7 (class=9), count=1, data@3810
+0001
 0EE2
-// node=112, disease_off=0 (class=2), count=33, data@3811
-7001
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1344] node=112, disease_off=0 (class=2), count=33, data@3811
+0021
 0EE3
-// node=112, disease_off=1 (class=3), count=3, data@3844
-7013
+// [1345] node=112, disease_off=1 (class=3), count=3, data@3844
+0003
 0F04
-// node=112, disease_off=3 (class=5), count=2, data@3847
-7032
+0000
+0000
+// [1347] node=112, disease_off=3 (class=5), count=2, data@3847
+0002
 0F07
-// node=112, disease_off=4 (class=6), count=1, data@3849
-7041
+// [1348] node=112, disease_off=4 (class=6), count=1, data@3849
+0001
 0F09
-// node=112, disease_off=8 (class=10), count=1, data@3850
-7081
+0000
+0000
+0000
+0000
+0000
+0000
+// [1352] node=112, disease_off=8 (class=10), count=1, data@3850
+0001
 0F0A
-// node=113, disease_off=0 (class=2), count=30, data@3851
-710E
+0000
+0000
+0000
+0000
+0000
+0000
+// [1356] node=113, disease_off=0 (class=2), count=30, data@3851
+001E
 0F0B
-// node=113, disease_off=1 (class=3), count=5, data@3881
-7115
+// [1357] node=113, disease_off=1 (class=3), count=5, data@3881
+0005
 0F29
-// node=113, disease_off=2 (class=4), count=1, data@3886
-7121
+// [1358] node=113, disease_off=2 (class=4), count=1, data@3886
+0001
 0F2E
-// node=113, disease_off=3 (class=5), count=4, data@3887
-7134
+// [1359] node=113, disease_off=3 (class=5), count=4, data@3887
+0004
 0F2F
-// node=113, disease_off=7 (class=9), count=1, data@3891
-7171
+0000
+0000
+0000
+0000
+0000
+0000
+// [1363] node=113, disease_off=7 (class=9), count=1, data@3891
+0001
 0F33
-// node=114, disease_off=0 (class=2), count=28, data@3892
-720C
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1368] node=114, disease_off=0 (class=2), count=28, data@3892
+001C
 0F34
-// node=114, disease_off=8 (class=10), count=1, data@3920
-7281
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1376] node=114, disease_off=8 (class=10), count=1, data@3920
+0001
 0F50
-// node=115, disease_off=0 (class=2), count=9, data@3921
-7309
+0000
+0000
+0000
+0000
+0000
+0000
+// [1380] node=115, disease_off=0 (class=2), count=9, data@3921
+0009
 0F51
-// node=115, disease_off=1 (class=3), count=8, data@3930
-7318
+// [1381] node=115, disease_off=1 (class=3), count=8, data@3930
+0008
 0F5A
-// node=115, disease_off=3 (class=5), count=10, data@3938
-733A
+0000
+0000
+// [1383] node=115, disease_off=3 (class=5), count=10, data@3938
+000A
 0F62
-// node=115, disease_off=4 (class=6), count=2, data@3948
-7342
+// [1384] node=115, disease_off=4 (class=6), count=2, data@3948
+0002
 0F6C
-// node=115, disease_off=8 (class=10), count=2, data@3950
-7382
+0000
+0000
+0000
+0000
+0000
+0000
+// [1388] node=115, disease_off=8 (class=10), count=2, data@3950
+0002
 0F6E
-// node=116, disease_off=0 (class=2), count=28, data@3952
-740C
+0000
+0000
+0000
+0000
+0000
+0000
+// [1392] node=116, disease_off=0 (class=2), count=28, data@3952
+001C
 0F70
-// node=117, disease_off=0 (class=2), count=32, data@3980
-7500
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1404] node=117, disease_off=0 (class=2), count=32, data@3980
+0020
 0F8C
-// node=117, disease_off=1 (class=3), count=1, data@4012
-7511
+// [1405] node=117, disease_off=1 (class=3), count=1, data@4012
+0001
 0FAC
-// node=117, disease_off=8 (class=10), count=2, data@4013
-7582
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1412] node=117, disease_off=8 (class=10), count=2, data@4013
+0002
 0FAD
-// node=118, disease_off=0 (class=2), count=31, data@4015
-760F
+0000
+0000
+0000
+0000
+0000
+0000
+// [1416] node=118, disease_off=0 (class=2), count=31, data@4015
+001F
 0FAF
-// node=118, disease_off=1 (class=3), count=1, data@4046
-7611
+// [1417] node=118, disease_off=1 (class=3), count=1, data@4046
+0001
 0FCE
-// node=118, disease_off=2 (class=4), count=1, data@4047
-7621
+// [1418] node=118, disease_off=2 (class=4), count=1, data@4047
+0001
 0FCF
-// node=118, disease_off=3 (class=5), count=2, data@4048
-7632
+// [1419] node=118, disease_off=3 (class=5), count=2, data@4048
+0002
 0FD0
-// node=119, disease_off=0 (class=2), count=27, data@4050
-770B
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1428] node=119, disease_off=0 (class=2), count=27, data@4050
+001B
 0FD2
-// node=119, disease_off=1 (class=3), count=4, data@4077
-7714
+// [1429] node=119, disease_off=1 (class=3), count=4, data@4077
+0004
 0FED
-// node=119, disease_off=3 (class=5), count=1, data@4081
-7731
+0000
+0000
+// [1431] node=119, disease_off=3 (class=5), count=1, data@4081
+0001
 0FF1
-// node=119, disease_off=7 (class=9), count=2, data@4082
-7772
+0000
+0000
+0000
+0000
+0000
+0000
+// [1435] node=119, disease_off=7 (class=9), count=2, data@4082
+0002
 0FF2
-// node=119, disease_off=8 (class=10), count=2, data@4084
-7782
+// [1436] node=119, disease_off=8 (class=10), count=2, data@4084
+0002
 0FF4
-// node=120, disease_off=0 (class=2), count=37, data@4086
-7805
+0000
+0000
+0000
+0000
+0000
+0000
+// [1440] node=120, disease_off=0 (class=2), count=37, data@4086
+0025
 0FF6
-// node=120, disease_off=1 (class=3), count=1, data@4123
-7811
+// [1441] node=120, disease_off=1 (class=3), count=1, data@4123
+0001
 101B
-// node=121, disease_off=0 (class=2), count=30, data@4124
-790E
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1452] node=121, disease_off=0 (class=2), count=30, data@4124
+001E
 101C
-// node=121, disease_off=1 (class=3), count=3, data@4154
-7913
+// [1453] node=121, disease_off=1 (class=3), count=3, data@4154
+0003
 103A
-// node=121, disease_off=2 (class=4), count=1, data@4157
-7921
+// [1454] node=121, disease_off=2 (class=4), count=1, data@4157
+0001
 103D
-// node=121, disease_off=3 (class=5), count=1, data@4158
-7931
+// [1455] node=121, disease_off=3 (class=5), count=1, data@4158
+0001
 103E
-// node=121, disease_off=6 (class=8), count=1, data@4159
-7961
+0000
+0000
+0000
+0000
+// [1458] node=121, disease_off=6 (class=8), count=1, data@4159
+0001
 103F
-// node=121, disease_off=7 (class=9), count=1, data@4160
-7971
+// [1459] node=121, disease_off=7 (class=9), count=1, data@4160
+0001
 1040
-// node=122, disease_off=0 (class=2), count=30, data@4161
-7A0E
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1464] node=122, disease_off=0 (class=2), count=30, data@4161
+001E
 1041
-// node=122, disease_off=1 (class=3), count=2, data@4191
-7A12
+// [1465] node=122, disease_off=1 (class=3), count=2, data@4191
+0002
 105F
-// node=122, disease_off=3 (class=5), count=2, data@4193
-7A32
+0000
+0000
+// [1467] node=122, disease_off=3 (class=5), count=2, data@4193
+0002
 1061
-// node=122, disease_off=4 (class=6), count=3, data@4195
-7A43
+// [1468] node=122, disease_off=4 (class=6), count=3, data@4195
+0003
 1063
-// node=122, disease_off=8 (class=10), count=1, data@4198
-7A81
+0000
+0000
+0000
+0000
+0000
+0000
+// [1472] node=122, disease_off=8 (class=10), count=1, data@4198
+0001
 1066
-// node=123, disease_off=0 (class=2), count=25, data@4199
-7B09
+0000
+0000
+0000
+0000
+0000
+0000
+// [1476] node=123, disease_off=0 (class=2), count=25, data@4199
+0019
 1067
-// node=123, disease_off=1 (class=3), count=6, data@4224
-7B16
+// [1477] node=123, disease_off=1 (class=3), count=6, data@4224
+0006
 1080
-// node=123, disease_off=3 (class=5), count=2, data@4230
-7B32
+0000
+0000
+// [1479] node=123, disease_off=3 (class=5), count=2, data@4230
+0002
 1086
-// node=123, disease_off=4 (class=6), count=1, data@4232
-7B41
+// [1480] node=123, disease_off=4 (class=6), count=1, data@4232
+0001
 1088
-// node=124, disease_off=0 (class=2), count=33, data@4233
-7C01
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1488] node=124, disease_off=0 (class=2), count=33, data@4233
+0021
 1089
-// node=124, disease_off=1 (class=3), count=1, data@4266
-7C11
+// [1489] node=124, disease_off=1 (class=3), count=1, data@4266
+0001
 10AA
-// node=125, disease_off=0 (class=2), count=31, data@4267
-7D0F
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1500] node=125, disease_off=0 (class=2), count=31, data@4267
+001F
 10AB
-// node=125, disease_off=1 (class=3), count=5, data@4298
-7D15
+// [1501] node=125, disease_off=1 (class=3), count=5, data@4298
+0005
 10CA
-// node=125, disease_off=3 (class=5), count=3, data@4303
-7D33
+0000
+0000
+// [1503] node=125, disease_off=3 (class=5), count=3, data@4303
+0003
 10CF
-// node=125, disease_off=4 (class=6), count=1, data@4306
-7D41
+// [1504] node=125, disease_off=4 (class=6), count=1, data@4306
+0001
 10D2
-// node=125, disease_off=8 (class=10), count=2, data@4307
-7D82
+0000
+0000
+0000
+0000
+0000
+0000
+// [1508] node=125, disease_off=8 (class=10), count=2, data@4307
+0002
 10D3
-// node=126, disease_off=0 (class=2), count=32, data@4309
-7E00
+0000
+0000
+0000
+0000
+0000
+0000
+// [1512] node=126, disease_off=0 (class=2), count=32, data@4309
+0020
 10D5
-// node=126, disease_off=1 (class=3), count=3, data@4341
-7E13
+// [1513] node=126, disease_off=1 (class=3), count=3, data@4341
+0003
 10F5
-// node=127, disease_off=0 (class=2), count=36, data@4344
-7F04
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1524] node=127, disease_off=0 (class=2), count=36, data@4344
+0024
 10F8
-// node=127, disease_off=1 (class=3), count=3, data@4380
-7F13
+// [1525] node=127, disease_off=1 (class=3), count=3, data@4380
+0003
 111C
-// node=127, disease_off=4 (class=6), count=1, data@4383
-7F41
+0000
+0000
+0000
+0000
+// [1528] node=127, disease_off=4 (class=6), count=1, data@4383
+0001
 111F
-// node=128, disease_off=0 (class=2), count=25, data@4384
-8009
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1536] node=128, disease_off=0 (class=2), count=25, data@4384
+0019
 1120
-// node=128, disease_off=1 (class=3), count=1, data@4409
-8011
+// [1537] node=128, disease_off=1 (class=3), count=1, data@4409
+0001
 1139
-// node=128, disease_off=3 (class=5), count=2, data@4410
-8032
+0000
+0000
+// [1539] node=128, disease_off=3 (class=5), count=2, data@4410
+0002
 113A
-// node=128, disease_off=4 (class=6), count=1, data@4412
-8041
+// [1540] node=128, disease_off=4 (class=6), count=1, data@4412
+0001
 113C
-// node=129, disease_off=0 (class=2), count=26, data@4413
-810A
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1548] node=129, disease_off=0 (class=2), count=26, data@4413
+001A
 113D
-// node=129, disease_off=1 (class=3), count=5, data@4439
-8115
+// [1549] node=129, disease_off=1 (class=3), count=5, data@4439
+0005
 1157
-// node=129, disease_off=3 (class=5), count=4, data@4444
-8134
+0000
+0000
+// [1551] node=129, disease_off=3 (class=5), count=4, data@4444
+0004
 115C
-// node=130, disease_off=0 (class=2), count=35, data@4448
-8203
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1560] node=130, disease_off=0 (class=2), count=35, data@4448
+0023
 1160
-// node=130, disease_off=1 (class=3), count=2, data@4483
-8212
+// [1561] node=130, disease_off=1 (class=3), count=2, data@4483
+0002
 1183
-// node=130, disease_off=4 (class=6), count=1, data@4485
-8241
+0000
+0000
+0000
+0000
+// [1564] node=130, disease_off=4 (class=6), count=1, data@4485
+0001
 1185
-// node=130, disease_off=7 (class=9), count=1, data@4486
-8271
+0000
+0000
+0000
+0000
+// [1567] node=130, disease_off=7 (class=9), count=1, data@4486
+0001
 1186
-// node=131, disease_off=0 (class=2), count=34, data@4487
-8302
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1572] node=131, disease_off=0 (class=2), count=34, data@4487
+0022
 1187
-// node=131, disease_off=1 (class=3), count=2, data@4521
-8312
+// [1573] node=131, disease_off=1 (class=3), count=2, data@4521
+0002
 11A9
-// node=132, disease_off=0 (class=2), count=25, data@4523
-8409
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1584] node=132, disease_off=0 (class=2), count=25, data@4523
+0019
 11AB
-// node=132, disease_off=1 (class=3), count=3, data@4548
-8413
+// [1585] node=132, disease_off=1 (class=3), count=3, data@4548
+0003
 11C4
-// node=132, disease_off=2 (class=4), count=2, data@4551
-8422
+// [1586] node=132, disease_off=2 (class=4), count=2, data@4551
+0002
 11C7
-// node=132, disease_off=4 (class=6), count=1, data@4553
-8441
+0000
+0000
+// [1588] node=132, disease_off=4 (class=6), count=1, data@4553
+0001
 11C9
-// node=132, disease_off=5 (class=7), count=1, data@4554
-8451
+// [1589] node=132, disease_off=5 (class=7), count=1, data@4554
+0001
 11CA
-// node=133, disease_off=0 (class=2), count=31, data@4555
-850F
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1596] node=133, disease_off=0 (class=2), count=31, data@4555
+001F
 11CB
-// node=133, disease_off=1 (class=3), count=2, data@4586
-8512
+// [1597] node=133, disease_off=1 (class=3), count=2, data@4586
+0002
 11EA
-// node=133, disease_off=3 (class=5), count=1, data@4588
-8531
+0000
+0000
+// [1599] node=133, disease_off=3 (class=5), count=1, data@4588
+0001
 11EC
-// node=133, disease_off=4 (class=6), count=1, data@4589
-8541
+// [1600] node=133, disease_off=4 (class=6), count=1, data@4589
+0001
 11ED
-// node=134, disease_off=0 (class=2), count=23, data@4590
-8607
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1608] node=134, disease_off=0 (class=2), count=23, data@4590
+0017
 11EE
-// node=134, disease_off=1 (class=3), count=3, data@4613
-8613
+// [1609] node=134, disease_off=1 (class=3), count=3, data@4613
+0003
 1205
-// node=134, disease_off=3 (class=5), count=1, data@4616
-8631
+0000
+0000
+// [1611] node=134, disease_off=3 (class=5), count=1, data@4616
+0001
 1208
-// node=134, disease_off=4 (class=6), count=1, data@4617
-8641
+// [1612] node=134, disease_off=4 (class=6), count=1, data@4617
+0001
 1209
-// node=134, disease_off=8 (class=10), count=1, data@4618
-8681
+0000
+0000
+0000
+0000
+0000
+0000
+// [1616] node=134, disease_off=8 (class=10), count=1, data@4618
+0001
 120A
-// node=135, disease_off=0 (class=2), count=33, data@4619
-8701
+0000
+0000
+0000
+0000
+0000
+0000
+// [1620] node=135, disease_off=0 (class=2), count=33, data@4619
+0021
 120B
-// node=135, disease_off=1 (class=3), count=1, data@4652
-8711
+// [1621] node=135, disease_off=1 (class=3), count=1, data@4652
+0001
 122C
-// node=135, disease_off=3 (class=5), count=1, data@4653
-8731
+0000
+0000
+// [1623] node=135, disease_off=3 (class=5), count=1, data@4653
+0001
 122D
-// node=135, disease_off=7 (class=9), count=1, data@4654
-8771
+0000
+0000
+0000
+0000
+0000
+0000
+// [1627] node=135, disease_off=7 (class=9), count=1, data@4654
+0001
 122E
-// node=135, disease_off=8 (class=10), count=1, data@4655
-8781
+// [1628] node=135, disease_off=8 (class=10), count=1, data@4655
+0001
 122F
-// node=136, disease_off=0 (class=2), count=24, data@4656
-8808
+0000
+0000
+0000
+0000
+0000
+0000
+// [1632] node=136, disease_off=0 (class=2), count=24, data@4656
+0018
 1230
-// node=136, disease_off=1 (class=3), count=2, data@4680
-8812
+// [1633] node=136, disease_off=1 (class=3), count=2, data@4680
+0002
 1248
-// node=136, disease_off=2 (class=4), count=1, data@4682
-8821
+// [1634] node=136, disease_off=2 (class=4), count=1, data@4682
+0001
 124A
-// node=137, disease_off=0 (class=2), count=26, data@4683
-890A
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1644] node=137, disease_off=0 (class=2), count=26, data@4683
+001A
 124B
-// node=137, disease_off=4 (class=6), count=1, data@4709
-8941
+0000
+0000
+0000
+0000
+0000
+0000
+// [1648] node=137, disease_off=4 (class=6), count=1, data@4709
+0001
 1265
-// node=138, disease_off=0 (class=2), count=31, data@4710
-8A0F
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1656] node=138, disease_off=0 (class=2), count=31, data@4710
+001F
 1266
-// node=138, disease_off=2 (class=4), count=1, data@4741
-8A21
+0000
+0000
+// [1658] node=138, disease_off=2 (class=4), count=1, data@4741
+0001
 1285
-// node=138, disease_off=3 (class=5), count=3, data@4742
-8A33
+// [1659] node=138, disease_off=3 (class=5), count=3, data@4742
+0003
 1286
-// node=139, disease_off=0 (class=2), count=36, data@4745
-8B04
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1668] node=139, disease_off=0 (class=2), count=36, data@4745
+0024
 1289
-// node=139, disease_off=1 (class=3), count=1, data@4781
-8B11
+// [1669] node=139, disease_off=1 (class=3), count=1, data@4781
+0001
 12AD
-// node=139, disease_off=3 (class=5), count=1, data@4782
-8B31
+0000
+0000
+// [1671] node=139, disease_off=3 (class=5), count=1, data@4782
+0001
 12AE
-// node=140, disease_off=0 (class=2), count=8, data@4783
-8C08
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1680] node=140, disease_off=0 (class=2), count=8, data@4783
+0008
 12AF
-// node=140, disease_off=1 (class=3), count=18, data@4791
-8C12
+// [1681] node=140, disease_off=1 (class=3), count=18, data@4791
+0012
 12B7
-// node=140, disease_off=2 (class=4), count=2, data@4809
-8C22
+// [1682] node=140, disease_off=2 (class=4), count=2, data@4809
+0002
 12C9
-// node=140, disease_off=3 (class=5), count=4, data@4811
-8C34
+// [1683] node=140, disease_off=3 (class=5), count=4, data@4811
+0004
 12CB
-// node=140, disease_off=7 (class=9), count=3, data@4815
-8C73
+0000
+0000
+0000
+0000
+0000
+0000
+// [1687] node=140, disease_off=7 (class=9), count=3, data@4815
+0003
 12CF
-// node=141, disease_off=0 (class=2), count=33, data@4818
-8D01
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1692] node=141, disease_off=0 (class=2), count=33, data@4818
+0021
 12D2
-// node=141, disease_off=1 (class=3), count=1, data@4851
-8D11
+// [1693] node=141, disease_off=1 (class=3), count=1, data@4851
+0001
 12F3
-// node=141, disease_off=3 (class=5), count=3, data@4852
-8D33
+0000
+0000
+// [1695] node=141, disease_off=3 (class=5), count=3, data@4852
+0003
 12F4
-// node=142, disease_off=0 (class=2), count=23, data@4855
-8E07
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1704] node=142, disease_off=0 (class=2), count=23, data@4855
+0017
 12F7
-// node=142, disease_off=1 (class=3), count=3, data@4878
-8E13
+// [1705] node=142, disease_off=1 (class=3), count=3, data@4878
+0003
 130E
-// node=142, disease_off=3 (class=5), count=3, data@4881
-8E33
+0000
+0000
+// [1707] node=142, disease_off=3 (class=5), count=3, data@4881
+0003
 1311
-// node=143, disease_off=0 (class=2), count=38, data@4884
-8F06
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1716] node=143, disease_off=0 (class=2), count=38, data@4884
+0026
 1314
-// node=143, disease_off=1 (class=3), count=1, data@4922
-8F11
+// [1717] node=143, disease_off=1 (class=3), count=1, data@4922
+0001
 133A
-// node=143, disease_off=2 (class=4), count=1, data@4923
-8F21
+// [1718] node=143, disease_off=2 (class=4), count=1, data@4923
+0001
 133B
-// node=143, disease_off=3 (class=5), count=2, data@4924
-8F32
+// [1719] node=143, disease_off=3 (class=5), count=2, data@4924
+0002
 133C
-// node=144, disease_off=0 (class=2), count=25, data@4926
-9009
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1728] node=144, disease_off=0 (class=2), count=25, data@4926
+0019
 133E
-// node=144, disease_off=1 (class=3), count=4, data@4951
-9014
+// [1729] node=144, disease_off=1 (class=3), count=4, data@4951
+0004
 1357
-// node=144, disease_off=3 (class=5), count=4, data@4955
-9034
+0000
+0000
+// [1731] node=144, disease_off=3 (class=5), count=4, data@4955
+0004
 135B
-// node=145, disease_off=0 (class=2), count=29, data@4959
-910D
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1740] node=145, disease_off=0 (class=2), count=29, data@4959
+001D
 135F
-// node=145, disease_off=1 (class=3), count=3, data@4988
-9113
+// [1741] node=145, disease_off=1 (class=3), count=3, data@4988
+0003
 137C
-// node=145, disease_off=2 (class=4), count=1, data@4991
-9121
+// [1742] node=145, disease_off=2 (class=4), count=1, data@4991
+0001
 137F
-// node=146, disease_off=0 (class=2), count=24, data@4992
-9208
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1752] node=146, disease_off=0 (class=2), count=24, data@4992
+0018
 1380
-// node=146, disease_off=2 (class=4), count=1, data@5016
-9221
+0000
+0000
+// [1754] node=146, disease_off=2 (class=4), count=1, data@5016
+0001
 1398
-// node=146, disease_off=3 (class=5), count=5, data@5017
-9235
+// [1755] node=146, disease_off=3 (class=5), count=5, data@5017
+0005
 1399
-// node=146, disease_off=8 (class=10), count=1, data@5022
-9281
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1760] node=146, disease_off=8 (class=10), count=1, data@5022
+0001
 139E
-// node=147, disease_off=0 (class=2), count=29, data@5023
-930D
+0000
+0000
+0000
+0000
+0000
+0000
+// [1764] node=147, disease_off=0 (class=2), count=29, data@5023
+001D
 139F
-// node=147, disease_off=1 (class=3), count=1, data@5052
-9311
+// [1765] node=147, disease_off=1 (class=3), count=1, data@5052
+0001
 13BC
-// node=147, disease_off=2 (class=4), count=2, data@5053
-9322
+// [1766] node=147, disease_off=2 (class=4), count=2, data@5053
+0002
 13BD
-// node=147, disease_off=7 (class=9), count=1, data@5055
-9371
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1771] node=147, disease_off=7 (class=9), count=1, data@5055
+0001
 13BF
-// node=147, disease_off=8 (class=10), count=2, data@5056
-9382
+// [1772] node=147, disease_off=8 (class=10), count=2, data@5056
+0002
 13C0
-// node=148, disease_off=0 (class=2), count=34, data@5058
-9402
+0000
+0000
+0000
+0000
+0000
+0000
+// [1776] node=148, disease_off=0 (class=2), count=34, data@5058
+0022
 13C2
-// node=148, disease_off=1 (class=3), count=1, data@5092
-9411
+// [1777] node=148, disease_off=1 (class=3), count=1, data@5092
+0001
 13E4
-// node=149, disease_off=0 (class=2), count=34, data@5093
-9502
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1788] node=149, disease_off=0 (class=2), count=34, data@5093
+0022
 13E5
-// node=149, disease_off=1 (class=3), count=2, data@5127
-9512
+// [1789] node=149, disease_off=1 (class=3), count=2, data@5127
+0002
 1407
-// node=149, disease_off=3 (class=5), count=3, data@5129
-9533
+0000
+0000
+// [1791] node=149, disease_off=3 (class=5), count=3, data@5129
+0003
 1409
-// node=149, disease_off=7 (class=9), count=1, data@5132
-9571
+0000
+0000
+0000
+0000
+0000
+0000
+// [1795] node=149, disease_off=7 (class=9), count=1, data@5132
+0001
 140C
-// node=150, disease_off=0 (class=2), count=20, data@5133
-9604
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1800] node=150, disease_off=0 (class=2), count=20, data@5133
+0014
 140D
-// node=150, disease_off=1 (class=3), count=1, data@5153
-9611
+// [1801] node=150, disease_off=1 (class=3), count=1, data@5153
+0001
 1421
-// node=151, disease_off=0 (class=2), count=34, data@5154
-9702
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1812] node=151, disease_off=0 (class=2), count=34, data@5154
+0022
 1422
-// node=151, disease_off=1 (class=3), count=1, data@5188
-9711
+// [1813] node=151, disease_off=1 (class=3), count=1, data@5188
+0001
 1444
-// node=151, disease_off=3 (class=5), count=3, data@5189
-9733
+0000
+0000
+// [1815] node=151, disease_off=3 (class=5), count=3, data@5189
+0003
 1445
-// node=151, disease_off=4 (class=6), count=1, data@5192
-9741
+// [1816] node=151, disease_off=4 (class=6), count=1, data@5192
+0001
 1448
-// node=152, disease_off=0 (class=2), count=30, data@5193
-980E
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1824] node=152, disease_off=0 (class=2), count=30, data@5193
+001E
 1449
-// node=152, disease_off=1 (class=3), count=3, data@5223
-9813
+// [1825] node=152, disease_off=1 (class=3), count=3, data@5223
+0003
 1467
-// node=152, disease_off=3 (class=5), count=1, data@5226
-9831
+0000
+0000
+// [1827] node=152, disease_off=3 (class=5), count=1, data@5226
+0001
 146A
-// node=152, disease_off=7 (class=9), count=1, data@5227
-9871
+0000
+0000
+0000
+0000
+0000
+0000
+// [1831] node=152, disease_off=7 (class=9), count=1, data@5227
+0001
 146B
-// node=152, disease_off=11 (class=16), count=1, data@5228
-98B1
+0000
+0000
+0000
+0000
+0000
+0000
+// [1835] node=152, disease_off=11 (class=16), count=1, data@5228
+0001
 146C
-// node=153, disease_off=0 (class=2), count=27, data@5229
-990B
+// [1836] node=153, disease_off=0 (class=2), count=27, data@5229
+001B
 146D
-// node=153, disease_off=1 (class=3), count=1, data@5256
-9911
+// [1837] node=153, disease_off=1 (class=3), count=1, data@5256
+0001
 1488
-// node=153, disease_off=4 (class=6), count=1, data@5257
-9941
+0000
+0000
+0000
+0000
+// [1840] node=153, disease_off=4 (class=6), count=1, data@5257
+0001
 1489
-// node=153, disease_off=5 (class=7), count=1, data@5258
-9951
+// [1841] node=153, disease_off=5 (class=7), count=1, data@5258
+0001
 148A
-// node=154, disease_off=0 (class=2), count=38, data@5259
-9A06
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1848] node=154, disease_off=0 (class=2), count=38, data@5259
+0026
 148B
-// node=154, disease_off=1 (class=3), count=2, data@5297
-9A12
+// [1849] node=154, disease_off=1 (class=3), count=2, data@5297
+0002
 14B1
-// node=154, disease_off=3 (class=5), count=1, data@5299
-9A31
+0000
+0000
+// [1851] node=154, disease_off=3 (class=5), count=1, data@5299
+0001
 14B3
-// node=154, disease_off=4 (class=6), count=1, data@5300
-9A41
+// [1852] node=154, disease_off=4 (class=6), count=1, data@5300
+0001
 14B4
-// node=155, disease_off=0 (class=2), count=21, data@5301
-9B05
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1860] node=155, disease_off=0 (class=2), count=21, data@5301
+0015
 14B5
-// node=155, disease_off=1 (class=3), count=4, data@5322
-9B14
+// [1861] node=155, disease_off=1 (class=3), count=4, data@5322
+0004
 14CA
-// node=155, disease_off=2 (class=4), count=1, data@5326
-9B21
+// [1862] node=155, disease_off=2 (class=4), count=1, data@5326
+0001
 14CE
-// node=155, disease_off=4 (class=6), count=1, data@5327
-9B41
+0000
+0000
+// [1864] node=155, disease_off=4 (class=6), count=1, data@5327
+0001
 14CF
-// node=155, disease_off=5 (class=7), count=1, data@5328
-9B51
+// [1865] node=155, disease_off=5 (class=7), count=1, data@5328
+0001
 14D0
-// node=156, disease_off=0 (class=2), count=31, data@5329
-9C0F
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1872] node=156, disease_off=0 (class=2), count=31, data@5329
+001F
 14D1
-// node=156, disease_off=1 (class=3), count=1, data@5360
-9C11
+// [1873] node=156, disease_off=1 (class=3), count=1, data@5360
+0001
 14F0
-// node=156, disease_off=3 (class=5), count=1, data@5361
-9C31
+0000
+0000
+// [1875] node=156, disease_off=3 (class=5), count=1, data@5361
+0001
 14F1
-// node=156, disease_off=8 (class=10), count=1, data@5362
-9C81
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1880] node=156, disease_off=8 (class=10), count=1, data@5362
+0001
 14F2
-// node=157, disease_off=0 (class=2), count=29, data@5363
-9D0D
+0000
+0000
+0000
+0000
+0000
+0000
+// [1884] node=157, disease_off=0 (class=2), count=29, data@5363
+001D
 14F3
-// node=157, disease_off=1 (class=3), count=1, data@5392
-9D11
+// [1885] node=157, disease_off=1 (class=3), count=1, data@5392
+0001
 1510
-// node=157, disease_off=3 (class=5), count=2, data@5393
-9D32
+0000
+0000
+// [1887] node=157, disease_off=3 (class=5), count=2, data@5393
+0002
 1511
-// node=157, disease_off=4 (class=6), count=1, data@5395
-9D41
+// [1888] node=157, disease_off=4 (class=6), count=1, data@5395
+0001
 1513
-// node=158, disease_off=0 (class=2), count=25, data@5396
-9E09
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1896] node=158, disease_off=0 (class=2), count=25, data@5396
+0019
 1514
-// node=158, disease_off=1 (class=3), count=3, data@5421
-9E13
+// [1897] node=158, disease_off=1 (class=3), count=3, data@5421
+0003
 152D
-// node=158, disease_off=8 (class=10), count=1, data@5424
-9E81
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1904] node=158, disease_off=8 (class=10), count=1, data@5424
+0001
 1530
-// node=159, disease_off=0 (class=2), count=27, data@5425
-9F0B
+0000
+0000
+0000
+0000
+0000
+0000
+// [1908] node=159, disease_off=0 (class=2), count=27, data@5425
+001B
 1531
-// node=159, disease_off=1 (class=3), count=1, data@5452
-9F11
+// [1909] node=159, disease_off=1 (class=3), count=1, data@5452
+0001
 154C
-// node=159, disease_off=2 (class=4), count=1, data@5453
-9F21
+// [1910] node=159, disease_off=2 (class=4), count=1, data@5453
+0001
 154D
-// node=159, disease_off=4 (class=6), count=1, data@5454
-9F41
+0000
+0000
+// [1912] node=159, disease_off=4 (class=6), count=1, data@5454
+0001
 154E
-// node=159, disease_off=11 (class=16), count=1, data@5455
-9FB1
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1919] node=159, disease_off=11 (class=16), count=1, data@5455
+0001
 154F
-// node=160, disease_off=0 (class=2), count=34, data@5456
-A002
+// [1920] node=160, disease_off=0 (class=2), count=34, data@5456
+0022
 1550
-// node=160, disease_off=3 (class=5), count=1, data@5490
-A031
+0000
+0000
+0000
+0000
+// [1923] node=160, disease_off=3 (class=5), count=1, data@5490
+0001
 1572
-// node=160, disease_off=7 (class=9), count=1, data@5491
-A071
+0000
+0000
+0000
+0000
+0000
+0000
+// [1927] node=160, disease_off=7 (class=9), count=1, data@5491
+0001
 1573
-// node=161, disease_off=0 (class=2), count=31, data@5492
-A10F
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1932] node=161, disease_off=0 (class=2), count=31, data@5492
+001F
 1574
-// node=161, disease_off=3 (class=5), count=1, data@5523
-A131
+0000
+0000
+0000
+0000
+// [1935] node=161, disease_off=3 (class=5), count=1, data@5523
+0001
 1593
-// node=161, disease_off=5 (class=7), count=1, data@5524
-A151
+0000
+0000
+// [1937] node=161, disease_off=5 (class=7), count=1, data@5524
+0001
 1594
-// node=162, disease_off=0 (class=2), count=32, data@5525
-A200
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1944] node=162, disease_off=0 (class=2), count=32, data@5525
+0020
 1595
-// node=162, disease_off=1 (class=3), count=5, data@5557
-A215
+// [1945] node=162, disease_off=1 (class=3), count=5, data@5557
+0005
 15B5
-// node=162, disease_off=3 (class=5), count=1, data@5562
-A231
+0000
+0000
+// [1947] node=162, disease_off=3 (class=5), count=1, data@5562
+0001
 15BA
-// node=162, disease_off=4 (class=6), count=2, data@5563
-A242
+// [1948] node=162, disease_off=4 (class=6), count=2, data@5563
+0002
 15BB
-// node=163, disease_off=0 (class=2), count=36, data@5565
-A304
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1956] node=163, disease_off=0 (class=2), count=36, data@5565
+0024
 15BD
-// node=163, disease_off=1 (class=3), count=1, data@5601
-A311
+// [1957] node=163, disease_off=1 (class=3), count=1, data@5601
+0001
 15E1
-// node=163, disease_off=4 (class=6), count=1, data@5602
-A341
+0000
+0000
+0000
+0000
+// [1960] node=163, disease_off=4 (class=6), count=1, data@5602
+0001
 15E2
-// node=164, disease_off=0 (class=2), count=26, data@5603
-A40A
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1968] node=164, disease_off=0 (class=2), count=26, data@5603
+001A
 15E3
-// node=164, disease_off=1 (class=3), count=1, data@5629
-A411
+// [1969] node=164, disease_off=1 (class=3), count=1, data@5629
+0001
 15FD
-// node=164, disease_off=3 (class=5), count=1, data@5630
-A431
+0000
+0000
+// [1971] node=164, disease_off=3 (class=5), count=1, data@5630
+0001
 15FE
-// node=165, disease_off=0 (class=2), count=29, data@5631
-A50D
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1980] node=165, disease_off=0 (class=2), count=29, data@5631
+001D
 15FF
-// node=165, disease_off=1 (class=3), count=3, data@5660
-A513
+// [1981] node=165, disease_off=1 (class=3), count=3, data@5660
+0003
 161C
-// node=165, disease_off=7 (class=9), count=1, data@5663
-A571
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1987] node=165, disease_off=7 (class=9), count=1, data@5663
+0001
 161F
-// node=166, disease_off=0 (class=2), count=36, data@5664
-A604
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [1992] node=166, disease_off=0 (class=2), count=36, data@5664
+0024
 1620
-// node=166, disease_off=1 (class=3), count=2, data@5700
-A612
+// [1993] node=166, disease_off=1 (class=3), count=2, data@5700
+0002
 1644
-// node=166, disease_off=2 (class=4), count=1, data@5702
-A621
+// [1994] node=166, disease_off=2 (class=4), count=1, data@5702
+0001
 1646
-// node=166, disease_off=3 (class=5), count=2, data@5703
-A632
+// [1995] node=166, disease_off=3 (class=5), count=2, data@5703
+0002
 1647
-// node=166, disease_off=4 (class=6), count=1, data@5705
-A641
+// [1996] node=166, disease_off=4 (class=6), count=1, data@5705
+0001
 1649
-// node=167, disease_off=0 (class=2), count=27, data@5706
-A70B
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2004] node=167, disease_off=0 (class=2), count=27, data@5706
+001B
 164A
-// node=167, disease_off=1 (class=3), count=5, data@5733
-A715
+// [2005] node=167, disease_off=1 (class=3), count=5, data@5733
+0005
 1665
-// node=167, disease_off=3 (class=5), count=2, data@5738
-A732
+0000
+0000
+// [2007] node=167, disease_off=3 (class=5), count=2, data@5738
+0002
 166A
-// node=167, disease_off=4 (class=6), count=2, data@5740
-A742
+// [2008] node=167, disease_off=4 (class=6), count=2, data@5740
+0002
 166C
-// node=168, disease_off=0 (class=2), count=24, data@5742
-A808
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2016] node=168, disease_off=0 (class=2), count=24, data@5742
+0018
 166E
-// node=168, disease_off=2 (class=4), count=2, data@5766
-A822
+0000
+0000
+// [2018] node=168, disease_off=2 (class=4), count=2, data@5766
+0002
 1686
-// node=168, disease_off=3 (class=5), count=1, data@5768
-A831
+// [2019] node=168, disease_off=3 (class=5), count=1, data@5768
+0001
 1688
-// node=168, disease_off=4 (class=6), count=1, data@5769
-A841
+// [2020] node=168, disease_off=4 (class=6), count=1, data@5769
+0001
 1689
-// node=168, disease_off=7 (class=9), count=1, data@5770
-A871
+0000
+0000
+0000
+0000
+// [2023] node=168, disease_off=7 (class=9), count=1, data@5770
+0001
 168A
-// node=169, disease_off=0 (class=2), count=34, data@5771
-A902
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2028] node=169, disease_off=0 (class=2), count=34, data@5771
+0022
 168B
-// node=169, disease_off=1 (class=3), count=2, data@5805
-A912
+// [2029] node=169, disease_off=1 (class=3), count=2, data@5805
+0002
 16AD
-// node=169, disease_off=2 (class=4), count=1, data@5807
-A921
+// [2030] node=169, disease_off=2 (class=4), count=1, data@5807
+0001
 16AF
-// node=169, disease_off=3 (class=5), count=1, data@5808
-A931
+// [2031] node=169, disease_off=3 (class=5), count=1, data@5808
+0001
 16B0
-// node=169, disease_off=8 (class=10), count=2, data@5809
-A982
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2036] node=169, disease_off=8 (class=10), count=2, data@5809
+0002
 16B1
-// node=170, disease_off=0 (class=2), count=22, data@5811
-AA06
+0000
+0000
+0000
+0000
+0000
+0000
+// [2040] node=170, disease_off=0 (class=2), count=22, data@5811
+0016
 16B3
-// node=170, disease_off=1 (class=3), count=3, data@5833
-AA13
+// [2041] node=170, disease_off=1 (class=3), count=3, data@5833
+0003
 16C9
-// node=171, disease_off=0 (class=2), count=24, data@5836
-AB08
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2052] node=171, disease_off=0 (class=2), count=24, data@5836
+0018
 16CC
-// node=171, disease_off=1 (class=3), count=4, data@5860
-AB14
+// [2053] node=171, disease_off=1 (class=3), count=4, data@5860
+0004
 16E4
-// node=171, disease_off=3 (class=5), count=1, data@5864
-AB31
+0000
+0000
+// [2055] node=171, disease_off=3 (class=5), count=1, data@5864
+0001
 16E8
-// node=172, disease_off=0 (class=2), count=33, data@5865
-AC01
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2064] node=172, disease_off=0 (class=2), count=33, data@5865
+0021
 16E9
-// node=172, disease_off=1 (class=3), count=1, data@5898
-AC11
+// [2065] node=172, disease_off=1 (class=3), count=1, data@5898
+0001
 170A
-// node=172, disease_off=2 (class=4), count=1, data@5899
-AC21
+// [2066] node=172, disease_off=2 (class=4), count=1, data@5899
+0001
 170B
-// node=172, disease_off=3 (class=5), count=2, data@5900
-AC32
+// [2067] node=172, disease_off=3 (class=5), count=2, data@5900
+0002
 170C
-// node=172, disease_off=4 (class=6), count=1, data@5902
-AC41
+// [2068] node=172, disease_off=4 (class=6), count=1, data@5902
+0001
 170E
-// node=173, disease_off=0 (class=2), count=35, data@5903
-AD03
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2076] node=173, disease_off=0 (class=2), count=35, data@5903
+0023
 170F
-// node=173, disease_off=3 (class=5), count=2, data@5938
-AD32
+0000
+0000
+0000
+0000
+// [2079] node=173, disease_off=3 (class=5), count=2, data@5938
+0002
 1732
-// node=174, disease_off=0 (class=2), count=17, data@5940
-AE01
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2088] node=174, disease_off=0 (class=2), count=17, data@5940
+0011
 1734
-// node=174, disease_off=1 (class=3), count=6, data@5957
-AE16
+// [2089] node=174, disease_off=1 (class=3), count=6, data@5957
+0006
 1745
-// node=174, disease_off=2 (class=4), count=1, data@5963
-AE21
+// [2090] node=174, disease_off=2 (class=4), count=1, data@5963
+0001
 174B
-// node=174, disease_off=4 (class=6), count=4, data@5964
-AE44
+0000
+0000
+// [2092] node=174, disease_off=4 (class=6), count=4, data@5964
+0004
 174C
-// node=174, disease_off=8 (class=10), count=1, data@5968
-AE81
+0000
+0000
+0000
+0000
+0000
+0000
+// [2096] node=174, disease_off=8 (class=10), count=1, data@5968
+0001
 1750
-// node=175, disease_off=0 (class=2), count=32, data@5969
-AF00
+0000
+0000
+0000
+0000
+0000
+0000
+// [2100] node=175, disease_off=0 (class=2), count=32, data@5969
+0020
 1751
-// node=175, disease_off=1 (class=3), count=1, data@6001
-AF11
+// [2101] node=175, disease_off=1 (class=3), count=1, data@6001
+0001
 1771
-// node=175, disease_off=2 (class=4), count=1, data@6002
-AF21
+// [2102] node=175, disease_off=2 (class=4), count=1, data@6002
+0001
 1772
-// node=175, disease_off=3 (class=5), count=3, data@6003
-AF33
+// [2103] node=175, disease_off=3 (class=5), count=3, data@6003
+0003
 1773
-// node=175, disease_off=8 (class=10), count=1, data@6006
-AF81
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2108] node=175, disease_off=8 (class=10), count=1, data@6006
+0001
 1776
-// node=176, disease_off=0 (class=2), count=35, data@6007
-B003
+0000
+0000
+0000
+0000
+0000
+0000
+// [2112] node=176, disease_off=0 (class=2), count=35, data@6007
+0023
 1777
-// node=176, disease_off=1 (class=3), count=2, data@6042
-B012
+// [2113] node=176, disease_off=1 (class=3), count=2, data@6042
+0002
 179A
-// node=176, disease_off=4 (class=6), count=1, data@6044
-B041
+0000
+0000
+0000
+0000
+// [2116] node=176, disease_off=4 (class=6), count=1, data@6044
+0001
 179C
-// node=177, disease_off=0 (class=2), count=29, data@6045
-B10D
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2124] node=177, disease_off=0 (class=2), count=29, data@6045
+001D
 179D
-// node=177, disease_off=1 (class=3), count=2, data@6074
-B112
+// [2125] node=177, disease_off=1 (class=3), count=2, data@6074
+0002
 17BA
-// node=177, disease_off=4 (class=6), count=1, data@6076
-B141
+0000
+0000
+0000
+0000
+// [2128] node=177, disease_off=4 (class=6), count=1, data@6076
+0001
 17BC
-// node=178, disease_off=0 (class=2), count=23, data@6077
-B207
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2136] node=178, disease_off=0 (class=2), count=23, data@6077
+0017
 17BD
-// node=178, disease_off=1 (class=3), count=5, data@6100
-B215
+// [2137] node=178, disease_off=1 (class=3), count=5, data@6100
+0005
 17D4
-// node=178, disease_off=2 (class=4), count=1, data@6105
-B221
+// [2138] node=178, disease_off=2 (class=4), count=1, data@6105
+0001
 17D9
-// node=178, disease_off=3 (class=5), count=2, data@6106
-B232
+// [2139] node=178, disease_off=3 (class=5), count=2, data@6106
+0002
 17DA
-// node=178, disease_off=7 (class=9), count=2, data@6108
-B272
+0000
+0000
+0000
+0000
+0000
+0000
+// [2143] node=178, disease_off=7 (class=9), count=2, data@6108
+0002
 17DC
-// node=178, disease_off=8 (class=10), count=2, data@6110
-B282
+// [2144] node=178, disease_off=8 (class=10), count=2, data@6110
+0002
 17DE
-// node=179, disease_off=0 (class=2), count=29, data@6112
-B30D
+0000
+0000
+0000
+0000
+0000
+0000
+// [2148] node=179, disease_off=0 (class=2), count=29, data@6112
+001D
 17E0
-// node=179, disease_off=1 (class=3), count=2, data@6141
-B312
+// [2149] node=179, disease_off=1 (class=3), count=2, data@6141
+0002
 17FD
-// node=179, disease_off=7 (class=9), count=1, data@6143
-B371
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2155] node=179, disease_off=7 (class=9), count=1, data@6143
+0001
 17FF
-// node=180, disease_off=0 (class=2), count=26, data@6144
-B40A
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2160] node=180, disease_off=0 (class=2), count=26, data@6144
+001A
 1800
-// node=180, disease_off=2 (class=4), count=2, data@6170
-B422
+0000
+0000
+// [2162] node=180, disease_off=2 (class=4), count=2, data@6170
+0002
 181A
-// node=180, disease_off=3 (class=5), count=5, data@6172
-B435
+// [2163] node=180, disease_off=3 (class=5), count=5, data@6172
+0005
 181C
-// node=180, disease_off=8 (class=10), count=2, data@6177
-B482
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2168] node=180, disease_off=8 (class=10), count=2, data@6177
+0002
 1821
-// node=180, disease_off=11 (class=16), count=1, data@6179
-B4B1
+0000
+0000
+0000
+0000
+// [2171] node=180, disease_off=11 (class=16), count=1, data@6179
+0001
 1823
-// node=181, disease_off=0 (class=2), count=34, data@6180
-B502
+// [2172] node=181, disease_off=0 (class=2), count=34, data@6180
+0022
 1824
-// node=181, disease_off=1 (class=3), count=1, data@6214
-B511
+// [2173] node=181, disease_off=1 (class=3), count=1, data@6214
+0001
 1846
-// node=182, disease_off=0 (class=2), count=20, data@6215
-B604
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2184] node=182, disease_off=0 (class=2), count=20, data@6215
+0014
 1847
-// node=182, disease_off=1 (class=3), count=3, data@6235
-B613
+// [2185] node=182, disease_off=1 (class=3), count=3, data@6235
+0003
 185B
-// node=182, disease_off=2 (class=4), count=4, data@6238
-B624
+// [2186] node=182, disease_off=2 (class=4), count=4, data@6238
+0004
 185E
-// node=182, disease_off=3 (class=5), count=4, data@6242
-B634
+// [2187] node=182, disease_off=3 (class=5), count=4, data@6242
+0004
 1862
-// node=182, disease_off=4 (class=6), count=1, data@6246
-B641
+// [2188] node=182, disease_off=4 (class=6), count=1, data@6246
+0001
 1866
-// node=182, disease_off=7 (class=9), count=1, data@6247
-B671
+0000
+0000
+0000
+0000
+// [2191] node=182, disease_off=7 (class=9), count=1, data@6247
+0001
 1867
-// node=182, disease_off=8 (class=10), count=1, data@6248
-B681
+// [2192] node=182, disease_off=8 (class=10), count=1, data@6248
+0001
 1868
-// node=183, disease_off=0 (class=2), count=26, data@6249
-B70A
+0000
+0000
+0000
+0000
+0000
+0000
+// [2196] node=183, disease_off=0 (class=2), count=26, data@6249
+001A
 1869
-// node=183, disease_off=1 (class=3), count=2, data@6275
-B712
+// [2197] node=183, disease_off=1 (class=3), count=2, data@6275
+0002
 1883
-// node=184, disease_off=0 (class=2), count=34, data@6277
-B802
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2208] node=184, disease_off=0 (class=2), count=34, data@6277
+0022
 1885
-// node=184, disease_off=1 (class=3), count=1, data@6311
-B811
+// [2209] node=184, disease_off=1 (class=3), count=1, data@6311
+0001
 18A7
-// node=184, disease_off=2 (class=4), count=1, data@6312
-B821
+// [2210] node=184, disease_off=2 (class=4), count=1, data@6312
+0001
 18A8
-// node=184, disease_off=3 (class=5), count=1, data@6313
-B831
+// [2211] node=184, disease_off=3 (class=5), count=1, data@6313
+0001
 18A9
-// node=184, disease_off=4 (class=6), count=1, data@6314
-B841
+// [2212] node=184, disease_off=4 (class=6), count=1, data@6314
+0001
 18AA
-// node=185, disease_off=0 (class=2), count=38, data@6315
-B906
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2220] node=185, disease_off=0 (class=2), count=38, data@6315
+0026
 18AB
-// node=185, disease_off=1 (class=3), count=1, data@6353
-B911
+// [2221] node=185, disease_off=1 (class=3), count=1, data@6353
+0001
 18D1
-// node=185, disease_off=3 (class=5), count=2, data@6354
-B932
+0000
+0000
+// [2223] node=185, disease_off=3 (class=5), count=2, data@6354
+0002
 18D2
-// node=185, disease_off=4 (class=6), count=1, data@6356
-B941
+// [2224] node=185, disease_off=4 (class=6), count=1, data@6356
+0001
 18D4
-// node=186, disease_off=0 (class=2), count=18, data@6357
-BA02
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2232] node=186, disease_off=0 (class=2), count=18, data@6357
+0012
 18D5
-// node=186, disease_off=1 (class=3), count=8, data@6375
-BA18
+// [2233] node=186, disease_off=1 (class=3), count=8, data@6375
+0008
 18E7
-// node=186, disease_off=2 (class=4), count=2, data@6383
-BA22
+// [2234] node=186, disease_off=2 (class=4), count=2, data@6383
+0002
 18EF
-// node=186, disease_off=4 (class=6), count=2, data@6385
-BA42
+0000
+0000
+// [2236] node=186, disease_off=4 (class=6), count=2, data@6385
+0002
 18F1
-// node=186, disease_off=7 (class=9), count=2, data@6387
-BA72
+0000
+0000
+0000
+0000
+// [2239] node=186, disease_off=7 (class=9), count=2, data@6387
+0002
 18F3
-// node=186, disease_off=8 (class=10), count=1, data@6389
-BA81
+// [2240] node=186, disease_off=8 (class=10), count=1, data@6389
+0001
 18F5
-// node=187, disease_off=0 (class=2), count=34, data@6390
-BB02
+0000
+0000
+0000
+0000
+0000
+0000
+// [2244] node=187, disease_off=0 (class=2), count=34, data@6390
+0022
 18F6
-// node=187, disease_off=1 (class=3), count=1, data@6424
-BB11
+// [2245] node=187, disease_off=1 (class=3), count=1, data@6424
+0001
 1918
-// node=188, disease_off=0 (class=2), count=19, data@6425
-BC03
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2256] node=188, disease_off=0 (class=2), count=19, data@6425
+0013
 1919
-// node=188, disease_off=1 (class=3), count=5, data@6444
-BC15
+// [2257] node=188, disease_off=1 (class=3), count=5, data@6444
+0005
 192C
-// node=188, disease_off=3 (class=5), count=5, data@6449
-BC35
+0000
+0000
+// [2259] node=188, disease_off=3 (class=5), count=5, data@6449
+0005
 1931
-// node=188, disease_off=7 (class=9), count=1, data@6454
-BC71
+0000
+0000
+0000
+0000
+0000
+0000
+// [2263] node=188, disease_off=7 (class=9), count=1, data@6454
+0001
 1936
-// node=188, disease_off=8 (class=10), count=1, data@6455
-BC81
+// [2264] node=188, disease_off=8 (class=10), count=1, data@6455
+0001
 1937
-// node=189, disease_off=0 (class=2), count=29, data@6456
-BD0D
+0000
+0000
+0000
+0000
+0000
+0000
+// [2268] node=189, disease_off=0 (class=2), count=29, data@6456
+001D
 1938
-// node=189, disease_off=1 (class=3), count=1, data@6485
-BD11
+// [2269] node=189, disease_off=1 (class=3), count=1, data@6485
+0001
 1955
-// node=189, disease_off=3 (class=5), count=1, data@6486
-BD31
+0000
+0000
+// [2271] node=189, disease_off=3 (class=5), count=1, data@6486
+0001
 1956
-// node=190, disease_off=0 (class=2), count=30, data@6487
-BE0E
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2280] node=190, disease_off=0 (class=2), count=30, data@6487
+001E
 1957
-// node=190, disease_off=2 (class=4), count=2, data@6517
-BE22
+0000
+0000
+// [2282] node=190, disease_off=2 (class=4), count=2, data@6517
+0002
 1975
-// node=190, disease_off=3 (class=5), count=3, data@6519
-BE33
+// [2283] node=190, disease_off=3 (class=5), count=3, data@6519
+0003
 1977
-// node=190, disease_off=4 (class=6), count=4, data@6522
-BE44
+// [2284] node=190, disease_off=4 (class=6), count=4, data@6522
+0004
 197A
-// node=190, disease_off=8 (class=10), count=1, data@6526
-BE81
+0000
+0000
+0000
+0000
+0000
+0000
+// [2288] node=190, disease_off=8 (class=10), count=1, data@6526
+0001
 197E
-// node=191, disease_off=0 (class=2), count=29, data@6527
-BF0D
+0000
+0000
+0000
+0000
+0000
+0000
+// [2292] node=191, disease_off=0 (class=2), count=29, data@6527
+001D
 197F
-// node=192, disease_off=0 (class=2), count=21, data@6556
-C005
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2304] node=192, disease_off=0 (class=2), count=21, data@6556
+0015
 199C
-// node=192, disease_off=1 (class=3), count=5, data@6577
-C015
+// [2305] node=192, disease_off=1 (class=3), count=5, data@6577
+0005
 19B1
-// node=192, disease_off=2 (class=4), count=4, data@6582
-C024
+// [2306] node=192, disease_off=2 (class=4), count=4, data@6582
+0004
 19B6
-// node=192, disease_off=4 (class=6), count=5, data@6586
-C045
+0000
+0000
+// [2308] node=192, disease_off=4 (class=6), count=5, data@6586
+0005
 19BA
-// node=192, disease_off=5 (class=7), count=1, data@6591
-C051
+// [2309] node=192, disease_off=5 (class=7), count=1, data@6591
+0001
 19BF
-// node=193, disease_off=0 (class=2), count=29, data@6592
-C10D
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2316] node=193, disease_off=0 (class=2), count=29, data@6592
+001D
 19C0
-// node=193, disease_off=1 (class=3), count=2, data@6621
-C112
+// [2317] node=193, disease_off=1 (class=3), count=2, data@6621
+0002
 19DD
-// node=193, disease_off=3 (class=5), count=2, data@6623
-C132
+0000
+0000
+// [2319] node=193, disease_off=3 (class=5), count=2, data@6623
+0002
 19DF
-// node=193, disease_off=8 (class=10), count=1, data@6625
-C181
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2324] node=193, disease_off=8 (class=10), count=1, data@6625
+0001
 19E1
-// node=194, disease_off=0 (class=2), count=29, data@6626
-C20D
+0000
+0000
+0000
+0000
+0000
+0000
+// [2328] node=194, disease_off=0 (class=2), count=29, data@6626
+001D
 19E2
-// node=194, disease_off=1 (class=3), count=3, data@6655
-C213
+// [2329] node=194, disease_off=1 (class=3), count=3, data@6655
+0003
 19FF
-// node=194, disease_off=3 (class=5), count=1, data@6658
-C231
+0000
+0000
+// [2331] node=194, disease_off=3 (class=5), count=1, data@6658
+0001
 1A02
-// node=194, disease_off=4 (class=6), count=3, data@6659
-C243
+// [2332] node=194, disease_off=4 (class=6), count=3, data@6659
+0003
 1A03
-// node=194, disease_off=8 (class=10), count=1, data@6662
-C281
+0000
+0000
+0000
+0000
+0000
+0000
+// [2336] node=194, disease_off=8 (class=10), count=1, data@6662
+0001
 1A06
-// node=195, disease_off=0 (class=2), count=34, data@6663
-C302
+0000
+0000
+0000
+0000
+0000
+0000
+// [2340] node=195, disease_off=0 (class=2), count=34, data@6663
+0022
 1A07
-// node=195, disease_off=3 (class=5), count=1, data@6697
-C331
+0000
+0000
+0000
+0000
+// [2343] node=195, disease_off=3 (class=5), count=1, data@6697
+0001
 1A29
-// node=196, disease_off=0 (class=2), count=22, data@6698
-C406
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2352] node=196, disease_off=0 (class=2), count=22, data@6698
+0016
 1A2A
-// node=196, disease_off=1 (class=3), count=1, data@6720
-C411
+// [2353] node=196, disease_off=1 (class=3), count=1, data@6720
+0001
 1A40
-// node=196, disease_off=4 (class=6), count=3, data@6721
-C443
+0000
+0000
+0000
+0000
+// [2356] node=196, disease_off=4 (class=6), count=3, data@6721
+0003
 1A41
-// node=196, disease_off=7 (class=9), count=1, data@6724
-C471
+0000
+0000
+0000
+0000
+// [2359] node=196, disease_off=7 (class=9), count=1, data@6724
+0001
 1A44
-// node=196, disease_off=8 (class=10), count=2, data@6725
-C482
+// [2360] node=196, disease_off=8 (class=10), count=2, data@6725
+0002
 1A45
-// node=197, disease_off=0 (class=2), count=32, data@6727
-C500
+0000
+0000
+0000
+0000
+0000
+0000
+// [2364] node=197, disease_off=0 (class=2), count=32, data@6727
+0020
 1A47
-// node=197, disease_off=1 (class=3), count=2, data@6759
-C512
+// [2365] node=197, disease_off=1 (class=3), count=2, data@6759
+0002
 1A67
-// node=198, disease_off=0 (class=2), count=12, data@6761
-C60C
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2376] node=198, disease_off=0 (class=2), count=12, data@6761
+000C
 1A69
-// node=198, disease_off=1 (class=3), count=16, data@6773
-C610
+// [2377] node=198, disease_off=1 (class=3), count=16, data@6773
+0010
 1A75
-// node=198, disease_off=3 (class=5), count=5, data@6789
-C635
+0000
+0000
+// [2379] node=198, disease_off=3 (class=5), count=5, data@6789
+0005
 1A85
-// node=198, disease_off=4 (class=6), count=3, data@6794
-C643
+// [2380] node=198, disease_off=4 (class=6), count=3, data@6794
+0003
 1A8A
-// node=199, disease_off=0 (class=2), count=32, data@6797
-C700
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2388] node=199, disease_off=0 (class=2), count=32, data@6797
+0020
 1A8D
-// node=199, disease_off=3 (class=5), count=2, data@6829
-C732
+0000
+0000
+0000
+0000
+// [2391] node=199, disease_off=3 (class=5), count=2, data@6829
+0002
 1AAD
-// node=200, disease_off=0 (class=2), count=31, data@6831
-C80F
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2400] node=200, disease_off=0 (class=2), count=31, data@6831
+001F
 1AAF
-// node=200, disease_off=2 (class=4), count=2, data@6862
-C822
+0000
+0000
+// [2402] node=200, disease_off=2 (class=4), count=2, data@6862
+0002
 1ACE
-// node=200, disease_off=4 (class=6), count=3, data@6864
-C843
+0000
+0000
+// [2404] node=200, disease_off=4 (class=6), count=3, data@6864
+0003
 1AD0
-// node=200, disease_off=5 (class=7), count=1, data@6867
-C851
+// [2405] node=200, disease_off=5 (class=7), count=1, data@6867
+0001
 1AD3
-// node=200, disease_off=7 (class=9), count=1, data@6868
-C871
+0000
+0000
+// [2407] node=200, disease_off=7 (class=9), count=1, data@6868
+0001
 1AD4
-// node=200, disease_off=8 (class=10), count=1, data@6869
-C881
+// [2408] node=200, disease_off=8 (class=10), count=1, data@6869
+0001
 1AD5
-// node=201, disease_off=0 (class=2), count=30, data@6870
-C90E
+0000
+0000
+0000
+0000
+0000
+0000
+// [2412] node=201, disease_off=0 (class=2), count=30, data@6870
+001E
 1AD6
-// node=201, disease_off=1 (class=3), count=2, data@6900
-C912
+// [2413] node=201, disease_off=1 (class=3), count=2, data@6900
+0002
 1AF4
-// node=202, disease_off=0 (class=2), count=22, data@6902
-CA06
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2424] node=202, disease_off=0 (class=2), count=22, data@6902
+0016
 1AF6
-// node=202, disease_off=3 (class=5), count=2, data@6924
-CA32
+0000
+0000
+0000
+0000
+// [2427] node=202, disease_off=3 (class=5), count=2, data@6924
+0002
 1B0C
-// node=202, disease_off=4 (class=6), count=9, data@6926
-CA49
+// [2428] node=202, disease_off=4 (class=6), count=9, data@6926
+0009
 1B0E
-// node=202, disease_off=5 (class=7), count=1, data@6935
-CA51
+// [2429] node=202, disease_off=5 (class=7), count=1, data@6935
+0001
 1B17
-// node=203, disease_off=0 (class=2), count=28, data@6936
-CB0C
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2436] node=203, disease_off=0 (class=2), count=28, data@6936
+001C
 1B18
-// node=203, disease_off=1 (class=3), count=2, data@6964
-CB12
+// [2437] node=203, disease_off=1 (class=3), count=2, data@6964
+0002
 1B34
-// node=203, disease_off=3 (class=5), count=2, data@6966
-CB32
+0000
+0000
+// [2439] node=203, disease_off=3 (class=5), count=2, data@6966
+0002
 1B36
-// node=204, disease_off=0 (class=2), count=29, data@6968
-CC0D
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2448] node=204, disease_off=0 (class=2), count=29, data@6968
+001D
 1B38
-// node=204, disease_off=1 (class=3), count=3, data@6997
-CC13
+// [2449] node=204, disease_off=1 (class=3), count=3, data@6997
+0003
 1B55
-// node=204, disease_off=3 (class=5), count=1, data@7000
-CC31
+0000
+0000
+// [2451] node=204, disease_off=3 (class=5), count=1, data@7000
+0001
 1B58
-// node=204, disease_off=4 (class=6), count=1, data@7001
-CC41
+// [2452] node=204, disease_off=4 (class=6), count=1, data@7001
+0001
 1B59
-// node=204, disease_off=8 (class=10), count=1, data@7002
-CC81
+0000
+0000
+0000
+0000
+0000
+0000
+// [2456] node=204, disease_off=8 (class=10), count=1, data@7002
+0001
 1B5A
-// node=205, disease_off=0 (class=2), count=36, data@7003
-CD04
+0000
+0000
+0000
+0000
+0000
+0000
+// [2460] node=205, disease_off=0 (class=2), count=36, data@7003
+0024
 1B5B
-// node=205, disease_off=2 (class=4), count=1, data@7039
-CD21
+0000
+0000
+// [2462] node=205, disease_off=2 (class=4), count=1, data@7039
+0001
 1B7F
-// node=206, disease_off=0 (class=2), count=24, data@7040
-CE08
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2472] node=206, disease_off=0 (class=2), count=24, data@7040
+0018
 1B80
-// node=206, disease_off=1 (class=3), count=1, data@7064
-CE11
+// [2473] node=206, disease_off=1 (class=3), count=1, data@7064
+0001
 1B98
-// node=206, disease_off=3 (class=5), count=1, data@7065
-CE31
+0000
+0000
+// [2475] node=206, disease_off=3 (class=5), count=1, data@7065
+0001
 1B99
-// node=206, disease_off=4 (class=6), count=2, data@7066
-CE42
+// [2476] node=206, disease_off=4 (class=6), count=2, data@7066
+0002
 1B9A
-// node=207, disease_off=0 (class=2), count=31, data@7068
-CF0F
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2484] node=207, disease_off=0 (class=2), count=31, data@7068
+001F
 1B9C
-// node=207, disease_off=1 (class=3), count=2, data@7099
-CF12
+// [2485] node=207, disease_off=1 (class=3), count=2, data@7099
+0002
 1BBB
-// node=207, disease_off=2 (class=4), count=1, data@7101
-CF21
+// [2486] node=207, disease_off=2 (class=4), count=1, data@7101
+0001
 1BBD
-// node=207, disease_off=4 (class=6), count=2, data@7102
-CF42
+0000
+0000
+// [2488] node=207, disease_off=4 (class=6), count=2, data@7102
+0002
 1BBE
-// node=207, disease_off=7 (class=9), count=1, data@7104
-CF71
+0000
+0000
+0000
+0000
+// [2491] node=207, disease_off=7 (class=9), count=1, data@7104
+0001
 1BC0
-// node=208, disease_off=0 (class=2), count=22, data@7105
-D006
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2496] node=208, disease_off=0 (class=2), count=22, data@7105
+0016
 1BC1
-// node=208, disease_off=1 (class=3), count=3, data@7127
-D013
+// [2497] node=208, disease_off=1 (class=3), count=3, data@7127
+0003
 1BD7
-// node=208, disease_off=2 (class=4), count=1, data@7130
-D021
+// [2498] node=208, disease_off=2 (class=4), count=1, data@7130
+0001
 1BDA
-// node=209, disease_off=0 (class=2), count=35, data@7131
-D103
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2508] node=209, disease_off=0 (class=2), count=35, data@7131
+0023
 1BDB
-// node=210, disease_off=0 (class=2), count=12, data@7166
-D20C
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2520] node=210, disease_off=0 (class=2), count=12, data@7166
+000C
 1BFE
-// node=210, disease_off=1 (class=3), count=16, data@7178
-D210
+// [2521] node=210, disease_off=1 (class=3), count=16, data@7178
+0010
 1C0A
-// node=210, disease_off=2 (class=4), count=1, data@7194
-D221
+// [2522] node=210, disease_off=2 (class=4), count=1, data@7194
+0001
 1C1A
-// node=210, disease_off=3 (class=5), count=8, data@7195
-D238
+// [2523] node=210, disease_off=3 (class=5), count=8, data@7195
+0008
 1C1B
-// node=210, disease_off=4 (class=6), count=3, data@7203
-D243
+// [2524] node=210, disease_off=4 (class=6), count=3, data@7203
+0003
 1C23
-// node=210, disease_off=8 (class=10), count=1, data@7206
-D281
+0000
+0000
+0000
+0000
+0000
+0000
+// [2528] node=210, disease_off=8 (class=10), count=1, data@7206
+0001
 1C26
-// node=211, disease_off=0 (class=2), count=34, data@7207
-D302
+0000
+0000
+0000
+0000
+0000
+0000
+// [2532] node=211, disease_off=0 (class=2), count=34, data@7207
+0022
 1C27
-// node=211, disease_off=3 (class=5), count=1, data@7241
-D331
+0000
+0000
+0000
+0000
+// [2535] node=211, disease_off=3 (class=5), count=1, data@7241
+0001
 1C49
-// node=212, disease_off=0 (class=2), count=27, data@7242
-D40B
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2544] node=212, disease_off=0 (class=2), count=27, data@7242
+001B
 1C4A
-// node=212, disease_off=1 (class=3), count=2, data@7269
-D412
+// [2545] node=212, disease_off=1 (class=3), count=2, data@7269
+0002
 1C65
-// node=212, disease_off=2 (class=4), count=1, data@7271
-D421
+// [2546] node=212, disease_off=2 (class=4), count=1, data@7271
+0001
 1C67
-// node=212, disease_off=5 (class=7), count=2, data@7272
-D452
+0000
+0000
+0000
+0000
+// [2549] node=212, disease_off=5 (class=7), count=2, data@7272
+0002
 1C68
-// node=213, disease_off=0 (class=2), count=34, data@7274
-D502
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2556] node=213, disease_off=0 (class=2), count=34, data@7274
+0022
 1C6A
-// node=214, disease_off=0 (class=2), count=22, data@7308
-D606
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+// [2568] node=214, disease_off=0 (class=2), count=22, data@7308
+0016
 1C8C
-// node=214, disease_off=1 (class=3), count=7, data@7330
-D617
+// [2569] node=214, disease_off=1 (class=3), count=7, data@7330
+0007
 1CA2
-// node=214, disease_off=3 (class=5), count=2, data@7337
-D632
+0000
+0000
+// [2571] node=214, disease_off=3 (class=5), count=2, data@7337
+0002
 1CA9
-// node=214, disease_off=4 (class=6), count=2, data@7339
-D642
+// [2572] node=214, disease_off=4 (class=6), count=2, data@7339
+0002
 1CAB
-// node=214, disease_off=7 (class=9), count=3, data@7341
-D673
+0000
+0000
+0000
+0000
+// [2575] node=214, disease_off=7 (class=9), count=3, data@7341
+0003
 1CAD
+0000
+0000
+0000
+0000
+0000
+0000
+0000
+0000
 //
 // === DATA SECTION ===
 // Format: 2 x 16-bit words per action
