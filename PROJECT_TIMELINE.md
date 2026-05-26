@@ -137,8 +137,8 @@ Then:
 Plug in Your FPGA, Turn board power on, Open: Flow Navigator, Open Hardware Manager, Open Target, Auto Connect -> You should see the FPGA device. Then: Program Device, Select the generated .bit file.
 
 Once this is done the FPGA will do what the programming says, here is a video of FPGA blinking LED: U16 at 1Hz, I also press button U18 to reset according to the constraints file:
-<video width="640" height="480" controls>
-  <source src="FPGA_Files/LED_Blinking_files/LED_Blinking_Video.MOV" type="video/quicktime">
+<video width="640" height="480" controls muted>
+  <source src="FPGA_Files/LED_Blinking_files/LED_Blinking_Video.mp4" type="video/mp4">
 </video>
 
 ## 4. CDS-NI Module Coding
