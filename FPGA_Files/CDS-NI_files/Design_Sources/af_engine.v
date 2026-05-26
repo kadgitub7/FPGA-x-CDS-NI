@@ -17,11 +17,11 @@ module af_engine(
     input wire signed [15:0] user_feature_value,
 
     // BRAM address outputs (to model_rom / sensor_interface)
-    output reg [10:0] action_hdr_addr,
-    output reg [12:0] action_data_addr,
+    output reg [12:0] action_hdr_addr,
+    output reg [13:0] action_data_addr,
     output reg [11:0] prob_phf_addr,
     output reg [7:0]  prob_pgt1_addr,
-    output reg [15:0] hr_read_addr,
+    output reg [16:0] hr_read_addr,
     output reg [8:0]  feature_read_addr,
 
     output reg [1:0]  decision,
@@ -36,7 +36,7 @@ module af_engine(
 
     localparam [3:0] N_DISEASES = 4'd12;
 
-    localparam signed [31:0] THRESHOLD_FP = 32'sh00066666; // 0.025 in Q 24 format
+    localparam signed [31:0] THRESHOLD_FP = 32'sh0199999A; // 0.025 in Q s2.30
 
     // these are all the states that will be tracked based on the FSM diagram
     // BRAM takes 1 cycle to return data, therefore there is a wait state that lets them rest before being used
@@ -61,22 +61,23 @@ module af_engine(
         S_COMPUTE_DIV    = 5'd16,  // drive fixedDivide inputs
         S_WAIT_DIV       = 5'd17,  // wait 2 cycles (pipelined divider)
         S_ACCUMULATE     = 5'd18,  // pulse af_accumulator
-        S_CHECK_RANGE    = 5'd19,  // evaluate rangeComparator
-        S_NEXT_ACTION    = 5'd20,  // increment action pointer
-        S_NEXT_DISEASE   = 5'd21,  // increment disease_offset
-        S_THRESHOLD      = 5'd22,  // compare rw_real vs THRESHOLD_FP
-        S_ALARM          = 5'd23,  // latch UNHEALTHY result
-        S_DONE           = 5'd24;  // assert done
+        S_CHECK_RANGE    = 5'd19,  // drive rangeComparator inputs
+        S_EVAL_RANGE     = 5'd20,  // read rangeComparator outputs
+        S_NEXT_ACTION    = 5'd21,  // increment action pointer
+        S_NEXT_DISEASE   = 5'd22,  // increment disease_offset
+        S_THRESHOLD      = 5'd23,  // compare rw_real vs THRESHOLD_FP
+        S_ALARM          = 5'd24,  // latch UNHEALTHY result
+        S_DONE           = 5'd25;  // assert done
 
     reg [4:0] state;
 
     reg [3:0]  disease_offset;       // 0 to 11
     reg [5:0]  action_count;         // actions in current (node, disease) group
     reg [5:0]  action_idx;           // current action within group
-    reg [12:0] action_base_addr;     // start_address of current group in data BRAM
+    reg [13:0] action_base_addr;     // start_address of current group in data BRAM
 
     // BRAM data
-    reg [15:0]        hdr_word0;           // packed [node(8)|disease(4)|count(4)]
+    reg [15:0]        hdr_word0;           // action_count (full 16-bit)
     reg [15:0]        hdr_start_addr;      // start address in action data BRAM
     reg [8:0]         latched_feature_idx;  // from action data word 0 (9 bits used)
     reg signed [15:0] latched_r_j_h;       // from action data word 1 (Q s1.15)
@@ -161,35 +162,7 @@ module af_engine(
         .result_valid (rc_result_valid)
     );
 
-    // =========================================================================
-    // FSM
-    // =========================================================================
-    //
-    //  Action header BRAM layout (16-bit wide, sequential word addressing):
-    //    Addr 0        : header_count  (number of header entries)
-    //    Addr 1 + 2*i  : header[i] word 0 = {node(8), disease(4), count(4)}
-    //    Addr 2 + 2*i  : header[i] word 1 = start_address in data section
-    //
-    //  Action data BRAM layout (16-bit wide):
-    //    Addr 2*j      : action[j] word 0 = feature_idx
-    //    Addr 2*j + 1  : action[j] word 1 = r_j_h (Q s1.15)
-    //
-    //  Prob table A BRAM (16-bit wide):
-    //    Addr = node_idx * 12 + disease_offset → P(h,f) in Q s1.15
-    //
-    //  Prob table B BRAM (16-bit wide):
-    //    Addr = node_idx → reciprocal of P(h>1,f) in Q s2.14
-    //    (precomputed reciprocals for use with fixedDivide)
-    //
-    //  Healthy-range BRAM (returns b_min and b_max simultaneously):
-    //    Addr = {node_idx[7:0], feature_idx[7:0]} or linear mapping
-    //    → hr_bmin (Q s9.4), hr_bmax (Q s9.4)
-    //
-    //  Sensor interface (16-bit wide):
-    //    Addr = feature_idx → user_feature_value
-    //
-    // =========================================================================
-
+    
     always @(posedge clk) begin
         if (reset) begin
             state             <= S_IDLE;
@@ -201,13 +174,13 @@ module af_engine(
             disease_offset    <= 4'd0;
             action_count      <= 6'd0;
             action_idx        <= 6'd0;
-            action_base_addr  <= 13'd0;
+            action_base_addr  <= 14'd0;
 
-            action_hdr_addr   <= 11'd0;
-            action_data_addr  <= 13'd0;
+            action_hdr_addr   <= 13'd0;
+            action_data_addr  <= 14'd0;
             prob_phf_addr     <= 12'd0;
             prob_pgt1_addr    <= 8'd0;
-            hr_read_addr      <= 16'd0;
+            hr_read_addr      <= 17'd0;
             feature_read_addr <= 9'd0;
 
             mul_a             <= 16'sd0;
@@ -239,42 +212,35 @@ module af_engine(
 
                 S_IDLE: begin
                     if (start) begin
-                        accum_clear <= 1'b1; // clear accumulator to load AF_init
-                        accum_delta <= AF_init;
-                        accum_delta_valid <= 1'b1;
+                        accum_clear <= 1'b1;
                         state <= S_LOAD_DISEASE;
                     end
                 end
 
                 S_LOAD_DISEASE: begin
+                    accum_delta <= AF_init;
+                    accum_delta_valid <= 1'b1;
                     disease_offset <= 4'd0;
                     state <= S_LOAD_HDR_W0;
                 end
 
                 S_LOAD_HDR_W0: begin
-                    addr = 11'd1 + (node_idx * N_DISEASES + disease_offset) * 2;
-                    action_hdr_addr <= addr;
-                    if(action_count > 0) begin
-                        state <= S_LOAD_HDR_W1;
-                    end
-                    else begin
-                        state <= S_NEXT_DISEASE;
-                    end
+                    action_hdr_addr <= {node_times_12 + {8'd0, disease_offset}, 1'b0};
+                    state <= S_LOAD_HDR_W1;
                 end
 
                 S_LOAD_HDR_W1: begin
                     hdr_word0 <= action_hdr_data;
-                    action_hdr_addr <= action_hdr_addr + 1;
+                    action_hdr_addr <= action_hdr_addr + 13'd1;
                     state <= S_CAPTURE_HDR;
                 end
 
                 S_CAPTURE_HDR: begin
                     hdr_start_addr <= action_hdr_data;
-                    action_count <= hdr_word0[3:0];
-                    if (hdr_word0[3:0] > 0) begin
+                    action_count <= hdr_word0[5:0];
+                    if (hdr_word0[5:0] > 0) begin
                         action_idx <= 6'd0;
-                        action_base_addr <= {3'b0, hdr_word0[7:4],
-                                            6'b0}; // action_base_addr = start_addr of current group
+                        action_base_addr <= action_hdr_data[13:0];
                         state <= S_LOAD_ACT_W0;
                     end
                     else begin
@@ -283,13 +249,13 @@ module af_engine(
                 end
 
                 S_LOAD_ACT_W0: begin
-                    action_data_addr <= 2 * (action_base_addr + action_idx);
+                    action_data_addr <= {action_base_addr + {8'd0, action_idx}, 1'b0};
                     state <= S_LOAD_ACT_W1;
                 end
 
                 S_LOAD_ACT_W1: begin
                     latched_feature_idx <= action_data_out[8:0];
-                    action_data_addr <= action_data_addr + 1;
+                    action_data_addr <= action_data_addr + 14'd1;
                     state <= S_CAPTURE_ACT;
                 end
 
@@ -301,7 +267,7 @@ module af_engine(
                 S_LOAD_PROBS: begin
                     prob_phf_addr <= node_times_12 + disease_offset;
                     prob_pgt1_addr <= node_idx;
-                    state <= S_CAPTURE_PROBS
+                    state <= S_CAPTURE_PROBS;
                 end
 
                 S_CAPTURE_PROBS: begin
@@ -321,7 +287,7 @@ module af_engine(
                 end
 
                 S_LOAD_RANGE: begin
-                    hr_read_addr <= {node_idx, latched_feature_idx}
+                    hr_read_addr <= {node_idx, latched_feature_idx};
                     state <= S_CAPTURE_RANGE;
                 end
 
@@ -371,13 +337,16 @@ module af_engine(
                     rc_bmin <= latched_bmin;
                     rc_bmax <= latched_bmax;
                     rc_valid <= 1'b1;
-                    if (rc_result_valid) begin
-                        if (rc_triggered) begin
-                            state <= S_ALARM;
-                        end
-                        else begin
-                            state <= S_NEXT_ACTION;
-                        end
+                    state <= S_EVAL_RANGE;
+                end
+
+                S_EVAL_RANGE: begin
+                    rc_valid <= 1'b1;
+                    if (rc_triggered) begin
+                        state <= S_ALARM;
+                    end
+                    else begin
+                        state <= S_NEXT_ACTION;
                     end
                 end
 
@@ -421,9 +390,6 @@ module af_engine(
 
                 S_DONE: begin
                     done <= 1'b1;
-                    if (start || reset) begin
-                        state <= S_IDLE;
-                    end
                 end
 
                 default: state <= S_IDLE;
