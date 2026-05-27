@@ -152,6 +152,9 @@ The af_engine module is complex and represent a full flow of how a user may be c
 
 The module is quite long with many components. It creates instances of all previous modules which it uses to multiply, divide, compare boundaries, and accumulate assurance. It runs the standards pipeline and accesses memory components. It holds many different states which each transisition based on stict logic.
 
+The next module is for tree traversal. It identifies which node to compare the user on by taking their value and determining which branch they belong to, returning a stream of values. Here is the FSM diagram for this module:
+
+<img src=/FPGA_Files/CDS-NI_files/Diagrams/tree_traversal_FSM_Diagram.png width="60%">
 
 
 
