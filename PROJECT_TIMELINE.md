@@ -148,7 +148,7 @@ The af_accumulate module was a little more tricky and needed both combinational,
 
 The af_engine module is complex and represent a full flow of how a user may be checked with regards to assurance factor. It involves multiple of the previous modules and combines then in the form of a FSM(Finite State Machine). Below is a diagram drawn to represent the different states, and actions that transition the machine.
 
-<img src=/FPGA_Files/Diagrams/af_engine_FSM_Diagram.png width="60%">
+<img src=/FPGA_Files/CDS-NI_files/Diagrams/af_engine_FSM_Diagram.png width="60%">
 
 The module is quite long with many components. It creates instances of all previous modules which it uses to multiply, divide, compare boundaries, and accumulate assurance. It runs the standards pipeline and accesses memory components. It holds many different states which each transisition based on stict logic.
 
