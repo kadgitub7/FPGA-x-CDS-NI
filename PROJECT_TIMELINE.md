@@ -156,6 +156,8 @@ The next module is for tree traversal. It identifies which node to compare the u
 
 <img src=/FPGA_Files/CDS-NI_files/Diagrams/tree_traversal_FSM_Diagram.png width="60%">
 
+The tree traversal module is made to go through all the possible nodes mentioned in a memory file and iterate through them while determining if the user value falls within this range. It waits a few clock cycles to get the tree node address and the users value to compare. Once this is done it returns a stream of values which help us who which nodes to compare healthy ranges for in AF engine module.
+
 
 
 
