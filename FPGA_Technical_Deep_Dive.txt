@@ -1,0 +1,1267 @@
+================================================================================
+FPGA & VERILOG TECHNICAL DEEP DIVE
+A ground-up learning resource for digital hardware design
+================================================================================
+
+This document covers every technical concept used in this project, explained
+from first principles. It is organized so that each section builds on the
+previous one. Read it in order.
+
+
+================================================================================
+PART 1: THE MENTAL MODEL — HARDWARE IS NOT SOFTWARE
+================================================================================
+
+The single most important thing to internalize: Verilog does not describe
+a sequence of instructions. It describes physical circuits that exist
+simultaneously and operate in parallel.
+
+When you write C or Python, the CPU executes one instruction at a time:
+    x = a + b
+    y = x * c
+
+In hardware, if you write:
+    assign x = a + b;
+    assign y = x * c;
+
+Both of those circuits exist at the same time, physically. There is an adder
+connected to wires a and b, and a multiplier connected to the output of that
+adder and wire c. They are always computing. There is no "first" or "second"
+— they are copper traces on silicon.
+
+This is why you cannot "call a function" in hardware. A module is not a
+function — it is a physical box with input and output wires. You connect
+wires to it, and it continuously produces output. If the box takes multiple
+clock cycles to produce a result (like fixedDivide), you must wait for it
+by checking a "result_valid" signal.
+
+KEY RULE: In software, you think about TIME (what happens first, second).
+In hardware, you think about SPACE (what is connected to what).
+The only way to introduce time is through clock edges.
+
+
+================================================================================
+PART 2: COMBINATIONAL VS SEQUENTIAL LOGIC
+================================================================================
+
+All digital circuits fall into two categories:
+
+--- COMBINATIONAL LOGIC ---
+
+Output depends ONLY on current inputs. No memory, no clock.
+Changes propagate immediately (after a tiny physical delay).
+
+Example from your project — rangeComparator.v:
+
+    assign triggered = ~is_nan & ~invalid_range & valid &
+                       ((raw_value < b_min) || (raw_value > b_max));
+
+This is pure combinational logic. The moment raw_value, b_min, or b_max
+change, the output triggered updates. There is no clock involved.
+
+Combinational logic is built from:
+  - AND, OR, NOT, XOR gates
+  - Multiplexers (if/else becomes a mux)
+  - Adders, comparators, multipliers
+
+When you write:
+    assign result = (a > b) ? x : y;
+
+The synthesizer builds a comparator and a multiplexer. Both exist physically.
+
+
+--- SEQUENTIAL LOGIC ---
+
+Output depends on current inputs AND previous state. Has memory. Uses a clock.
+
+Example from your project — fixedMultiply.v:
+
+    always @(posedge clk) begin
+        product <= valid ? (a * b) : 32'sd0;
+        result_valid <= valid;
+    end
+
+The "@(posedge clk)" means: capture new values into the registers only at
+the rising edge of the clock signal. Between clock edges, the registers
+hold their previous value.
+
+Sequential logic is built from flip-flops (also called registers or FFs).
+A flip-flop is a circuit that stores one bit. It has:
+  - D input (the new value)
+  - Q output (the stored value)
+  - CLK input (when to capture D into Q)
+
+Every "reg" in your Verilog that is assigned inside "always @(posedge clk)"
+becomes one or more flip-flops in hardware.
+
+
+--- WHY CLOCKS MATTER ---
+
+Without a clock, combinational logic has a problem: signals take different
+amounts of time to travel through different paths. A signal might arrive
+at an adder before another signal has finished propagating through a
+multiplier. This causes "glitches" — briefly wrong values.
+
+The clock solves this: it says "everyone, capture your new values NOW."
+Between clock edges, signals have time to settle. This is why faster
+clocks are harder — the signals have less time to propagate.
+
+The clock period must be longer than the longest combinational path
+(called the "critical path"). Vivado tells you this as "timing slack."
+Positive slack = good. Negative slack = your circuit won't work reliably.
+
+
+================================================================================
+PART 3: VERILOG FUNDAMENTALS
+================================================================================
+
+--- WIRE VS REG ---
+
+These are the two fundamental data types. The distinction is about HOW
+a signal gets its value, not what it physically becomes.
+
+WIRE: Driven by continuous assignment or module output.
+    wire [15:0] tree_data;           // connected to a BRAM output
+    wire result = (a & b) | c;       // driven by combinational logic
+    assign triggered = (x > y);      // continuous assignment
+
+REG: Assigned inside an "always" block.
+    reg [3:0] state;                 // assigned in always @(posedge clk)
+    reg signed [31:0] product;       // assigned in always @(posedge clk)
+
+IMPORTANT: "reg" does NOT mean "register" or "flip-flop." It means
+"something assigned procedurally." A reg assigned in:
+  - always @(posedge clk) -> becomes a flip-flop (true register)
+  - always @(*) -> becomes combinational logic (no register!)
+
+The name "reg" is an unfortunate historical mistake in Verilog.
+SystemVerilog fixes this with "logic" which replaces both wire and reg.
+
+
+--- SIGNED VS UNSIGNED ---
+
+By default, Verilog treats everything as unsigned.
+
+    wire [7:0] a = 8'hFF;    // This is 255 (unsigned)
+    wire signed [7:0] b = 8'hFF;  // This is -1 (signed, two's complement)
+
+The "signed" keyword tells Verilog to use signed arithmetic and sign
+extension. This matters enormously for:
+
+1. Comparison operators: (a > b) gives different results for signed vs unsigned
+2. Right shift: >> is logical (fills with 0), >>> is arithmetic (fills with sign bit)
+3. Extension: unsigned {8'd0, val} vs signed automatic sign-extension
+
+CRITICAL RULE: When you mix signed and unsigned in ONE expression, Verilog
+treats the ENTIRE expression as unsigned. This is a notorious source of bugs.
+
+Example from your project — tree_traversal.v has this bug:
+
+    wire [15:0] feat_ext = {8'd0, feat_latched};   // unsigned!
+    ...
+    if (feat_ext >= node_low && feat_ext < node_high)  // node_low is signed
+
+feat_ext is unsigned (no "signed" keyword). node_low is signed. Verilog
+promotes both to unsigned for the comparison. A negative node_low like -2
+(16'hFFFE) becomes 65534 unsigned, making the comparison meaningless.
+
+Fix: declare feat_ext as signed, or compare feat_latched directly (it is
+already signed [15:0]).
+
+
+--- BLOCKING VS NON-BLOCKING ASSIGNMENT ---
+
+This is one of the most confusing aspects of Verilog.
+
+    a = b;      // BLOCKING: executes immediately, like software
+    a <= b;     // NON-BLOCKING: schedules the update for end of time step
+
+RULE: Inside "always @(posedge clk)", ALWAYS use <= (non-blocking).
+      Inside "always @(*)" (combinational), ALWAYS use = (blocking).
+
+Why? Non-blocking assignments all happen "simultaneously" at the clock edge.
+This models how real flip-flops work: they all capture their inputs at the
+same instant.
+
+Example — what happens at a clock edge:
+
+    always @(posedge clk) begin
+        a <= b;     // a gets the OLD value of b
+        b <= a;     // b gets the OLD value of a
+    end
+
+This swaps a and b! Both assignments read the old values and write the new
+values simultaneously. If you used blocking (=), it would NOT swap:
+
+    always @(posedge clk) begin
+        a = b;      // a gets b's value immediately
+        b = a;      // b gets a's NEW value (same as b!) — BUG
+    end
+
+The af_accumulator.v has one intentional exception:
+
+    sum = {{1{AF_real[31]}}, AF_real} + {{1{delta_AF[31]}}, delta_AF};
+
+Here "sum" is used as an intermediate combinational value within the
+always block, not as a register output. It uses blocking assignment
+because the result is used immediately in the if/else below it.
+This is acceptable but be cautious — mixing blocking and non-blocking
+in one always block is an advanced pattern.
+
+
+--- BIT MANIPULATION ---
+
+Verilog gives you direct access to individual bits and bit ranges.
+This maps directly to physical wires — no computation needed.
+
+Bit select:
+    wire sign_bit = value[31];       // just a wire connection
+    wire [8:0] feat = data[8:0];     // low 9 bits
+
+Concatenation:
+    wire [31:0] wide = {high_16, low_16};   // join two 16-bit values
+
+This is how model_rom.v packs/unpacks healthy ranges:
+    wire [31:0] hr_data_wide;         // 32 bits from BRAM
+    assign hr_bmin = hr_data_wide[31:16];  // top 16 bits
+    assign hr_bmax = hr_data_wide[15:0];   // bottom 16 bits
+
+Replication:
+    {{1{AF_real[31]}}, AF_real}   // sign-extend by 1 bit
+    // {1{x}} means "repeat x once" — the {N{pattern}} syntax
+
+Concatenation for multiplication by powers of 2:
+    {value, 1'b0}     // append a 0 bit = multiply by 2 (left shift by 1)
+    {value, 2'b00}    // append two 0s = multiply by 4
+
+This is FREE in hardware — no adder or multiplier needed. It is literally
+just wiring the output pins one position to the left. Your project uses
+this extensively:
+
+    // From af_engine.v — node_idx * 8 + node_idx * 4 = node_idx * 12
+    wire [11:0] node_times_12 = {1'b0, node_idx, 3'b0}    // node_idx * 8
+                               + {2'b0, node_idx, 2'b0};   // node_idx * 4
+
+    // From rl_action_selector.v — (base + counter) * 2
+    action_data_addr <= {action_data_start_addr + {6'd0, candidate_counter}, 1'b0};
+
+The general pattern: if you need to multiply by a constant, decompose it
+into powers of 2 and add. This avoids synthesizing a hardware multiplier
+(which is large and slow) when you just need a fixed scaling.
+
+    Multiply by 3:  {0, x, 0} + {00, x} = x*2 + x
+    Multiply by 5:  {0, x, 00} + {000, x} = x*4 + x
+    Multiply by 12: {0, x, 000} + {00, x, 00} = x*8 + x*4
+
+
+================================================================================
+PART 4: TWO'S COMPLEMENT AND SIGNED NUMBERS
+================================================================================
+
+All signed numbers in your FPGA use two's complement representation.
+Understanding this is critical for debugging fixed-point arithmetic.
+
+For an N-bit signed number:
+  - Bit N-1 is the sign bit (0 = positive, 1 = negative)
+  - Range: [-2^(N-1), +2^(N-1) - 1]
+
+For 16-bit signed:
+  - Range: [-32768, +32767]
+  - 0x0000 =      0
+  - 0x0001 =     +1
+  - 0x7FFF = +32767  (largest positive)
+  - 0x8000 = -32768  (most negative)
+  - 0xFFFF =     -1
+  - 0xFFFE =     -2
+
+To negate a two's complement number: invert all bits, add 1.
+    +5 = 0000 0101
+    ~5 = 1111 1010
+    +1 = 1111 1011 = -5
+
+WHY THIS MATTERS FOR YOUR PROJECT:
+When you see "32'sh40000000" in the testbench, that is:
+    0100 0000 0000 0000 0000 0000 0000 0000
+The sign bit is 0 (positive). In Q s2.30, this represents:
+    2^30 / 2^30 = 1.0
+
+When you see "-32'sh40000000" in Verilog:
+    Verilog negates 0x40000000 to get 0xC0000000
+    1100 0000 0000 0000 0000 0000 0000 0000
+    Sign bit is 1 (negative). This represents -1.0 in Q s2.30.
+
+ARITHMETIC SHIFT VS LOGICAL SHIFT:
+    >> (logical right shift):  fills vacated bits with 0
+    >>> (arithmetic right shift): fills vacated bits with the SIGN BIT
+
+    8'b1100_0000 >> 2  = 8'b0011_0000   (shifted in 00)
+    8'b1100_0000 >>> 2 = 8'b1111_0000   (shifted in 11, preserving sign)
+
+Arithmetic shift is essential for fixed-point division by powers of 2.
+Your fixedDivide.v uses:
+    quotient <= (full_product >>> 13);
+This divides by 2^13 while preserving the sign of the result.
+
+
+================================================================================
+PART 5: FIXED-POINT ARITHMETIC
+================================================================================
+
+FPGAs do not have floating-point units (well, some do, but they are huge
+and slow). Instead, we represent fractional numbers as integers with an
+implied binary point.
+
+--- Q FORMAT NOTATION ---
+
+Q sI.F means:
+  s = signed (1 sign bit, handled by two's complement)
+  I = number of INTEGER bits
+  F = number of FRACTIONAL bits
+  Total bits = 1 (sign) + (I-1) (integer) + F (fractional)
+  Or more precisely: I includes the sign bit, so I integer bits = 1 sign + (I-1) magnitude bits.
+
+Wait — there are actually two conventions and they cause confusion. Let us
+be precise about what THIS PROJECT uses:
+
+  Q s2.30: 32-bit signed, 2 integer bits (including sign), 30 fractional bits
+    - 1 sign bit + 1 magnitude integer bit + 30 fractional bits = 32 bits
+    - Range: [-2.0, +2.0 - 2^-30]  (approximately [-2, +2))
+    - Resolution: 2^-30 ~ 0.00000000093
+
+  Q s1.15: 16-bit signed, 1 integer bit (the sign), 15 fractional bits
+    - 1 sign bit + 0 magnitude integer bits + 15 fractional bits = 16 bits
+    - Range: [-1.0, +1.0 - 2^-15]  (approximately [-1, +1))
+    - Resolution: 2^-15 ~ 0.0000305
+
+  Q s3.13: 16-bit signed, 3 integer bits (including sign), 13 fractional bits
+    - 1 sign bit + 2 magnitude integer bits + 13 fractional bits = 16 bits
+    - Range: [-4.0, +4.0 - 2^-13]  (approximately [-4, +4))
+    - Resolution: 2^-13 ~ 0.000122
+
+  Q s11.4: 16-bit signed, 11 integer bits (including sign), 4 fractional bits
+    - 1 sign bit + 10 magnitude integer bits + 4 fractional bits = 16 bits
+    - Range: [-1024.0, +1024.0 - 2^-4]
+    - Resolution: 2^-4 = 0.0625
+
+
+--- CONVERTING FLOAT TO FIXED ---
+
+To convert a floating-point value to Q sI.F:
+    fixed_value = round(float_value * 2^F)
+
+Examples:
+    1.0 in Q s2.30:  round(1.0 * 2^30) = 1073741824 = 0x40000000
+    0.5 in Q s2.30:  round(0.5 * 2^30) =  536870912 = 0x20000000
+    0.025 in Q s2.30: round(0.025 * 2^30) = 26843546 = 0x0199999A
+
+    1.0 in Q s1.15:  round(1.0 * 2^15) = 32768 = 0x8000
+    Wait — 0x8000 in 16-bit signed is -32768! That is -1.0, not +1.0!
+    This tells us 1.0 CANNOT be represented in Q s1.15 (range is [-1, +1)).
+    The maximum positive value is 0x7FFF = 32767/32768 = 0.99997.
+
+    1.0 in Q s3.13:  round(1.0 * 2^13) = 8192 = 0x2000. This fits (range [-4, +4)).
+   -1.0 in Q s3.13:  round(-1.0 * 2^13) = -8192. Two's complement: 0xE000.
+
+This is exactly what your testbench uses:
+    reciprocal_denominator = 16'sh2000;  // 1.0 in Q s3.13
+    reciprocal_denominator = 16'shE000;  // -1.0 in Q s3.13
+
+
+--- FIXED-POINT ADDITION/SUBTRACTION ---
+
+Just use regular integer addition/subtraction. The binary points align
+as long as both operands are in the same Q format.
+
+    Q s2.30 + Q s2.30 = Q s2.30 (but watch for overflow!)
+
+Your af_accumulator.v adds delta_AF to AF_real, both Q s2.30:
+    sum = AF_real + delta_AF;
+
+But it uses a 33-bit intermediate to detect overflow:
+    sum = {{1{AF_real[31]}}, AF_real} + {{1{delta_AF[31]}}, delta_AF};
+
+The {1{AF_real[31]}} sign-extends by 1 bit. If bit 32 indicates overflow,
+the accumulator clamps to [0, 1.0].
+
+OVERFLOW: When adding two positive numbers, the result might exceed the
+format's range. 0.9 + 0.9 = 1.8, but Q s1.15 maxes at ~1.0. You must
+detect and clamp, as af_accumulator does.
+
+
+--- FIXED-POINT MULTIPLICATION ---
+
+When you multiply Q sA.B * Q sC.D, the result has:
+    Integer bits: A + C
+    Fractional bits: B + D
+
+Your fixedMultiply.v: Q s1.15 * Q s1.15 = Q s2.30
+    Inputs:  16-bit signed * 16-bit signed
+    Product: 32-bit signed (Verilog automatically widens)
+    No shift needed because we WANT Q s2.30 as the output format.
+
+The Verilog multiplication operator (*) handles signed multiplication
+correctly when both operands are declared "signed." The result width
+is the sum of the operand widths.
+
+
+--- FIXED-POINT DIVISION (VIA RECIPROCAL MULTIPLY) ---
+
+True division is expensive in hardware (requires iterative algorithms).
+Your project avoids it by precomputing reciprocals in Python and storing
+them in BRAM.
+
+Instead of:   result = numerator / denominator
+You compute:  result = numerator * (1/denominator)
+
+The reciprocal 1/denominator is precomputed and stored in Q s3.13 format.
+
+fixedDivide.v does:
+    full_product = numerator * reciprocal_denominator;
+    // Q s2.30 * Q s3.13 = Q s5.43 (48-bit intermediate)
+    quotient = full_product >>> 13;
+    // Arithmetic right shift by 13 discards 13 fractional bits
+    // Q s5.43 >>> 13 = Q s5.30, but we only keep 32 bits = Q s2.30
+
+Why shift by 13? The reciprocal has 13 fractional bits. Multiplying
+introduces 13 "extra" fractional bits that we must remove to get back
+to our target format (Q s2.30).
+
+WHY Q s3.13 AND NOT Q s2.14 FOR RECIPROCALS:
+The reciprocals of P(h>1,f) can exceed 2.0. For example, if P(h>1,f) = 0.3,
+then 1/0.3 = 3.33. Q s2.14 has range [-2, +2) — it cannot represent 3.33
+and would clamp to ~1.99. Q s3.13 has range [-4, +4), which comfortably
+fits all reciprocals in the dataset. The tradeoff is 1 fewer fractional
+bit (13 vs 14), losing a tiny bit of precision, but the clamping from
+Q s2.14 would completely destroy 167 of 215 values.
+
+
+--- THE TRADEOFF: INTEGER BITS VS FRACTIONAL BITS ---
+
+For a fixed total width (say 16 bits), every integer bit you add removes
+a fractional bit:
+
+    Q s11.4:  range [-1024, +1024), precision 0.0625
+    Q s3.13:  range [-4, +4),       precision 0.000122
+    Q s1.15:  range [-1, +1),       precision 0.0000305
+
+Sensor values (body measurements) need wide range (Q s11.4).
+Probabilities are always in [0,1], so they need precision (Q s1.15).
+Reciprocals need moderate range and precision (Q s3.13).
+
+The Python script decision_pipeline_fixedPoint.py profiles every variable
+across all users to determine the actual min/max ranges, which guides the
+Q format choices.
+
+
+================================================================================
+PART 6: FINITE STATE MACHINES (FSMs)
+================================================================================
+
+An FSM is the fundamental way to create sequential behavior in hardware.
+It is a register (the "state") plus combinational logic that determines
+the next state and outputs.
+
+Every FSM in your project follows this template:
+
+    reg [N:0] state;
+
+    localparam [N:0]
+        S_IDLE    = ...,
+        S_PHASE_1 = ...,
+        S_PHASE_2 = ...,
+        S_DONE    = ...;
+
+    always @(posedge clk) begin
+        if (reset) begin
+            state <= S_IDLE;
+            // reset all outputs
+        end
+        else begin
+            // default: de-assert one-shot pulses
+            case (state)
+                S_IDLE: begin
+                    if (start) state <= S_PHASE_1;
+                end
+                S_PHASE_1: begin
+                    // do work, transition
+                    state <= S_PHASE_2;
+                end
+                ...
+            endcase
+        end
+    end
+
+KEY CONCEPTS:
+
+1. ONE CLOCK EDGE, ONE STATE TRANSITION
+   The FSM can only move to one new state per clock cycle. This is why
+   you need separate states for "issue BRAM address" and "latch BRAM data"
+   — each is one clock edge.
+
+2. STATE REGISTER WIDTH
+   If you have N states, you need ceil(log2(N)) bits. 10 states need 4 bits
+   (max value 15). Your localparams should match the register width.
+
+3. ONE-SHOT PULSES AND DEFAULT DE-ASSERTION
+   Many signals (mul_valid, div_valid, done) should be high for exactly
+   one clock cycle. The pattern is:
+
+   Default at top of else block: signal <= 1'b0;
+   Set in specific state:        signal <= 1'b1;
+
+   This means the signal is high only during the one clock cycle when that
+   state is active. On the next cycle, the default kicks in and pulls it low.
+
+4. OUTPUT ENCODING
+   You can encode outputs in the state itself (called "output-encoded" FSM)
+   or compute them separately. Your project computes outputs in each state's
+   begin/end block, which is the most readable approach.
+
+
+--- FSM EXAMPLE FROM YOUR PROJECT: rl_action_selector ---
+
+State flow:
+    S_IDLE -> S_LOAD_ACT_W0 -> S_LOAD_ACT_W1 -> S_CAPTURE_ACT
+           -> S_MUL -> S_MUL_WAIT
+           -> S_DIV -> S_DIV_WAIT
+           -> S_UPDATE_BEST -> S_NEXT_CAND -> (loop or S_DONE)
+
+Each state does exactly ONE thing:
+  S_LOAD_ACT_W0:  put address on BRAM bus (data arrives next cycle)
+  S_LOAD_ACT_W1:  grab word 0, put next address on bus
+  S_CAPTURE_ACT:  grab word 1 (now we have both feature_idx and r_j_h)
+  S_MUL:          drive multiplier inputs, assert mul_valid
+  S_MUL_WAIT:     wait for mul_result_valid, latch product
+  S_DIV:          drive divider inputs, assert div_valid
+  S_DIV_WAIT:     wait for div_result_valid, latch quotient
+  S_UPDATE_BEST:  compare and possibly update best
+  S_NEXT_CAND:    increment counter, decide loop or finish
+
+
+================================================================================
+PART 7: BLOCK RAM (BRAM)
+================================================================================
+
+BRAM is dedicated memory on the FPGA chip. It is NOT made of flip-flops
+(that would be "distributed RAM"). BRAM is separate silicon optimized for
+storage.
+
+Key properties:
+  - Fixed sizes (typically 18Kb or 36Kb blocks on Xilinx)
+  - Synchronous read: you provide an address, data appears ONE CLOCK LATER
+  - Dual-port: two independent read/write ports (your sensor_interface uses this)
+  - Initialized from .mem files at synthesis time via $readmemh
+
+--- HOW TO INFER BRAM ---
+
+You do not instantiate BRAM primitives directly (though you can). Instead,
+you write Verilog patterns that the synthesizer recognizes and automatically
+maps to BRAM. Your bram_rom module shows the pattern:
+
+    reg [DATA_W-1:0] mem [0:DEPTH-1];    // declare memory array
+    initial $readmemh(MEM_FILE, mem);      // load from .mem file
+
+    always @(posedge clk) begin            // SYNCHRONOUS read
+        if (re)
+            data <= mem[addr];             // registered output
+    end
+
+The critical detail: the read is inside "always @(posedge clk)" with a
+registered output. This is what tells Vivado "use BRAM." If you write:
+
+    assign data = mem[addr];   // combinational read — NOT BRAM!
+
+...Vivado will use LUTs (lookup tables) instead, which wastes FPGA logic.
+
+--- THE 1-CYCLE READ LATENCY ---
+
+BRAM is synchronous. When you present an address, the data is available on
+the NEXT clock edge. This means every BRAM read requires AT LEAST two FSM
+states:
+
+    STATE_ISSUE_ADDR:  addr <= target_address;   // put address on bus
+    STATE_LATCH_DATA:  my_reg <= data_out;        // data is now available
+
+You CANNOT do both in one cycle. The data bus has stale (previous) data
+during the same cycle you change the address. This is the #1 beginner
+mistake with BRAM.
+
+Your tree_traversal reads 3 words per node, requiring 3 address-issue
+cycles plus careful pipelining:
+
+    S_READ_W0:  addr <= node_base          (issues word 0 address)
+    S_LATCH_W0: feat_idx <= tree_data      (word 0 data arrives, issue word 1 addr)
+    S_LATCH_W1: node_low <= tree_data      (word 1 data arrives, issue word 2 addr)
+    S_LATCH_W2: node_high <= tree_data     (word 2 data arrives)
+
+Notice how S_LATCH_W0 both reads data AND issues the next address. This
+"pipeline" technique avoids wasting a cycle between each read.
+
+
+--- $readmemh AND .MEM FILES ---
+
+$readmemh("filename.mem", mem) loads hexadecimal data into a memory array
+at synthesis/simulation time.
+
+File format — each line is one hex value, no "0x" prefix:
+    0042
+    FFFF
+    7FFF
+    8000
+
+Lines starting with // are comments (in simulation, synthesizers vary).
+Values are loaded sequentially: line 1 -> mem[0], line 2 -> mem[1], etc.
+
+Your parameter_export.py generates these files from trained model data.
+For example, prob_pgt1.mem has 215 lines, one per tree node, each being
+a 16-bit hex reciprocal value in Q s3.13 format.
+
+
+--- BRAM SIZING ---
+
+Each BRAM instance on Xilinx 7-series has 36Kb (36,864 bits). Vivado
+packs your declared memory into as few BRAMs as possible.
+
+Your model_rom uses:
+  tree_topology: 645 * 16 = 10,320 bits (1 BRAM)
+  action_hdr:    5,160 * 16 = 82,560 bits (3 BRAMs)
+  action_data:   14,688 * 16 = 234,900 bits (7 BRAMs)
+  prob_phf:      2,580 * 16 = 41,280 bits (2 BRAMs)
+  prob_pgt1:     215 * 16 = 3,440 bits (1 BRAM, mostly wasted)
+  healthy_ranges: 131,072 * 32 = 4,194,304 bits (117 BRAMs!)
+
+healthy_ranges dominates BRAM usage because it is direct-addressed
+(131,072 entries for all possible node*feature combinations, most empty).
+This is a space-vs-time tradeoff: direct addressing means ONE cycle to
+look up any (node, feature) pair, but wastes space on empty entries.
+
+
+================================================================================
+PART 8: MODULE INSTANTIATION AND HIERARCHY
+================================================================================
+
+Modules are the building blocks of hardware. Each module is a self-contained
+circuit with defined input/output ports.
+
+--- INSTANTIATION SYNTAX ---
+
+    fixedMultiply u_mul (
+        .clk          (clk),
+        .reset        (reset),
+        .a            (mul_a),
+        .b            (mul_b),
+        .valid        (mul_valid),
+        .product      (mul_product),
+        .result_valid (mul_result_valid)
+    );
+
+Breaking this down:
+  "fixedMultiply" — the module type (defined in fixedMultiply.v)
+  "u_mul"         — the instance name (like a variable name)
+  ".clk(clk)"     — connects the module's "clk" port to the local "clk" wire
+
+The .port(signal) syntax is called "named port connection." Always use it.
+There is a positional syntax but it is error-prone and should be avoided.
+
+--- PARAMETERIZED MODULES ---
+
+Your bram_rom uses parameters:
+
+    module bram_rom #(
+        parameter ADDR_W   = 10,
+        parameter DATA_W   = 16,
+        parameter DEPTH    = 645,
+        parameter MEM_FILE = "mem.hex"
+    )( ... );
+
+Instantiated with specific values:
+
+    bram_rom #(.ADDR_W(10), .DATA_W(16), .DEPTH(645),
+               .MEM_FILE("tree_topology.mem"))
+    u_tree (.clk(clk), .addr(tree_read_addr), ...);
+
+Parameters are resolved at SYNTHESIS TIME. Each instantiation with different
+parameters creates a different physical circuit. u_tree and u_hr are both
+bram_rom, but u_tree is 16-bit wide and u_hr is 32-bit wide — they are
+different hardware.
+
+
+--- HIERARCHY IN YOUR PROJECT ---
+
+The module hierarchy (what contains what):
+
+    cds_top (not yet built)
+    +-- sensor_interface      (UART -> feature memory)
+    +-- model_rom             (all BRAM lookup tables)
+    |   +-- bram_rom (x6)     (parameterized ROM instances)
+    +-- tree_traversal        (find which nodes match the user)
+    +-- af_engine             (main decision FSM)
+    |   +-- fixedMultiply     (P(h,f) * r_j_h)
+    |   +-- fixedDivide       (numerator * reciprocal)
+    |   +-- af_accumulator    (running AF sum with clamping)
+    |   +-- rangeComparator   (healthy range check)
+    +-- rl_action_selector    (RL action selection)
+        +-- fixedMultiply     (its own multiply instance)
+        +-- fixedDivide       (its own divide instance)
+
+Note: af_engine and rl_action_selector each have their OWN instances of
+fixedMultiply and fixedDivide. These are separate physical circuits.
+They do NOT share — there is no "function call." Each instance exists
+independently on the FPGA.
+
+
+================================================================================
+PART 9: PIPELINE DESIGN
+================================================================================
+
+A pipeline is a circuit where work flows through multiple stages, with
+each stage doing part of the computation in one clock cycle.
+
+--- SINGLE-STAGE PIPELINE: fixedMultiply ---
+
+    always @(posedge clk) begin
+        product <= (a * b);       // stage 1: multiply
+        result_valid <= valid;     // valid follows data by 1 cycle
+    end
+
+Input on cycle N, output on cycle N+1. Latency = 1 cycle.
+
+--- TWO-STAGE PIPELINE: fixedDivide ---
+
+    always @(posedge clk) begin
+        // Stage 1: multiply
+        full_product <= (numerator * reciprocal_denominator);
+        valid_stage1 <= valid;
+
+        // Stage 2: shift (uses PREVIOUS cycle's multiply result)
+        quotient <= valid_stage1 ? (full_product >>> 13) : 0;
+        result_valid <= valid_stage1;
+    end
+
+Input on cycle N, multiply completes cycle N+1, shift completes cycle N+2.
+Latency = 2 cycles.
+
+IMPORTANT: both stages execute EVERY cycle. While stage 2 is shifting
+the result of input A, stage 1 is already multiplying input B. This is
+the pipeline benefit — throughput is 1 result per cycle after the initial
+latency, even though each result takes 2 cycles.
+
+--- THE VALID SIGNAL PATTERN ---
+
+Every pipeline in your project uses a "valid" signal that travels alongside
+the data through the pipeline:
+
+    Cycle 1: valid_in = 1, data enters stage 1
+    Cycle 2: valid_stage1 = 1, stage 1 result enters stage 2
+    Cycle 3: result_valid = 1, final result available
+
+The consumer (af_engine's FSM) waits for result_valid before latching
+the output. This makes the pipeline self-timed — the FSM does not need
+to count cycles.
+
+    S_MUL_WAIT: begin
+        if (mul_result_valid) begin    // don't care HOW long, just wait
+            candidate_AF <= mul_product;
+            state <= S_DIV;
+        end
+    end
+
+
+================================================================================
+PART 10: TESTBENCH DESIGN
+================================================================================
+
+Testbenches are Verilog modules that generate stimulus for your design
+and check the outputs. They are NOT synthesized — they run only in
+simulation.
+
+--- THE BASIC STRUCTURE ---
+
+    module my_module_tb();       // no ports — testbench is self-contained
+        reg clk;                 // inputs to DUT are regs (you drive them)
+        wire [31:0] output;      // outputs from DUT are wires (DUT drives them)
+
+        my_module dut (          // Device Under Test
+            .clk(clk),
+            .output(output)
+        );
+
+        // Clock generation
+        initial begin
+            clk = 0;
+            forever #5 clk = ~clk;  // 10ns period = 100MHz
+        end
+
+        // Stimulus
+        initial begin
+            // apply inputs, wait, check outputs
+            $finish;
+        end
+    endmodule
+
+--- CLOCK GENERATION ---
+
+    initial begin
+        clk = 0;
+        forever #5 clk = ~clk;
+    end
+
+"#5" means "wait 5 time units" (nanoseconds with `timescale 1ns/1ps).
+The clock toggles every 5ns, giving a 10ns period (100MHz).
+
+--- TIMING IN TESTBENCHES ---
+
+    @(posedge clk)     — wait for the next rising clock edge
+    @(negedge reset)   — wait for reset to go from 1 to 0
+    #10                — wait 10 time units (absolute delay)
+    repeat(N) @(posedge clk)  — wait for N clock edges
+
+The "#1" delays you see after @(posedge clk) in your testbenches:
+    @(posedge clk);
+    #1;
+    $display("product=%h", product);
+
+This waits 1ns after the clock edge for signals to settle before reading
+them. At the exact clock edge, the new values are being computed but
+might not be stable yet in simulation. The #1 gives the simulator time
+to resolve all the non-blocking assignments.
+
+--- $display ---
+
+Similar to printf in C:
+    $display("value=%h valid=%b", some_signal, valid_signal);
+
+Format specifiers:
+    %h — hexadecimal
+    %b — binary
+    %d — decimal (signed by default if signal is signed)
+    %0d — decimal with no leading spaces
+
+
+================================================================================
+PART 11: RESET DESIGN
+================================================================================
+
+Every sequential module needs a reset to put it in a known state.
+
+--- SYNCHRONOUS RESET (what your project uses) ---
+
+    always @(posedge clk) begin
+        if (reset) begin
+            state <= S_IDLE;
+            counter <= 0;
+        end
+        else begin
+            // normal operation
+        end
+    end
+
+The reset is checked at the clock edge, just like normal logic. This means
+reset must be held high for at least one full clock cycle to take effect.
+
+Your testbenches typically do:
+    initial begin
+        reset = 1;
+        #12;           // hold reset for 12ns (covers at least one clock edge)
+        reset = 0;
+    end
+
+--- WHAT TO RESET ---
+
+Reset every register that could cause incorrect behavior if left undefined:
+  - State registers (FSM state)
+  - Counters
+  - Output registers (done, valid signals)
+  - Accumulators
+
+You generally do NOT need to reset:
+  - Data path registers that will be overwritten before use (like mul_a, mul_b)
+  - BRAM contents (loaded from .mem files at synthesis)
+
+
+================================================================================
+PART 12: BRAM ADDRESS CALCULATION PATTERNS
+================================================================================
+
+Your project uses several address calculation patterns worth understanding.
+
+--- FLAT ARRAY ---
+
+Simplest case. prob_pgt1 has one entry per node:
+    prob_pgt1_addr <= node_idx;    // 8-bit, direct index
+
+--- 2D ARRAY FLATTENED ---
+
+prob_phf has one entry per (node, disease) pair:
+    prob_phf_addr <= node_idx * 12 + disease_offset;
+
+In hardware, node_idx * 12 uses the bit-shift-and-add trick:
+    node_times_12 = {1'b0, node_idx, 3'b0} + {2'b0, node_idx, 2'b0};
+
+--- WORD-PAIR ADDRESSING ---
+
+action_hdr and action_data store 2 words per logical entry. The address
+formula doubles the logical index:
+    action_hdr_addr <= {logical_slot, 1'b0};  // *2 via concatenation
+
+To read word 0: addr = logical_slot * 2
+To read word 1: addr = logical_slot * 2 + 1
+
+--- COMPOSITE KEY ---
+
+healthy_ranges uses a 17-bit address made of two fields:
+    hr_read_addr <= {node_idx[7:0], feature_idx[8:0]};
+
+This packs a 2D index into a single flat address. The upper 8 bits select
+the node, the lower 9 bits select the feature. This is fast (one cycle)
+but wasteful (131,072 entries for ~1000 actual values).
+
+
+================================================================================
+PART 13: THE "DRIVE-WAIT-LATCH" PATTERN
+================================================================================
+
+This is the most important hardware design pattern in your project. Whenever
+one module needs a result from another module, it follows this three-phase
+pattern:
+
+PHASE 1: DRIVE — Set the input signals of the target module
+    mul_a     <= p_h_f;
+    mul_b     <= latched_r_j_h;
+    mul_valid <= 1'b1;
+
+PHASE 2: WAIT — Monitor the target module's valid output
+    if (mul_result_valid) begin ...
+
+PHASE 3: LATCH — Capture the result into a local register
+    candidate_AF <= mul_product;
+
+You see this pattern used for:
+  - BRAM reads: drive address -> wait 1 cycle -> latch data
+  - Multiplier: drive a,b,valid -> wait for result_valid -> latch product
+  - Divider: drive numerator,recip,valid -> wait for result_valid -> latch quotient
+
+Each phase takes at least one clock cycle. You CANNOT combine them.
+In software, mul(a, b) returns instantly. In hardware, the circuit needs
+time to compute and you must explicitly wait for it.
+
+
+================================================================================
+PART 14: OVERFLOW, CLAMPING, AND SATURATION
+================================================================================
+
+Fixed-point arithmetic can overflow (result exceeds the format's range).
+You must decide: wrap around, or clamp (saturate)?
+
+WRAPPING: Default behavior. 0x7FFF + 1 = 0x8000 (positive becomes negative!).
+          This is catastrophic for accumulation — one AF increment could
+          suddenly make the total negative.
+
+CLAMPING: Detect overflow and limit to the max/min representable value.
+          Your af_accumulator.v does this:
+
+    sum = sign_extended_AF + sign_extended_delta;  // 33-bit to detect overflow
+    if (sum > 33'sh40000000)      // exceeded +1.0?
+        AF_real <= ONE;            // clamp to 1.0
+    else if (sum[32] == 1'b1)     // went negative?
+        AF_real <= 0;              // clamp to 0.0
+
+The trick: use a wider intermediate register (33 bits for a 32-bit result).
+The extra bit catches overflow. Check it before truncating to the output width.
+
+Your to_fixed() Python function also clamps:
+    return max(min_val, min(max_val, fixed))
+
+This ensures the .mem files never contain out-of-range values.
+
+
+================================================================================
+PART 15: SYNTHESIS — WHAT VIVADO DOES WITH YOUR CODE
+================================================================================
+
+When you click "Run Synthesis" in Vivado, your Verilog is transformed into
+actual FPGA hardware through these stages:
+
+1. ELABORATION: Parse Verilog, build module hierarchy, resolve parameters.
+   Errors here: syntax errors, missing modules, port width mismatches.
+
+2. SYNTHESIS: Convert behavioral Verilog into a netlist of FPGA primitives
+   (LUTs, flip-flops, BRAMs, DSP slices).
+
+   What becomes what:
+   - "always @(posedge clk)" assignments -> flip-flops
+   - Arithmetic operators (+, *, <) -> LUTs, carry chains, or DSP slices
+   - Large memory arrays with sync read -> BRAM
+   - case statements -> multiplexers or decoder logic
+   - localparam constants -> hard-wired connections (no logic used!)
+
+3. IMPLEMENTATION: Place primitives on the physical FPGA and route wires.
+   This is where timing analysis happens.
+
+4. BITSTREAM GENERATION: Create the .bit file that programs the FPGA.
+
+--- DSP SLICES ---
+
+FPGAs have dedicated DSP (Digital Signal Processing) blocks that can do
+25x18-bit signed multiplication in a single cycle. Vivado automatically
+maps your (* ) operators to DSP slices when the operand widths fit.
+
+Your fixedMultiply does 16x16 signed multiplication — this fits perfectly
+in one DSP slice. fixedDivide does 32x16 multiplication, which may use
+1-2 DSP slices depending on how Vivado decomposes it.
+
+--- LUTs (LOOK-UP TABLES) ---
+
+The basic logic element on an FPGA. A 6-input LUT can implement ANY
+Boolean function of 6 inputs (it is literally a 64-entry truth table
+stored in configuration memory). Comparators, small adders, multiplexers,
+and control logic all map to LUTs.
+
+--- UTILIZATION ---
+
+After synthesis, check the utilization report:
+  - LUT: general logic (aim to stay under 80%)
+  - FF: flip-flops (usually not the bottleneck)
+  - BRAM: block RAM (check if your memories fit)
+  - DSP: multiplier blocks (limited quantity)
+
+If you exceed 100% of any resource, the design does not fit and you must
+optimize (smaller memories, fewer parallel operations, etc.).
+
+
+================================================================================
+PART 16: THE .MEM FILE PIPELINE
+================================================================================
+
+This section connects the Python world to the FPGA world.
+
+--- THE FLOW ---
+
+1. Python algorithms (1-3) train a model on patient data
+2. parameter_export.py converts trained parameters to fixed-point
+3. Fixed-point values are written as hex strings to .mem files
+4. Vivado reads .mem files at synthesis via $readmemh
+5. .mem contents become the initial values in BRAM
+6. The FPGA reads BRAM contents at runtime to make decisions
+
+--- FORMAT ALIGNMENT ---
+
+Each .mem file must exactly match the BRAM it loads into:
+
+  File                Lines    Bits/line  BRAM instance
+  tree_topology.mem   645      16         u_tree
+  action_hdr.mem      5160     16         u_ahdr
+  action_data.mem     14688    16         u_adata
+  prob_phf.mem        2580     16         u_phf
+  prob_pgt1.mem       215      16         u_pgt1
+  healthy_ranges.mem  131072   32         u_hr
+
+If the file has fewer lines than DEPTH, remaining entries are undefined
+(could be zero, could be garbage — depends on synthesis tool). If it has
+more lines, extra lines are ignored. Neither is good — make them match.
+
+--- HEX ENCODING OF SIGNED VALUES ---
+
+Negative values in .mem files use two's complement hex:
+    +1.0 in Q s3.13 = 8192 = "2000"
+    -1.0 in Q s3.13 = -8192 -> two's complement -> "E000"
+
+The Python to_hex_16() function handles this:
+    if val < 0:
+        val = val + (1 << 16)    # convert to unsigned representation
+    return format(val & 0xFFFF, '04X')
+
+
+================================================================================
+PART 17: COMMON DEBUGGING TECHNIQUES
+================================================================================
+
+--- SIMULATION WITH $display ---
+
+The simplest debug tool. Print signal values at specific points:
+    $display("state=%d AF=%h valid=%b", state, AF_real, result_valid);
+
+Place these in your testbench or temporarily inside your design modules.
+Remove them before synthesis (they have no hardware equivalent).
+
+--- WAVEFORM VIEWER ---
+
+The most powerful debug tool. After simulation, open the waveform viewer
+(in Vivado: Simulation -> Open Wave Configuration). You can see every
+signal's value at every clock edge.
+
+Tips:
+  - Add your FSM state signal first — it tells you where you are
+  - Add BRAM addresses and data to verify reads
+  - Add valid signals to verify pipeline timing
+  - Look for signals stuck at X (undefined) — usually a missing reset
+  - Look for signals that change one cycle too early/late — pipeline bug
+
+--- X VALUES ---
+
+In simulation, "X" means "unknown/undefined." Common causes:
+  - Register not reset and not yet assigned
+  - Reading from uninitialized memory
+  - Width mismatch (e.g., 17-bit value assigned to 16-bit reg — MSB dropped)
+
+X propagates: X + 1 = X, X & 1 = X, if(X) = neither branch taken.
+Always fix X values — they indicate real problems.
+
+--- Z VALUES ---
+
+"Z" means "high impedance" or "undriven." Usually means a wire is not
+connected to anything. Check your module instantiation for missing ports.
+
+
+================================================================================
+PART 18: PUTTING IT ALL TOGETHER — DATA FLOW IN YOUR DESIGN
+================================================================================
+
+Here is how a single user gets classified, from start to finish:
+
+1. SENSOR LOADING
+   - UART sends 558 bytes (279 features * 2 bytes each)
+   - sensor_interface receives bytes, pairs them into 16-bit words
+   - Stores in feature_mem[0..278] (distributed or BRAM)
+   - Asserts load_complete when all 279 features are loaded
+
+2. TREE TRAVERSAL
+   - tree_traversal iterates through all 215 nodes
+   - For each node: reads 3 words from tree_topology BRAM (feature_idx,
+     branch_low, branch_high)
+   - Reads the user's value for that feature from sensor_interface
+   - Compares: if value is in [low, high), this node matches
+   - Outputs a stream of (active_node_idx, active_node_valid) pulses
+
+3. AF ENGINE (per matched node)
+   - For each disease class (12 total):
+     - Reads action header: how many actions, where they start in data BRAM
+     - For each action:
+       a. Reads feature_idx and r_j_h from action_data BRAM
+       b. Reads P(h,f) from prob_phf BRAM
+       c. Reads 1/P(h>1,f) from prob_pgt1 BRAM
+       d. Reads user's feature value from sensor_interface
+       e. Reads healthy range from healthy_ranges BRAM
+       f. Computes: product = P(h,f) * r_j_h        (fixedMultiply)
+       g. Computes: delta_AF = product * reciprocal  (fixedDivide)
+       h. Accumulates: AF += delta_AF                (af_accumulator)
+       i. Checks: is user value outside [b_min, b_max]? (rangeComparator)
+       j. If outside range -> UNHEALTHY, stop immediately
+   - After all diseases: checks rw = 1 - AF vs threshold
+   - If rw <= 0.025 -> HEALTHY
+   - Otherwise -> SCREENING (try next focus level)
+
+4. RL ACTION SELECTOR (optional, called from within AF engine)
+   - Before committing to an action, simulates all candidates
+   - Picks the one that would minimize remaining risk weight
+   - Returns the winning action's address and feature index
+
+5. FINAL OUTPUT
+   - decision: HEALTHY / UNHEALTHY / SCREENING
+   - alarm_class: which disease triggered the alarm (if UNHEALTHY)
+   - AF_out: final assurance factor value
+
+
+================================================================================
+PART 19: REFERENCE — VERILOG SYNTAX QUICK REFERENCE
+================================================================================
+
+--- MODULE DECLARATION ---
+    module name (
+        input wire clk,
+        input wire signed [15:0] data_in,
+        output reg [7:0] result,
+        output wire valid
+    );
+        // declarations and logic
+    endmodule
+
+--- WIRE DECLARATION ---
+    wire [15:0] data;                    // 16-bit unsigned
+    wire signed [31:0] product;          // 32-bit signed
+    wire flag = (a == b);               // with continuous assignment
+
+--- REG DECLARATION ---
+    reg [3:0] state;
+    reg signed [31:0] accumulator;
+    reg [15:0] mem [0:255];             // memory array: 256 x 16-bit
+
+--- CONTINUOUS ASSIGNMENT ---
+    assign out = a & b;
+    assign mux = sel ? a : b;           // 2:1 multiplexer
+
+--- ALWAYS BLOCK (SEQUENTIAL) ---
+    always @(posedge clk) begin
+        if (reset) begin
+            reg_a <= 0;
+        end
+        else begin
+            reg_a <= next_value;        // non-blocking assignment
+        end
+    end
+
+--- ALWAYS BLOCK (COMBINATIONAL) ---
+    always @(*) begin                   // sensitive to ALL inputs
+        case (sel)
+            2'b00: out = a;
+            2'b01: out = b;
+            2'b10: out = c;
+            default: out = d;
+        endcase
+    end
+
+--- NUMERIC LITERALS ---
+    8'd255        // 8-bit decimal 255
+    16'hFFFF      // 16-bit hex
+    32'sh80000000 // 32-bit signed hex (most negative)
+    4'b1010       // 4-bit binary
+    1'b0          // single bit, value 0
+
+--- OPERATORS ---
+    +  -  *       // arithmetic
+    &  |  ^  ~    // bitwise AND, OR, XOR, NOT
+    &&  ||  !     // logical AND, OR, NOT
+    ==  !=        // equality
+    <  >  <=  >=  // comparison (signed-aware if operands are signed)
+    <<  >>        // logical shift (fill with 0)
+    <<<  >>>      // arithmetic shift (fill with sign bit on right shift)
+    {a, b}        // concatenation
+    {N{pattern}}  // replication: repeat pattern N times
+
+--- PARAMETER ---
+    localparam WIDTH = 16;              // local constant (cannot be overridden)
+    parameter DEPTH = 256;              // can be overridden at instantiation
+
+--- GENERATE (advanced) ---
+    genvar i;
+    generate
+        for (i = 0; i < N; i = i + 1) begin : gen_block
+            // instantiate N copies of something
+        end
+    endgenerate
+
+
+================================================================================
+PART 20: COMMON PITFALLS CHECKLIST
+================================================================================
+
+Before submitting any module, check for these:
+
+[ ] All regs assigned in always @(posedge clk) use <= (non-blocking)
+[ ] No mixing of signed and unsigned in comparisons
+[ ] BRAM reads have a wait state (address on cycle N, data on cycle N+1)
+[ ] Pipeline outputs are checked via result_valid, not cycle counting
+[ ] One-shot pulses (valid, done) are de-asserted by default
+[ ] State register is wide enough for all states
+[ ] localparam width matches state register width
+[ ] No trailing comma on last port in module declaration
+[ ] FSM has a default case (state <= S_IDLE)
+[ ] All internal registers re-initialized when module is re-started
+[ ] Shift amounts match Q format (>>>13 for Q s3.13 reciprocal)
+[ ] Bit widths in concatenation add up to target width
+[ ] No reliance on initial values of regs (always have a reset path)
+
+
+================================================================================
+END OF DOCUMENT
+================================================================================
