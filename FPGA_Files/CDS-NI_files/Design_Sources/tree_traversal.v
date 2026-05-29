@@ -5,10 +5,10 @@ module tree_traversal (
     input wire        reset,
     input wire        start,
 
-    input wire [7:0]  user_feature_value,   // from sensor_interface
+    input wire signed [15:0]  user_feature_value,   // from sensor_interface
     input wire [15:0] tree_data,            // from model_rom
 
-    output reg [7:0]  feature_read_addr,    // to sensor_interface
+    output reg [8:0]  feature_read_addr,    // to sensor_interface
     output reg [9:0]  tree_read_addr,       // to model_rom
     output reg [7:0]  active_node_idx,
     output reg        active_node_valid,
@@ -33,15 +33,15 @@ module tree_traversal (
     // ── Internal registers ──────────────────────────────────────────
     reg [3:0]  state;
     reg [7:0]  node_counter;        // linear iterator: 1 -> 214
-    reg [7:0]  branch_feat_idx;     // which feature this node branches on
-    reg [15:0] node_low;            // branch low bound  (ROM word 1)
-    reg [15:0] node_high;           // branch high bound (ROM word 2)
-    reg [7:0]  feat_latched;        // user's feature value, held stable
+    reg [8:0]  branch_feat_idx;     // which feature this node branches on
+    reg signed [15:0] node_low;            // branch low bound  (ROM word 1)
+    reg signed [15:0] node_high;           // branch high bound (ROM word 2)
+    reg signed [15:0]  feat_latched;        // user's feature value, held stable
 
     wire [9:0] node_base = {1'b0, node_counter, 1'b0}  
                          + {2'b00, node_counter};   
 
-    wire [15:0] feat_ext = {8'd0, feat_latched};
+    wire signed [15:0] feat_ext = {8'd0, feat_latched};
 
     always @(posedge clk) begin
         active_node_valid <= 1'b0;
@@ -77,7 +77,7 @@ module tree_traversal (
                 end
 
                 S_LATCH_W0: begin
-                    branch_feat_idx <= tree_data[7:0]; 
+                    branch_feat_idx <= tree_data[8:0]; 
                     tree_read_addr  <= tree_read_addr + 10'd1;  
                     state           <= S_LATCH_W1;
                 end

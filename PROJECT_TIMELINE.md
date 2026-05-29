@@ -158,6 +158,8 @@ The next module is for tree traversal. It identifies which node to compare the u
 
 The tree traversal module is made to go through all the possible nodes mentioned in a memory file and iterate through them while determining if the user value falls within this range. It waits a few clock cycles to get the tree node address and the users value to compare. Once this is done it returns a stream of values which help us who which nodes to compare healthy ranges for in AF engine module.
 
+The sensor_interface module was made to be a transition point where the value of the user can be accurately read by the tree traversal as well as the af engine module. It helps to take the users data from the uart stream and organize it to be used in later sections.
+
 
 
 

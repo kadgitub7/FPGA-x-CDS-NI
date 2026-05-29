@@ -46,10 +46,10 @@ module fixedDivide_tb();
 
 
         //----------------------------------------------------
-        // TEST 1: 0.5 / 1 = 0.5
+        // TEST 1: 1.0 * recip(1.0) = 1.0
         //----------------------------------------------------
-        numerator = 32'sh40000000;     // 0.5
-        reciprocal_denominator = 16'sh4000; // 1.0
+        numerator = 32'sh40000000;     // 1.0 in Q s2.30
+        reciprocal_denominator = 16'sh2000; // 1.0 in Q s3.13
         valid = 1;
         
         repeat(2) @(posedge clk);
@@ -64,7 +64,7 @@ module fixedDivide_tb();
         // TEST 2: -0.5 / 1 = -0.5
         //----------------------------------------------------
         numerator = -32'sh40000000;
-        reciprocal_denominator = 16'sh4000;
+        reciprocal_denominator = 16'sh2000;
         valid = 1;
 
         repeat(2) @(posedge clk);
@@ -79,7 +79,7 @@ module fixedDivide_tb();
         // TEST 3: 0.5 * (-1.0) = -0.5
         //----------------------------------------------------
         numerator = 32'sh40000000;
-        reciprocal_denominator = 16'shC000; // -1.0 in Q2.14
+        reciprocal_denominator = 16'shE000; // -1.0 in Q s3.13
         valid = 1;
 
         repeat(2) @(posedge clk);
@@ -94,7 +94,7 @@ module fixedDivide_tb();
         // TEST 4: -0.5 * (-1.0) = 0.5
         //----------------------------------------------------
         numerator = -32'sh40000000;
-        reciprocal_denominator = 16'shC000;
+        reciprocal_denominator = 16'shE000;
         valid = 1;
 
         repeat(2) @(posedge clk);

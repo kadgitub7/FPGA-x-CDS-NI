@@ -1,17 +1,22 @@
 """
 FPGA Parameter Export — Convert trained CDS model to Verilog-loadable .mem files
 
-Exports all pretrained data that Algorithm 4 needs at inference time:
-  1. Tree topology     — node structure, branch bounds for routing
-  2. Healthy ranges    — (node, feature) -> b_min, b_max for Eq. 5 checks
-  3. Action library    — (node, disease) -> sorted list of (feature, r_j_h) for RL
-  4. Probability tables — (node, disease) -> P(h,f), and per-node P(h>1,f)
+Exports all pretrained data that Algorithm 4 needs at inference time,
+split into 6 BRAM-aligned .mem files matching the Verilog module interfaces:
+
+  1. tree_topology.mem  — 3 words/node (feat_idx, branch_low, branch_high)
+  2. action_hdr.mem     — header section: (node*12+disease) -> (count, start_addr)
+  3. action_data.mem    — data section: flat (feature_idx, r_j_h) pairs
+  4. prob_phf.mem       — P(h,f) per (node, disease), Q s1.15
+  5. prob_pgt1.mem      — 1/P(h>1,f) reciprocal per node, Q s3.13
+  6. healthy_ranges.mem — direct-addressed 32-bit: {b_min, b_max} at addr {node, feat}
 
 Output format: Verilog $readmemh compatible (.mem files with hex values).
 
 All float values are converted to fixed-point integers before export:
   - Sensor/branch values: Q s11.4 (16-bit signed)
   - Probabilities/weights: Q s1.15 (16-bit signed)
+  - Reciprocals:           Q s3.13 (16-bit signed)
   - Threshold:             Q s2.30 (32-bit signed)
 """
 
@@ -124,86 +129,82 @@ def export_tree_topology(
     node_index: Dict[str, int],
     output_path: str,
 ) -> None:
-    """Export tree structure to .mem file.
+    """Export tree structure to .mem file (3 words per node).
 
-    For each node (ordered by index), writes one line with fields packed as:
-        Word 0: [level(4) | is_leaf(1) | branch_feature(9) | padding(2)] = 16 bits
+    Addressed by tree_traversal as: node_counter * 3 + word_offset
+    tree_traversal reads tree_data[7:0] for feature index.
+
+        Word 0: branch_feature_idx (16 bits, low 9 significant)
         Word 1: branch_low  in Q s11.4 (16 bits)
         Word 2: branch_high in Q s11.4 (16 bits)
-        Word 3: n_users     (16 bits unsigned)
-        Word 4: n_diseased  (16 bits unsigned)
 
-    Total: 5 words × 16 bits = 80 bits per node.
+    Total: 3 words × 16 bits = 48 bits per node.
+    Address width: ceil(log2(n_nodes * 3)) bits.
     """
     n_nodes = len(node_index)
-
-    # Build reverse map: index -> node_id
     idx_to_nid = {idx: nid for nid, idx in node_index.items()}
 
     with open(output_path, 'w', encoding='utf-8') as f:
-        f.write(f"// Tree Topology — {n_nodes} nodes\n")
-        f.write(f"// Format per node: 5 x 16-bit words\n")
-        f.write(f"//   Word 0: [level(4) | is_leaf(1) | branch_feat(9) | pad(2)]\n")
+        f.write(f"// Tree Topology — {n_nodes} nodes, 3 words each\n")
+        f.write(f"// Addr = node_index * 3 + word_offset\n")
+        f.write(f"// Format per node: 3 x 16-bit words\n")
+        f.write(f"//   Word 0: branch_feature_idx (low 9 bits significant)\n")
         f.write(f"//   Word 1: branch_low  (Q s11.4)\n")
         f.write(f"//   Word 2: branch_high (Q s11.4)\n")
-        f.write(f"//   Word 3: n_users     (unsigned)\n")
-        f.write(f"//   Word 4: n_diseased  (unsigned)\n")
+        f.write(f"// Total entries: {n_nodes * 3}\n")
         f.write(f"//\n")
 
         for idx in range(n_nodes):
             nid = idx_to_nid[idx]
             node = tree.all_nodes[nid]
 
-            level = node.focus_level
-            is_leaf = 1 if node.is_leaf else 0
             branch_feat = node.branching_feat_k if node.branch_def is not None else 0
 
-            # Pack word 0: level(4 bits) | is_leaf(1 bit) | branch_feat(9 bits) | pad(2 bits)
-            word0 = ((level & 0xF) << 12) | ((is_leaf & 0x1) << 11) | ((branch_feat & 0x1FF) << 2)
-
-            # Branch bounds — convert to Q s11.4
             if node.branch_def is not None:
                 branch_low = to_fixed(node.branch_def.low, 11, 4)
                 branch_high = to_fixed(node.branch_def.high, 11, 4)
             else:
-                # Root has no branch bounds
-                branch_low = to_fixed(-1024.0, 11, 4)   # minimum representable
-                branch_high = to_fixed(1023.0, 11, 4)    # maximum representable
+                branch_low = to_fixed(-1024.0, 11, 4)
+                branch_high = to_fixed(1023.0, 11, 4)
 
-            n_users = min(node.n_users, 0xFFFF)       # clamp to 16 bits
-            n_diseased = min(node.n_diseased, 0xFFFF)
-
-            f.write(f"// Node {idx}: {nid} (level={level}, users={n_users})\n")
-            f.write(f"{to_hex_16(word0)}\n")
+            f.write(f"// Node {idx}: {nid}\n")
+            f.write(f"{to_hex_16(branch_feat & 0x1FF)}\n")
             f.write(f"{to_hex_16(branch_low)}\n")
             f.write(f"{to_hex_16(branch_high)}\n")
-            f.write(f"{to_hex_16(n_users)}\n")
-            f.write(f"{to_hex_16(n_diseased)}\n")
 
-    print(f"  Tree topology: {n_nodes} nodes -> {output_path}")
+    print(f"  Tree topology: {n_nodes} nodes x 3 words = {n_nodes * 3} entries -> {output_path}")
 
 
 # =====================================================================
-# Export 2: Healthy Ranges
+# Export 2: Healthy Ranges (direct-addressed, 32-bit wide)
 # =====================================================================
+
+HR_NODE_BITS: int = 8
+HR_FEAT_BITS: int = 9
+HR_ADDR_DEPTH: int = (1 << (HR_NODE_BITS + HR_FEAT_BITS))  # 131072
+
+HR_SENTINEL_BMIN: int = 0x7FFF
+HR_SENTINEL_BMAX: int = 0x8000
+
 
 def export_healthy_ranges(
     alg2_output: Algorithm2Output,
     node_index: Dict[str, int],
     output_path: str,
 ) -> None:
-    """Export healthy ranges to .mem file.
+    """Export healthy ranges as direct-addressed 32-bit BRAM.
 
-    Uses sparse storage: only (node, feature) pairs that have a trained
-    perceptor model get an entry.  Each entry is:
-        Word 0: [node_index(8) | feature_idx(9)] packed in 17 bits -> 32-bit word
-        Word 1: b_min in Q s9.4 (16 bits)
-        Word 2: b_max in Q s9.4 (16 bits)
+    Address = {node_idx[7:0], feature_idx[8:0]}  (17 bits, 131072 entries)
+    Data    = {b_min[15:0], b_max[15:0]}          (32 bits per entry)
 
-    First line of the file is the total entry count (so the FPGA knows
-    how many to read).
+    af_engine drives hr_read_addr = {node_idx, latched_feature_idx} and
+    model_rom splits the 32-bit output:
+        hr_bmin = data[31:16],  hr_bmax = data[15:0]
+
+    Empty entries use sentinel {0x7FFF, 0x8000} (b_min > b_max) so
+    rangeComparator sets invalid_range=true -> triggered=false.
     """
-    entries = []
+    populated: Dict[int, Tuple[int, int]] = {}
 
     for (nid, feat_idx), model in alg2_output.perceptor_index.items():
         if nid not in node_index:
@@ -211,60 +212,41 @@ def export_healthy_ranges(
         n_idx = node_index[nid]
         b_min = to_fixed(model.healthy_range.b_min_healthy, 9, 4)
         b_max = to_fixed(model.healthy_range.b_max_healthy, 9, 4)
-        entries.append((n_idx, feat_idx, b_min, b_max))
+        addr = (n_idx << HR_FEAT_BITS) | (feat_idx & ((1 << HR_FEAT_BITS) - 1))
+        populated[addr] = (b_min, b_max)
 
-    # Sort by node index, then feature index for predictable ordering
-    entries.sort(key=lambda e: (e[0], e[1]))
+    n_populated = len(populated)
+    sentinel_word = f"{HR_SENTINEL_BMIN:04X}{HR_SENTINEL_BMAX:04X}"
 
     with open(output_path, 'w', encoding='utf-8') as f:
-        f.write(f"// Healthy Ranges — {len(entries)} entries (sparse)\n")
-        f.write(f"// Format per entry: 3 x 16-bit words\n")
-        f.write(f"//   Word 0: [node_index(8) | feature_idx(8)] (lookup key)\n")
-        f.write(f"//   Word 1: b_min (Q s9.4)\n")
-        f.write(f"//   Word 2: b_max (Q s9.4)\n")
+        f.write(f"// Healthy Ranges — direct-addressed, 32-bit wide BRAM\n")
+        f.write(f"// Addr = {{node_idx[7:0], feature_idx[8:0]}} (17 bits)\n")
+        f.write(f"// Data = {{b_min[15:0], b_max[15:0]}} (32 bits)\n")
+        f.write(f"// Depth: {HR_ADDR_DEPTH}, Populated: {n_populated}\n")
+        f.write(f"// Sentinel: {sentinel_word} (b_min > b_max -> invalid_range)\n")
         f.write(f"//\n")
-        f.write(f"// Entry count:\n")
-        f.write(f"{to_hex_16(len(entries))}\n")
 
-        for n_idx, feat_idx, b_min, b_max in entries:
-            # Pack node_index (high byte) and feature_idx (low byte) into 16 bits
-            key_word = ((n_idx & 0xFF) << 8) | (feat_idx & 0xFF)
-            f.write(f"// node={n_idx}, feat={feat_idx}\n")
-            f.write(f"{to_hex_16(key_word)}\n")
-            f.write(f"{to_hex_16(b_min)}\n")
-            f.write(f"{to_hex_16(b_max)}\n")
+        for addr in range(HR_ADDR_DEPTH):
+            if addr in populated:
+                b_min, b_max = populated[addr]
+                f.write(f"{b_min & 0xFFFF:04X}{b_max & 0xFFFF:04X}\n")
+            else:
+                f.write(f"{sentinel_word}\n")
 
-    print(f"  Healthy ranges: {len(entries)} entries -> {output_path}")
+    print(f"  Healthy ranges: {HR_ADDR_DEPTH} entries ({n_populated} populated) -> {output_path}")
 
 
 # =====================================================================
-# Export 3: Action Library
+# Export 3a: Action Header BRAM
 # =====================================================================
 
-def export_action_library(
+def _build_action_groups(
     alg3_output: Algorithm3Output,
     node_index: Dict[str, int],
-    output_path: str,
-) -> None:
-    """Export refined action library to .mem file.
-
-    Structure:
-      HEADER SECTION — direct-addressed by (node_index * 12 + disease_offset):
-        n_nodes * 12 total slots (empty slots have count=0)
-        Word 0: action_count (full 16 bits, supports counts > 15)
-        Word 1: start_address in the DATA section (16 bits)
-
-      DATA SECTION — flat list of (feature_idx, r_j_h) pairs:
-        Word 0: feature_idx (16 bits, 9 significant)
-        Word 1: r_j_h in Q s1.15 (16 bits)
-
-    The FPGA computes addr = node_idx * 12 + disease_offset to
-    directly look up count and start_address, then reads sequentially
-    from the data section. No scanning required.
-    """
-    # Collect all (node, disease) -> sorted action list
+) -> Tuple[Dict[Tuple[int, int], List[Tuple[int, int]]], int]:
+    """Shared helper: collect (node, disease) -> [(feat, weight_fixed)] groups."""
     action_groups: Dict[Tuple[int, int], List[Tuple[int, int]]] = {}
-    max_actions_seen = 0
+    max_actions = 0
 
     for nid, n_idx in node_index.items():
         for disease_h in DISEASE_CLASSES:
@@ -276,72 +258,104 @@ def export_action_library(
             for a in actions:
                 if a.action_weight <= 0.0:
                     continue
-                feat = a.feature_idx
-                weight = to_fixed(a.action_weight, 1, 15)
-                fixed_actions.append((feat, weight))
+                fixed_actions.append((a.feature_idx, to_fixed(a.action_weight, 1, 15)))
 
             if fixed_actions:
                 d_off = DISEASE_TO_OFFSET[disease_h]
                 action_groups[(n_idx, d_off)] = fixed_actions
-                max_actions_seen = max(max_actions_seen, len(fixed_actions))
+                max_actions = max(max_actions, len(fixed_actions))
 
-    # Build data section (flat list of actions, same as before)
-    data_words = []
+    return action_groups, max_actions
+
+
+def export_action_hdr(
+    alg3_output: Algorithm3Output,
+    node_index: Dict[str, int],
+    output_path: str,
+) -> None:
+    """Export action header BRAM (separate .mem file).
+
+    Addressed by af_engine as: action_hdr_addr = (node_idx * 12 + disease_offset) * 2 + word
+    Format: 2 x 16-bit words per slot
+        Word 0: action_count
+        Word 1: start_address in action_data BRAM (word-pair index)
+
+    Total entries: n_nodes * 12 * 2 words.
+    """
+    action_groups, max_actions = _build_action_groups(alg3_output, node_index)
+
+    n_nodes = len(node_index)
+    total_slots = n_nodes * N_DISEASES
+
+    # Assign data addresses (word-pair index, not raw word offset)
+    header_table: Dict[int, Tuple[int, int]] = {}
     data_addr = 0
-
-    # Build a dense lookup: header_table[n_idx * 12 + d_off] = (count, start_addr)
-    n_nodes = max(n_idx for n_idx, _ in action_groups.keys()) + 1 if action_groups else 0
-    # Ensure we cover all nodes that might be referenced
-    for nid, idx in node_index.items():
-        n_nodes = max(n_nodes, idx + 1)
-
-    header_table: Dict[int, Tuple[int, int]] = {}  # flat_addr -> (count, start_addr)
-
     for (n_idx, d_off) in sorted(action_groups.keys()):
-        actions = action_groups[(n_idx, d_off)]
-        count = len(actions)
-        flat_addr = n_idx * N_DISEASES + d_off
+        count = len(action_groups[(n_idx, d_off)])
+        flat = n_idx * N_DISEASES + d_off
+        header_table[flat] = (count, data_addr)
+        data_addr += count
 
-        header_table[flat_addr] = (count, data_addr)
-
-        for feat, weight in actions:
-            data_words.append((feat, weight, n_idx, d_off))
-            data_addr += 1
-
-    total_header_slots = n_nodes * N_DISEASES
-    populated_groups = len(header_table)
+    total_actions = data_addr
+    populated = len(header_table)
 
     with open(output_path, 'w', encoding='utf-8') as f:
-        f.write(f"// Action Library — {populated_groups} active groups, "
-                f"{len(data_words)} total actions\n")
-        f.write(f"// Max actions per (node, disease): {max_actions_seen}\n")
-        f.write(f"//\n")
-        f.write(f"// === HEADER SECTION (direct-addressed) ===\n")
-        f.write(f"// {total_header_slots} entries ({n_nodes} nodes x {N_DISEASES} diseases)\n")
-        f.write(f"// Address = node_index * {N_DISEASES} + disease_offset\n")
+        f.write(f"// Action Header BRAM — {total_slots} slots ({n_nodes} nodes x {N_DISEASES} diseases)\n")
+        f.write(f"// {populated} active groups, {total_actions} total actions\n")
+        f.write(f"// Addr = (node_index * {N_DISEASES} + disease_offset) * 2 + word\n")
         f.write(f"// Format: 2 x 16-bit words per slot\n")
-        f.write(f"//   Word 0: action_count (full 16-bit, no truncation)\n")
-        f.write(f"//   Word 1: start_address in data section\n")
-        f.write(f"// Empty slots have count=0, start_addr=0\n")
+        f.write(f"//   Word 0: action_count\n")
+        f.write(f"//   Word 1: start_address in action_data BRAM\n")
+        f.write(f"// Total entries: {total_slots * 2}\n")
         f.write(f"//\n")
 
-        for slot in range(total_header_slots):
+        for slot in range(total_slots):
             n_idx = slot // N_DISEASES
             d_off = slot % N_DISEASES
-            count, start_addr = header_table.get(slot, (0, 0))
+            count, start = header_table.get(slot, (0, 0))
 
             if count > 0:
                 f.write(f"// [{slot}] node={n_idx}, disease_off={d_off} "
                         f"(class={DISEASE_CLASSES[d_off]}), "
-                        f"count={count}, data@{start_addr}\n")
+                        f"count={count}, data@{start}\n")
             f.write(f"{to_hex_16(count)}\n")
-            f.write(f"{to_hex_16(start_addr)}\n")
+            f.write(f"{to_hex_16(start)}\n")
 
-        f.write(f"//\n")
-        f.write(f"// === DATA SECTION ===\n")
+    print(f"  Action header: {total_slots * 2} entries "
+          f"({populated} active groups) -> {output_path}")
+
+
+# =====================================================================
+# Export 3b: Action Data BRAM
+# =====================================================================
+
+def export_action_data(
+    alg3_output: Algorithm3Output,
+    node_index: Dict[str, int],
+    output_path: str,
+) -> None:
+    """Export action data BRAM (separate .mem file).
+
+    Addressed by af_engine as: action_data_addr = (start_addr + action_idx) * 2 + word
+    Format: 2 x 16-bit words per action
+        Word 0: feature_idx (low 9 bits significant)
+        Word 1: r_j_h (Q s1.15)
+    """
+    action_groups, max_actions = _build_action_groups(alg3_output, node_index)
+
+    data_words: List[Tuple[int, int, int, int]] = []
+    for (n_idx, d_off) in sorted(action_groups.keys()):
+        for feat, weight in action_groups[(n_idx, d_off)]:
+            data_words.append((feat, weight, n_idx, d_off))
+
+    with open(output_path, 'w', encoding='utf-8') as f:
+        f.write(f"// Action Data BRAM — {len(data_words)} actions\n")
+        f.write(f"// Max per (node, disease): {max_actions}\n")
+        f.write(f"// Addr = (start_addr + action_idx) * 2 + word\n")
         f.write(f"// Format: 2 x 16-bit words per action\n")
-        f.write(f"//   Word 0: feature_idx\n")
+        f.write(f"//   Word 0: feature_idx (low 9 bits significant)\n")
         f.write(f"//   Word 1: r_j_h (Q s1.15)\n")
+        f.write(f"// Total entries: {len(data_words) * 2}\n")
         f.write(f"//\n")
 
         for feat, weight, n_idx, d_off in data_words:
@@ -349,49 +363,31 @@ def export_action_library(
             f.write(f"{to_hex_16(feat)}\n")
             f.write(f"{to_hex_16(weight)}\n")
 
-    print(f"  Action library: {total_header_slots} header slots "
-          f"({populated_groups} active), {len(data_words)} actions -> {output_path}")
-    print(f"    Max actions per (node,disease): {max_actions_seen}")
+    print(f"  Action data: {len(data_words) * 2} entries "
+          f"({len(data_words)} actions, max {max_actions}/group) -> {output_path}")
 
 
 # =====================================================================
-# Export 4: Probability Tables
+# Export 4a: P(h,f) BRAM
 # =====================================================================
 
-def export_probability_tables(
+def export_prob_phf(
     tree: DecisionTree,
     node_index: Dict[str, int],
     output_path: str,
 ) -> None:
-    """Export precomputed probability tables to .mem file.
+    """Export P(h,f) probability table as its own BRAM .mem file.
 
-    Three sub-tables:
-
-    TABLE A — P(h, f) for each (node, disease) pair:
-        Indexed by: node_index * N_DISEASES + disease_offset
-        Value: P(h, f) = health_dist[h] / n_users, stored as Q s1.15
-
-    TABLE B — P(h>1, f) for each node:
-        Indexed by: node_index
-        Value: P(h>1, f) = n_diseased / n_users, stored as Q s1.15
-
-    TABLE C — 1/P(h>1, f) reciprocal for each node:
-        Indexed by: node_index
-        Value: 1.0 / P(h>1, f), stored as Q s2.14 (16-bit signed)
-        Used by FPGA to replace division with multiply + shift.
-
-    Precomputing avoids division on the FPGA entirely.
+    Addressed by af_engine as: prob_phf_addr = node_idx * 12 + disease_offset
+    Each entry: Q s1.15 (16 bits)
+    Total: n_nodes * 12 entries.
     """
     n_nodes = len(node_index)
     idx_to_nid = {idx: nid for nid, idx in node_index.items()}
 
     with open(output_path, 'w', encoding='utf-8') as f:
-        f.write(f"// Probability Tables — {n_nodes} nodes, {N_DISEASES} disease classes\n")
-        f.write(f"//\n")
-
-        # --- Table A: P(h, f) ---
-        f.write(f"// === TABLE A: P(h, f) ===\n")
-        f.write(f"// {n_nodes * N_DISEASES} entries (node_index * {N_DISEASES} + disease_offset)\n")
+        f.write(f"// P(h,f) BRAM — {n_nodes * N_DISEASES} entries\n")
+        f.write(f"// Addr = node_index * {N_DISEASES} + disease_offset\n")
         f.write(f"// Each entry: Q s1.15 (16 bits)\n")
         f.write(f"//\n")
 
@@ -413,11 +409,35 @@ def export_probability_tables(
                         f"{count_h}/{n_users}\n")
                 f.write(f"{to_hex_16(p_h_f)}\n")
 
-        # --- Table B: P(h>1, f) ---
-        f.write(f"//\n")
-        f.write(f"// === TABLE B: P(h>1, f) ===\n")
-        f.write(f"// {n_nodes} entries (one per node)\n")
-        f.write(f"// Each entry: Q s1.15 (16 bits)\n")
+    print(f"  prob_phf: {n_nodes * N_DISEASES} entries -> {output_path}")
+
+
+# =====================================================================
+# Export 4b: 1/P(h>1,f) Reciprocal BRAM
+# =====================================================================
+
+def export_prob_pgt1(
+    tree: DecisionTree,
+    node_index: Dict[str, int],
+    output_path: str,
+) -> None:
+    """Export 1/P(h>1,f) reciprocal table as its own BRAM .mem file.
+
+    Addressed by af_engine as: prob_pgt1_addr = node_idx
+    Each entry: Q s3.13 (16 bits, max ~3.9999)
+    Total: n_nodes entries.
+
+    af_engine feeds this directly to fixedDivide.reciprocal_denominator.
+    fixedDivide shifts the 48-bit product right by 13 to produce Q s2.30.
+    """
+    n_nodes = len(node_index)
+    idx_to_nid = {idx: nid for nid, idx in node_index.items()}
+
+    with open(output_path, 'w', encoding='utf-8') as f:
+        f.write(f"// 1/P(h>1,f) Reciprocal BRAM — {n_nodes} entries\n")
+        f.write(f"// Addr = node_index\n")
+        f.write(f"// Each entry: Q s3.13 (16 bits, max ~3.9999)\n")
+        f.write(f"// Used by fixedDivide.reciprocal_denominator\n")
         f.write(f"//\n")
 
         for idx in range(n_nodes):
@@ -427,40 +447,17 @@ def export_probability_tables(
             n_diseased = node.n_diseased
 
             if n_users == 0 or n_diseased == 0:
-                p_gt1 = 1  # one LSB, prevents divide-by-zero
-            else:
-                p_gt1 = fixed_divide(n_diseased, n_users, 15)
-
-            f.write(f"// [{idx:4d}] node={idx} ({nid}): {n_diseased}/{n_users}\n")
-            f.write(f"{to_hex_16(p_gt1)}\n")
-
-        # --- Table C: 1/P(h>1, f) reciprocal ---
-        f.write(f"//\n")
-        f.write(f"// === TABLE C: 1/P(h>1, f) reciprocal ===\n")
-        f.write(f"// {n_nodes} entries (one per node)\n")
-        f.write(f"// Each entry: Q s2.14 (16 bits)\n")
-        f.write(f"// FPGA usage: quotient = (numerator * recip) >>> 14\n")
-        f.write(f"//\n")
-
-        for idx in range(n_nodes):
-            nid = idx_to_nid[idx]
-            node = tree.all_nodes[nid]
-            n_users = node.n_users
-            n_diseased = node.n_diseased
-
-            if n_users == 0 or n_diseased == 0:
-                p_gt1_float = 1.0  # fallback: reciprocal of 1.0 = 1.0
+                p_gt1_float = 1.0
             else:
                 p_gt1_float = n_diseased / n_users
 
-            recip = to_fixed(1.0 / p_gt1_float, 2, 14)
+            recip = to_fixed(1.0 / p_gt1_float, 3, 13)
 
             f.write(f"// [{idx:4d}] node={idx} ({nid}): 1/({n_diseased}/{n_users})"
                     f" = {1.0 / p_gt1_float:.6f}\n")
             f.write(f"{to_hex_16(recip)}\n")
 
-    total_entries = n_nodes * N_DISEASES + n_nodes + n_nodes
-    print(f"  Probability tables: {total_entries} entries -> {output_path}")
+    print(f"  prob_pgt1: {n_nodes} entries -> {output_path}")
 
 
 # =====================================================================
@@ -544,18 +541,24 @@ def export_model_parameters(
         print(f"    [{idx:3d}] {nid} (level={node.focus_level}, "
               f"users={node.n_users}, diseased={node.n_diseased})")
 
-    # Step 2: Export each table
+    # Step 2: Export each BRAM-aligned .mem file
     export_tree_topology(tree, node_index,
                          os.path.join(output_dir, "tree_topology.mem"))
 
     export_healthy_ranges(alg2_output, node_index,
                           os.path.join(output_dir, "healthy_ranges.mem"))
 
-    export_action_library(alg3_output, node_index,
-                          os.path.join(output_dir, "action_library.mem"))
+    export_action_hdr(alg3_output, node_index,
+                      os.path.join(output_dir, "action_hdr.mem"))
 
-    export_probability_tables(tree, node_index,
-                              os.path.join(output_dir, "prob_tables.mem"))
+    export_action_data(alg3_output, node_index,
+                       os.path.join(output_dir, "action_data.mem"))
+
+    export_prob_phf(tree, node_index,
+                    os.path.join(output_dir, "prob_phf.mem"))
+
+    export_prob_pgt1(tree, node_index,
+                     os.path.join(output_dir, "prob_pgt1.mem"))
 
     export_constants(node_index,
                      os.path.join(output_dir, "cds_params.vh"))
@@ -882,10 +885,12 @@ def export_all_folds(
         f.write(f"// 10-Fold Cross Validation Manifest\n")
         f.write(f"// Generated with rng_seed={rng_seed}, n_users={n_total}\n")
         f.write(f"// Each fold_k/ directory contains:\n")
-        f.write(f"//   tree_topology.mem   - decision tree structure\n")
-        f.write(f"//   healthy_ranges.mem  - perceptor boundaries\n")
-        f.write(f"//   action_library.mem  - pruned action weights\n")
-        f.write(f"//   prob_tables.mem     - precomputed probabilities\n")
+        f.write(f"//   tree_topology.mem   - 3 words/node (feat, low, high)\n")
+        f.write(f"//   healthy_ranges.mem  - direct-addressed 32-bit {{bmin,bmax}}\n")
+        f.write(f"//   action_hdr.mem      - header: (count, start_addr) per slot\n")
+        f.write(f"//   action_data.mem     - data: (feature_idx, r_j_h) per action\n")
+        f.write(f"//   prob_phf.mem        - P(h,f) per (node, disease)\n")
+        f.write(f"//   prob_pgt1.mem       - 1/P(h>1,f) reciprocal per node\n")
         f.write(f"//   cds_params.vh       - Verilog constants header\n")
         f.write(f"//   test_vectors.mem    - test user stimulus (features + ground truth)\n")
         f.write(f"//   expected_output.mem - golden model predictions (FPGA must match)\n")

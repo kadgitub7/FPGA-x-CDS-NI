@@ -82,7 +82,7 @@ module af_engine(
     reg [8:0]         latched_feature_idx;  // from action data word 0 (9 bits used)
     reg signed [15:0] latched_r_j_h;       // from action data word 1 (Q s1.15)
     reg signed [15:0] latched_phf;         // P(h,f) (Q s1.15)
-    reg signed [15:0] latched_pgt1_recip;  // reciprocal of P(h>1,f) (Q s2.14)
+    reg signed [15:0] latched_pgt1_recip;  // reciprocal of P(h>1,f) (Q s3.13)
     reg signed [15:0] latched_sensor_val;  // user feature value
     reg signed [15:0] latched_bmin;        // healthy-range lower bound
     reg signed [15:0] latched_bmax;        // healthy-range upper bound
