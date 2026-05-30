@@ -1,0 +1,2572 @@
+// P(h,f) BRAM — 1284 entries
+// Addr = node_index * 12 + disease_offset
+// Each entry: Q s1.15 (16 bits)
+//
+// [   0] node=0 (root), disease=2: 38/406
+0BFA
+// [   1] node=0 (root), disease=3: 14/406
+0469
+// [   2] node=0 (root), disease=4: 13/406
+0419
+// [   3] node=0 (root), disease=5: 13/406
+0419
+// [   4] node=0 (root), disease=6: 24/406
+0791
+// [   5] node=0 (root), disease=7: 3/406
+00F2
+// [   6] node=0 (root), disease=8: 2/406
+00A1
+// [   7] node=0 (root), disease=9: 8/406
+0285
+// [   8] node=0 (root), disease=10: 46/406
+0E80
+// [   9] node=0 (root), disease=14: 4/406
+0142
+// [  10] node=0 (root), disease=15: 4/406
+0142
+// [  11] node=0 (root), disease=16: 21/406
+069E
+// [  12] node=1 (root|k3_f1), disease=2: 17/206
+0A90
+// [  13] node=1 (root|k3_f1), disease=3: 4/206
+027C
+// [  14] node=1 (root|k3_f1), disease=4: 3/206
+01DD
+// [  15] node=1 (root|k3_f1), disease=5: 8/206
+04F8
+// [  16] node=1 (root|k3_f1), disease=6: 13/206
+0813
+// [  17] node=1 (root|k3_f1), disease=7: 1/206
+009F
+// [  18] node=1 (root|k3_f1), disease=8: 0/206
+0000
+// [  19] node=1 (root|k3_f1), disease=9: 3/206
+01DD
+// [  20] node=1 (root|k3_f1), disease=10: 29/206
+1204
+// [  21] node=1 (root|k3_f1), disease=14: 3/206
+01DD
+// [  22] node=1 (root|k3_f1), disease=15: 2/206
+013E
+// [  23] node=1 (root|k3_f1), disease=16: 8/206
+04F8
+// [  24] node=2 (root|k3_f2), disease=2: 21/200
+0D70
+// [  25] node=2 (root|k3_f2), disease=3: 10/200
+0666
+// [  26] node=2 (root|k3_f2), disease=4: 10/200
+0666
+// [  27] node=2 (root|k3_f2), disease=5: 5/200
+0333
+// [  28] node=2 (root|k3_f2), disease=6: 11/200
+070A
+// [  29] node=2 (root|k3_f2), disease=7: 2/200
+0147
+// [  30] node=2 (root|k3_f2), disease=8: 2/200
+0147
+// [  31] node=2 (root|k3_f2), disease=9: 5/200
+0333
+// [  32] node=2 (root|k3_f2), disease=10: 17/200
+0AE1
+// [  33] node=2 (root|k3_f2), disease=14: 1/200
+00A3
+// [  34] node=2 (root|k3_f2), disease=15: 2/200
+0147
+// [  35] node=2 (root|k3_f2), disease=16: 13/200
+0851
+// [  36] node=3 (root|k4_f1), disease=2: 14/203
+08D3
+// [  37] node=3 (root|k4_f1), disease=3: 3/203
+01E4
+// [  38] node=3 (root|k4_f1), disease=4: 6/203
+03C8
+// [  39] node=3 (root|k4_f1), disease=5: 11/203
+06EF
+// [  40] node=3 (root|k4_f1), disease=6: 16/203
+0A16
+// [  41] node=3 (root|k4_f1), disease=7: 0/203
+0000
+// [  42] node=3 (root|k4_f1), disease=8: 0/203
+0000
+// [  43] node=3 (root|k4_f1), disease=9: 0/203
+0000
+// [  44] node=3 (root|k4_f1), disease=10: 8/203
+050B
+// [  45] node=3 (root|k4_f1), disease=14: 0/203
+0000
+// [  46] node=3 (root|k4_f1), disease=15: 2/203
+0142
+// [  47] node=3 (root|k4_f1), disease=16: 7/203
+0469
+// [  48] node=4 (root|k4_f2), disease=2: 24/203
+0F22
+// [  49] node=4 (root|k4_f2), disease=3: 11/203
+06EF
+// [  50] node=4 (root|k4_f2), disease=4: 7/203
+0469
+// [  51] node=4 (root|k4_f2), disease=5: 2/203
+0142
+// [  52] node=4 (root|k4_f2), disease=6: 8/203
+050B
+// [  53] node=4 (root|k4_f2), disease=7: 3/203
+01E4
+// [  54] node=4 (root|k4_f2), disease=8: 2/203
+0142
+// [  55] node=4 (root|k4_f2), disease=9: 8/203
+050B
+// [  56] node=4 (root|k4_f2), disease=10: 38/203
+17F5
+// [  57] node=4 (root|k4_f2), disease=14: 4/203
+0285
+// [  58] node=4 (root|k4_f2), disease=15: 2/203
+0142
+// [  59] node=4 (root|k4_f2), disease=16: 14/203
+08D3
+// [  60] node=5 (root|k5_f1), disease=2: 19/204
+0BEB
+// [  61] node=5 (root|k5_f1), disease=3: 6/204
+03C3
+// [  62] node=5 (root|k5_f1), disease=4: 7/204
+0464
+// [  63] node=5 (root|k5_f1), disease=5: 8/204
+0505
+// [  64] node=5 (root|k5_f1), disease=6: 9/204
+05A5
+// [  65] node=5 (root|k5_f1), disease=7: 0/204
+0000
+// [  66] node=5 (root|k5_f1), disease=8: 0/204
+0000
+// [  67] node=5 (root|k5_f1), disease=9: 5/204
+0323
+// [  68] node=5 (root|k5_f1), disease=10: 24/204
+0F0F
+// [  69] node=5 (root|k5_f1), disease=14: 1/204
+00A0
+// [  70] node=5 (root|k5_f1), disease=15: 4/204
+0282
+// [  71] node=5 (root|k5_f1), disease=16: 9/204
+05A5
+// [  72] node=6 (root|k5_f2), disease=2: 19/202
+0C0A
+// [  73] node=6 (root|k5_f2), disease=3: 8/202
+0511
+// [  74] node=6 (root|k5_f2), disease=4: 6/202
+03CD
+// [  75] node=6 (root|k5_f2), disease=5: 5/202
+032B
+// [  76] node=6 (root|k5_f2), disease=6: 15/202
+0981
+// [  77] node=6 (root|k5_f2), disease=7: 3/202
+01E6
+// [  78] node=6 (root|k5_f2), disease=8: 2/202
+0144
+// [  79] node=6 (root|k5_f2), disease=9: 3/202
+01E6
+// [  80] node=6 (root|k5_f2), disease=10: 22/202
+0DF0
+// [  81] node=6 (root|k5_f2), disease=14: 3/202
+01E6
+// [  82] node=6 (root|k5_f2), disease=15: 0/202
+0000
+// [  83] node=6 (root|k5_f2), disease=16: 12/202
+079A
+// [  84] node=7 (root|k6_f1), disease=2: 19/203
+0BFA
+// [  85] node=7 (root|k6_f1), disease=3: 9/203
+05AC
+// [  86] node=7 (root|k6_f1), disease=4: 9/203
+05AC
+// [  87] node=7 (root|k6_f1), disease=5: 13/203
+0832
+// [  88] node=7 (root|k6_f1), disease=6: 3/203
+01E4
+// [  89] node=7 (root|k6_f1), disease=7: 2/203
+0142
+// [  90] node=7 (root|k6_f1), disease=8: 1/203
+00A1
+// [  91] node=7 (root|k6_f1), disease=9: 0/203
+0000
+// [  92] node=7 (root|k6_f1), disease=10: 23/203
+0E80
+// [  93] node=7 (root|k6_f1), disease=14: 2/203
+0142
+// [  94] node=7 (root|k6_f1), disease=15: 3/203
+01E4
+// [  95] node=7 (root|k6_f1), disease=16: 11/203
+06EF
+// [  96] node=8 (root|k6_f2), disease=2: 19/203
+0BFA
+// [  97] node=8 (root|k6_f2), disease=3: 5/203
+0327
+// [  98] node=8 (root|k6_f2), disease=4: 4/203
+0285
+// [  99] node=8 (root|k6_f2), disease=5: 0/203
+0000
+// [ 100] node=8 (root|k6_f2), disease=6: 21/203
+0D3D
+// [ 101] node=8 (root|k6_f2), disease=7: 1/203
+00A1
+// [ 102] node=8 (root|k6_f2), disease=8: 1/203
+00A1
+// [ 103] node=8 (root|k6_f2), disease=9: 8/203
+050B
+// [ 104] node=8 (root|k6_f2), disease=10: 23/203
+0E80
+// [ 105] node=8 (root|k6_f2), disease=14: 2/203
+0142
+// [ 106] node=8 (root|k6_f2), disease=15: 1/203
+00A1
+// [ 107] node=8 (root|k6_f2), disease=16: 10/203
+064E
+// [ 108] node=9 (root|k7_f1), disease=2: 16/204
+0A0A
+// [ 109] node=9 (root|k7_f1), disease=3: 3/204
+01E1
+// [ 110] node=9 (root|k7_f1), disease=4: 7/204
+0464
+// [ 111] node=9 (root|k7_f1), disease=5: 10/204
+0646
+// [ 112] node=9 (root|k7_f1), disease=6: 18/204
+0B4B
+// [ 113] node=9 (root|k7_f1), disease=7: 1/204
+00A0
+// [ 114] node=9 (root|k7_f1), disease=8: 0/204
+0000
+// [ 115] node=9 (root|k7_f1), disease=9: 0/204
+0000
+// [ 116] node=9 (root|k7_f1), disease=10: 20/204
+0C8C
+// [ 117] node=9 (root|k7_f1), disease=14: 1/204
+00A0
+// [ 118] node=9 (root|k7_f1), disease=15: 4/204
+0282
+// [ 119] node=9 (root|k7_f1), disease=16: 10/204
+0646
+// [ 120] node=10 (root|k7_f2), disease=2: 22/202
+0DF0
+// [ 121] node=10 (root|k7_f2), disease=3: 11/202
+06F8
+// [ 122] node=10 (root|k7_f2), disease=4: 6/202
+03CD
+// [ 123] node=10 (root|k7_f2), disease=5: 3/202
+01E6
+// [ 124] node=10 (root|k7_f2), disease=6: 6/202
+03CD
+// [ 125] node=10 (root|k7_f2), disease=7: 2/202
+0144
+// [ 126] node=10 (root|k7_f2), disease=8: 2/202
+0144
+// [ 127] node=10 (root|k7_f2), disease=9: 8/202
+0511
+// [ 128] node=10 (root|k7_f2), disease=10: 26/202
+1079
+// [ 129] node=10 (root|k7_f2), disease=14: 3/202
+01E6
+// [ 130] node=10 (root|k7_f2), disease=15: 0/202
+0000
+// [ 131] node=10 (root|k7_f2), disease=16: 11/202
+06F8
+// [ 132] node=11 (root|k8_f1), disease=2: 19/203
+0BFA
+// [ 133] node=11 (root|k8_f1), disease=3: 5/203
+0327
+// [ 134] node=11 (root|k8_f1), disease=4: 4/203
+0285
+// [ 135] node=11 (root|k8_f1), disease=5: 9/203
+05AC
+// [ 136] node=11 (root|k8_f1), disease=6: 14/203
+08D3
+// [ 137] node=11 (root|k8_f1), disease=7: 1/203
+00A1
+// [ 138] node=11 (root|k8_f1), disease=8: 1/203
+00A1
+// [ 139] node=11 (root|k8_f1), disease=9: 4/203
+0285
+// [ 140] node=11 (root|k8_f1), disease=10: 26/203
+1064
+// [ 141] node=11 (root|k8_f1), disease=14: 1/203
+00A1
+// [ 142] node=11 (root|k8_f1), disease=15: 4/203
+0285
+// [ 143] node=11 (root|k8_f1), disease=16: 8/203
+050B
+// [ 144] node=12 (root|k8_f2), disease=2: 19/203
+0BFA
+// [ 145] node=12 (root|k8_f2), disease=3: 9/203
+05AC
+// [ 146] node=12 (root|k8_f2), disease=4: 9/203
+05AC
+// [ 147] node=12 (root|k8_f2), disease=5: 4/203
+0285
+// [ 148] node=12 (root|k8_f2), disease=6: 10/203
+064E
+// [ 149] node=12 (root|k8_f2), disease=7: 2/203
+0142
+// [ 150] node=12 (root|k8_f2), disease=8: 1/203
+00A1
+// [ 151] node=12 (root|k8_f2), disease=9: 4/203
+0285
+// [ 152] node=12 (root|k8_f2), disease=10: 20/203
+0C9C
+// [ 153] node=12 (root|k8_f2), disease=14: 3/203
+01E4
+// [ 154] node=12 (root|k8_f2), disease=15: 0/203
+0000
+// [ 155] node=12 (root|k8_f2), disease=16: 13/203
+0832
+// [ 156] node=13 (root|k9_f1), disease=2: 21/204
+0D2D
+// [ 157] node=13 (root|k9_f1), disease=3: 6/204
+03C3
+// [ 158] node=13 (root|k9_f1), disease=4: 11/204
+06E6
+// [ 159] node=13 (root|k9_f1), disease=5: 5/204
+0323
+// [ 160] node=13 (root|k9_f1), disease=6: 12/204
+0787
+// [ 161] node=13 (root|k9_f1), disease=7: 2/204
+0141
+// [ 162] node=13 (root|k9_f1), disease=8: 2/204
+0141
+// [ 163] node=13 (root|k9_f1), disease=9: 6/204
+03C3
+// [ 164] node=13 (root|k9_f1), disease=10: 23/204
+0E6E
+// [ 165] node=13 (root|k9_f1), disease=14: 1/204
+00A0
+// [ 166] node=13 (root|k9_f1), disease=15: 1/204
+00A0
+// [ 167] node=13 (root|k9_f1), disease=16: 8/204
+0505
+// [ 168] node=14 (root|k9_f2), disease=2: 17/202
+0AC5
+// [ 169] node=14 (root|k9_f2), disease=3: 8/202
+0511
+// [ 170] node=14 (root|k9_f2), disease=4: 2/202
+0144
+// [ 171] node=14 (root|k9_f2), disease=5: 8/202
+0511
+// [ 172] node=14 (root|k9_f2), disease=6: 12/202
+079A
+// [ 173] node=14 (root|k9_f2), disease=7: 1/202
+00A2
+// [ 174] node=14 (root|k9_f2), disease=8: 0/202
+0000
+// [ 175] node=14 (root|k9_f2), disease=9: 2/202
+0144
+// [ 176] node=14 (root|k9_f2), disease=10: 23/202
+0E93
+// [ 177] node=14 (root|k9_f2), disease=14: 3/202
+01E6
+// [ 178] node=14 (root|k9_f2), disease=15: 3/202
+01E6
+// [ 179] node=14 (root|k9_f2), disease=16: 13/202
+083C
+// [ 180] node=15 (root|k12_f1), disease=2: 20/205
+0C7C
+// [ 181] node=15 (root|k12_f1), disease=3: 6/205
+03BF
+// [ 182] node=15 (root|k12_f1), disease=4: 11/205
+06DE
+// [ 183] node=15 (root|k12_f1), disease=5: 4/205
+027F
+// [ 184] node=15 (root|k12_f1), disease=6: 14/205
+08BD
+// [ 185] node=15 (root|k12_f1), disease=7: 2/205
+013F
+// [ 186] node=15 (root|k12_f1), disease=8: 2/205
+013F
+// [ 187] node=15 (root|k12_f1), disease=9: 5/205
+031F
+// [ 188] node=15 (root|k12_f1), disease=10: 19/205
+0BDD
+// [ 189] node=15 (root|k12_f1), disease=14: 1/205
+009F
+// [ 190] node=15 (root|k12_f1), disease=15: 2/205
+013F
+// [ 191] node=15 (root|k12_f1), disease=16: 9/205
+059E
+// [ 192] node=16 (root|k12_f2), disease=2: 18/200
+0B85
+// [ 193] node=16 (root|k12_f2), disease=3: 8/200
+051E
+// [ 194] node=16 (root|k12_f2), disease=4: 2/200
+0147
+// [ 195] node=16 (root|k12_f2), disease=5: 9/200
+05C2
+// [ 196] node=16 (root|k12_f2), disease=6: 10/200
+0666
+// [ 197] node=16 (root|k12_f2), disease=7: 1/200
+00A3
+// [ 198] node=16 (root|k12_f2), disease=8: 0/200
+0000
+// [ 199] node=16 (root|k12_f2), disease=9: 3/200
+01EB
+// [ 200] node=16 (root|k12_f2), disease=10: 27/200
+1147
+// [ 201] node=16 (root|k12_f2), disease=14: 3/200
+01EB
+// [ 202] node=16 (root|k12_f2), disease=15: 2/200
+0147
+// [ 203] node=16 (root|k12_f2), disease=16: 12/200
+07AE
+// [ 204] node=17 (root|k14_f1), disease=2: 14/205
+08BD
+// [ 205] node=17 (root|k14_f1), disease=3: 7/205
+045E
+// [ 206] node=17 (root|k14_f1), disease=4: 0/205
+0000
+// [ 207] node=17 (root|k14_f1), disease=5: 0/205
+0000
+// [ 208] node=17 (root|k14_f1), disease=6: 24/205
+0EFC
+// [ 209] node=17 (root|k14_f1), disease=7: 1/205
+009F
+// [ 210] node=17 (root|k14_f1), disease=8: 2/205
+013F
+// [ 211] node=17 (root|k14_f1), disease=9: 6/205
+03BF
+// [ 212] node=17 (root|k14_f1), disease=10: 24/205
+0EFC
+// [ 213] node=17 (root|k14_f1), disease=14: 0/205
+0000
+// [ 214] node=17 (root|k14_f1), disease=15: 1/205
+009F
+// [ 215] node=17 (root|k14_f1), disease=16: 11/205
+06DE
+// [ 216] node=18 (root|k14_f2), disease=2: 24/200
+0F5C
+// [ 217] node=18 (root|k14_f2), disease=3: 7/200
+047A
+// [ 218] node=18 (root|k14_f2), disease=4: 13/200
+0851
+// [ 219] node=18 (root|k14_f2), disease=5: 13/200
+0851
+// [ 220] node=18 (root|k14_f2), disease=6: 0/200
+0000
+// [ 221] node=18 (root|k14_f2), disease=7: 1/200
+00A3
+// [ 222] node=18 (root|k14_f2), disease=8: 0/200
+0000
+// [ 223] node=18 (root|k14_f2), disease=9: 2/200
+0147
+// [ 224] node=18 (root|k14_f2), disease=10: 22/200
+0E14
+// [ 225] node=18 (root|k14_f2), disease=14: 4/200
+028F
+// [ 226] node=18 (root|k14_f2), disease=15: 3/200
+01EB
+// [ 227] node=18 (root|k14_f2), disease=16: 10/200
+0666
+// [ 228] node=19 (root|k28_f1), disease=2: 19/205
+0BDD
+// [ 229] node=19 (root|k28_f1), disease=3: 7/205
+045E
+// [ 230] node=19 (root|k28_f1), disease=4: 4/205
+027F
+// [ 231] node=19 (root|k28_f1), disease=5: 10/205
+063E
+// [ 232] node=19 (root|k28_f1), disease=6: 10/205
+063E
+// [ 233] node=19 (root|k28_f1), disease=7: 2/205
+013F
+// [ 234] node=19 (root|k28_f1), disease=8: 2/205
+013F
+// [ 235] node=19 (root|k28_f1), disease=9: 0/205
+0000
+// [ 236] node=19 (root|k28_f1), disease=10: 33/205
+149A
+// [ 237] node=19 (root|k28_f1), disease=14: 3/205
+01DF
+// [ 238] node=19 (root|k28_f1), disease=15: 0/205
+0000
+// [ 239] node=19 (root|k28_f1), disease=16: 7/205
+045E
+// [ 240] node=20 (root|k28_f2), disease=2: 19/201
+0C19
+// [ 241] node=20 (root|k28_f2), disease=3: 7/201
+0475
+// [ 242] node=20 (root|k28_f2), disease=4: 9/201
+05BB
+// [ 243] node=20 (root|k28_f2), disease=5: 3/201
+01E9
+// [ 244] node=20 (root|k28_f2), disease=6: 14/201
+08EA
+// [ 245] node=20 (root|k28_f2), disease=7: 1/201
+00A3
+// [ 246] node=20 (root|k28_f2), disease=8: 0/201
+0000
+// [ 247] node=20 (root|k28_f2), disease=9: 8/201
+0518
+// [ 248] node=20 (root|k28_f2), disease=10: 13/201
+0847
+// [ 249] node=20 (root|k28_f2), disease=14: 1/201
+00A3
+// [ 250] node=20 (root|k28_f2), disease=15: 4/201
+028C
+// [ 251] node=20 (root|k28_f2), disease=16: 14/201
+08EA
+// [ 252] node=21 (root|k40_f1), disease=2: 20/205
+0C7C
+// [ 253] node=21 (root|k40_f1), disease=3: 7/205
+045E
+// [ 254] node=21 (root|k40_f1), disease=4: 6/205
+03BF
+// [ 255] node=21 (root|k40_f1), disease=5: 6/205
+03BF
+// [ 256] node=21 (root|k40_f1), disease=6: 15/205
+095D
+// [ 257] node=21 (root|k40_f1), disease=7: 2/205
+013F
+// [ 258] node=21 (root|k40_f1), disease=8: 2/205
+013F
+// [ 259] node=21 (root|k40_f1), disease=9: 3/205
+01DF
+// [ 260] node=21 (root|k40_f1), disease=10: 23/205
+0E5C
+// [ 261] node=21 (root|k40_f1), disease=14: 2/205
+013F
+// [ 262] node=21 (root|k40_f1), disease=15: 0/205
+0000
+// [ 263] node=21 (root|k40_f1), disease=16: 10/205
+063E
+// [ 264] node=22 (root|k40_f2), disease=2: 18/201
+0B76
+// [ 265] node=22 (root|k40_f2), disease=3: 7/201
+0475
+// [ 266] node=22 (root|k40_f2), disease=4: 7/201
+0475
+// [ 267] node=22 (root|k40_f2), disease=5: 7/201
+0475
+// [ 268] node=22 (root|k40_f2), disease=6: 9/201
+05BB
+// [ 269] node=22 (root|k40_f2), disease=7: 1/201
+00A3
+// [ 270] node=22 (root|k40_f2), disease=8: 0/201
+0000
+// [ 271] node=22 (root|k40_f2), disease=9: 5/201
+032F
+// [ 272] node=22 (root|k40_f2), disease=10: 23/201
+0EA5
+// [ 273] node=22 (root|k40_f2), disease=14: 2/201
+0146
+// [ 274] node=22 (root|k40_f2), disease=15: 4/201
+028C
+// [ 275] node=22 (root|k40_f2), disease=16: 11/201
+0701
+// [ 276] node=23 (root|k44_f1), disease=2: 18/204
+0B4B
+// [ 277] node=23 (root|k44_f1), disease=3: 8/204
+0505
+// [ 278] node=23 (root|k44_f1), disease=4: 1/204
+00A0
+// [ 279] node=23 (root|k44_f1), disease=5: 5/204
+0323
+// [ 280] node=23 (root|k44_f1), disease=6: 14/204
+08C8
+// [ 281] node=23 (root|k44_f1), disease=7: 2/204
+0141
+// [ 282] node=23 (root|k44_f1), disease=8: 1/204
+00A0
+// [ 283] node=23 (root|k44_f1), disease=9: 4/204
+0282
+// [ 284] node=23 (root|k44_f1), disease=10: 25/204
+0FAF
+// [ 285] node=23 (root|k44_f1), disease=14: 1/204
+00A0
+// [ 286] node=23 (root|k44_f1), disease=15: 0/204
+0000
+// [ 287] node=23 (root|k44_f1), disease=16: 9/204
+05A5
+// [ 288] node=24 (root|k44_f2), disease=2: 20/202
+0CAC
+// [ 289] node=24 (root|k44_f2), disease=3: 6/202
+03CD
+// [ 290] node=24 (root|k44_f2), disease=4: 12/202
+079A
+// [ 291] node=24 (root|k44_f2), disease=5: 8/202
+0511
+// [ 292] node=24 (root|k44_f2), disease=6: 10/202
+0656
+// [ 293] node=24 (root|k44_f2), disease=7: 1/202
+00A2
+// [ 294] node=24 (root|k44_f2), disease=8: 1/202
+00A2
+// [ 295] node=24 (root|k44_f2), disease=9: 4/202
+0288
+// [ 296] node=24 (root|k44_f2), disease=10: 21/202
+0D4E
+// [ 297] node=24 (root|k44_f2), disease=14: 3/202
+01E6
+// [ 298] node=24 (root|k44_f2), disease=15: 4/202
+0288
+// [ 299] node=24 (root|k44_f2), disease=16: 12/202
+079A
+// [ 300] node=25 (root|k77_f1), disease=2: 18/206
+0B2F
+// [ 301] node=25 (root|k77_f1), disease=3: 5/206
+031B
+// [ 302] node=25 (root|k77_f1), disease=4: 13/206
+0813
+// [ 303] node=25 (root|k77_f1), disease=5: 7/206
+0459
+// [ 304] node=25 (root|k77_f1), disease=6: 15/206
+0952
+// [ 305] node=25 (root|k77_f1), disease=7: 2/206
+013E
+// [ 306] node=25 (root|k77_f1), disease=8: 1/206
+009F
+// [ 307] node=25 (root|k77_f1), disease=9: 2/206
+013E
+// [ 308] node=25 (root|k77_f1), disease=10: 10/206
+0636
+// [ 309] node=25 (root|k77_f1), disease=14: 1/206
+009F
+// [ 310] node=25 (root|k77_f1), disease=15: 4/206
+027C
+// [ 311] node=25 (root|k77_f1), disease=16: 12/206
+0774
+// [ 312] node=26 (root|k77_f2), disease=2: 20/200
+0CCC
+// [ 313] node=26 (root|k77_f2), disease=3: 9/200
+05C2
+// [ 314] node=26 (root|k77_f2), disease=4: 0/200
+0000
+// [ 315] node=26 (root|k77_f2), disease=5: 6/200
+03D7
+// [ 316] node=26 (root|k77_f2), disease=6: 9/200
+05C2
+// [ 317] node=26 (root|k77_f2), disease=7: 1/200
+00A3
+// [ 318] node=26 (root|k77_f2), disease=8: 1/200
+00A3
+// [ 319] node=26 (root|k77_f2), disease=9: 6/200
+03D7
+// [ 320] node=26 (root|k77_f2), disease=10: 36/200
+170A
+// [ 321] node=26 (root|k77_f2), disease=14: 3/200
+01EB
+// [ 322] node=26 (root|k77_f2), disease=15: 0/200
+0000
+// [ 323] node=26 (root|k77_f2), disease=16: 9/200
+05C2
+// [ 324] node=27 (root|k125_f1), disease=2: 12/205
+077E
+// [ 325] node=27 (root|k125_f1), disease=3: 8/205
+04FE
+// [ 326] node=27 (root|k125_f1), disease=4: 3/205
+01DF
+// [ 327] node=27 (root|k125_f1), disease=5: 7/205
+045E
+// [ 328] node=27 (root|k125_f1), disease=6: 15/205
+095D
+// [ 329] node=27 (root|k125_f1), disease=7: 1/205
+009F
+// [ 330] node=27 (root|k125_f1), disease=8: 0/205
+0000
+// [ 331] node=27 (root|k125_f1), disease=9: 0/205
+0000
+// [ 332] node=27 (root|k125_f1), disease=10: 21/205
+0D1C
+// [ 333] node=27 (root|k125_f1), disease=14: 3/205
+01DF
+// [ 334] node=27 (root|k125_f1), disease=15: 2/205
+013F
+// [ 335] node=27 (root|k125_f1), disease=16: 7/205
+045E
+// [ 336] node=28 (root|k125_f2), disease=2: 26/201
+108E
+// [ 337] node=28 (root|k125_f2), disease=3: 6/201
+03D2
+// [ 338] node=28 (root|k125_f2), disease=4: 10/201
+065E
+// [ 339] node=28 (root|k125_f2), disease=5: 6/201
+03D2
+// [ 340] node=28 (root|k125_f2), disease=6: 9/201
+05BB
+// [ 341] node=28 (root|k125_f2), disease=7: 2/201
+0146
+// [ 342] node=28 (root|k125_f2), disease=8: 2/201
+0146
+// [ 343] node=28 (root|k125_f2), disease=9: 8/201
+0518
+// [ 344] node=28 (root|k125_f2), disease=10: 25/201
+0FEB
+// [ 345] node=28 (root|k125_f2), disease=14: 1/201
+00A3
+// [ 346] node=28 (root|k125_f2), disease=15: 2/201
+0146
+// [ 347] node=28 (root|k125_f2), disease=16: 14/201
+08EA
+// [ 348] node=29 (root|k136_f1), disease=2: 14/204
+08C8
+// [ 349] node=29 (root|k136_f1), disease=3: 11/204
+06E6
+// [ 350] node=29 (root|k136_f1), disease=4: 11/204
+06E6
+// [ 351] node=29 (root|k136_f1), disease=5: 13/204
+0828
+// [ 352] node=29 (root|k136_f1), disease=6: 4/204
+0282
+// [ 353] node=29 (root|k136_f1), disease=7: 2/204
+0141
+// [ 354] node=29 (root|k136_f1), disease=8: 1/204
+00A0
+// [ 355] node=29 (root|k136_f1), disease=9: 2/204
+0141
+// [ 356] node=29 (root|k136_f1), disease=10: 25/204
+0FAF
+// [ 357] node=29 (root|k136_f1), disease=14: 2/204
+0141
+// [ 358] node=29 (root|k136_f1), disease=15: 2/204
+0141
+// [ 359] node=29 (root|k136_f1), disease=16: 12/204
+0787
+// [ 360] node=30 (root|k136_f2), disease=2: 24/202
+0F35
+// [ 361] node=30 (root|k136_f2), disease=3: 3/202
+01E6
+// [ 362] node=30 (root|k136_f2), disease=4: 2/202
+0144
+// [ 363] node=30 (root|k136_f2), disease=5: 0/202
+0000
+// [ 364] node=30 (root|k136_f2), disease=6: 20/202
+0CAC
+// [ 365] node=30 (root|k136_f2), disease=7: 1/202
+00A2
+// [ 366] node=30 (root|k136_f2), disease=8: 1/202
+00A2
+// [ 367] node=30 (root|k136_f2), disease=9: 6/202
+03CD
+// [ 368] node=30 (root|k136_f2), disease=10: 21/202
+0D4E
+// [ 369] node=30 (root|k136_f2), disease=14: 2/202
+0144
+// [ 370] node=30 (root|k136_f2), disease=15: 2/202
+0144
+// [ 371] node=30 (root|k136_f2), disease=16: 9/202
+05B3
+// [ 372] node=31 (root|k161_f1), disease=2: 12/205
+077E
+// [ 373] node=31 (root|k161_f1), disease=3: 9/205
+059E
+// [ 374] node=31 (root|k161_f1), disease=4: 2/205
+013F
+// [ 375] node=31 (root|k161_f1), disease=5: 6/205
+03BF
+// [ 376] node=31 (root|k161_f1), disease=6: 12/205
+077E
+// [ 377] node=31 (root|k161_f1), disease=7: 2/205
+013F
+// [ 378] node=31 (root|k161_f1), disease=8: 1/205
+009F
+// [ 379] node=31 (root|k161_f1), disease=9: 4/205
+027F
+// [ 380] node=31 (root|k161_f1), disease=10: 27/205
+10DB
+// [ 381] node=31 (root|k161_f1), disease=14: 3/205
+01DF
+// [ 382] node=31 (root|k161_f1), disease=15: 4/205
+027F
+// [ 383] node=31 (root|k161_f1), disease=16: 12/205
+077E
+// [ 384] node=32 (root|k161_f2), disease=2: 26/201
+108E
+// [ 385] node=32 (root|k161_f2), disease=3: 5/201
+032F
+// [ 386] node=32 (root|k161_f2), disease=4: 11/201
+0701
+// [ 387] node=32 (root|k161_f2), disease=5: 7/201
+0475
+// [ 388] node=32 (root|k161_f2), disease=6: 12/201
+07A4
+// [ 389] node=32 (root|k161_f2), disease=7: 1/201
+00A3
+// [ 390] node=32 (root|k161_f2), disease=8: 1/201
+00A3
+// [ 391] node=32 (root|k161_f2), disease=9: 4/201
+028C
+// [ 392] node=32 (root|k161_f2), disease=10: 19/201
+0C19
+// [ 393] node=32 (root|k161_f2), disease=14: 1/201
+00A3
+// [ 394] node=32 (root|k161_f2), disease=15: 0/201
+0000
+// [ 395] node=32 (root|k161_f2), disease=16: 9/201
+05BB
+// [ 396] node=33 (root|k167_f1), disease=2: 12/203
+0791
+// [ 397] node=33 (root|k167_f1), disease=3: 9/203
+05AC
+// [ 398] node=33 (root|k167_f1), disease=4: 4/203
+0285
+// [ 399] node=33 (root|k167_f1), disease=5: 8/203
+050B
+// [ 400] node=33 (root|k167_f1), disease=6: 9/203
+05AC
+// [ 401] node=33 (root|k167_f1), disease=7: 2/203
+0142
+// [ 402] node=33 (root|k167_f1), disease=8: 1/203
+00A1
+// [ 403] node=33 (root|k167_f1), disease=9: 1/203
+00A1
+// [ 404] node=33 (root|k167_f1), disease=10: 32/203
+142D
+// [ 405] node=33 (root|k167_f1), disease=14: 3/203
+01E4
+// [ 406] node=33 (root|k167_f1), disease=15: 3/203
+01E4
+// [ 407] node=33 (root|k167_f1), disease=16: 14/203
+08D3
+// [ 408] node=34 (root|k167_f2), disease=2: 26/203
+1064
+// [ 409] node=34 (root|k167_f2), disease=3: 5/203
+0327
+// [ 410] node=34 (root|k167_f2), disease=4: 9/203
+05AC
+// [ 411] node=34 (root|k167_f2), disease=5: 5/203
+0327
+// [ 412] node=34 (root|k167_f2), disease=6: 15/203
+0975
+// [ 413] node=34 (root|k167_f2), disease=7: 1/203
+00A1
+// [ 414] node=34 (root|k167_f2), disease=8: 1/203
+00A1
+// [ 415] node=34 (root|k167_f2), disease=9: 7/203
+0469
+// [ 416] node=34 (root|k167_f2), disease=10: 14/203
+08D3
+// [ 417] node=34 (root|k167_f2), disease=14: 1/203
+00A1
+// [ 418] node=34 (root|k167_f2), disease=15: 1/203
+00A1
+// [ 419] node=34 (root|k167_f2), disease=16: 7/203
+0469
+// [ 420] node=35 (root|k168_f1), disease=2: 28/203
+11A7
+// [ 421] node=35 (root|k168_f1), disease=3: 12/203
+0791
+// [ 422] node=35 (root|k168_f1), disease=4: 7/203
+0469
+// [ 423] node=35 (root|k168_f1), disease=5: 8/203
+050B
+// [ 424] node=35 (root|k168_f1), disease=6: 8/203
+050B
+// [ 425] node=35 (root|k168_f1), disease=7: 2/203
+0142
+// [ 426] node=35 (root|k168_f1), disease=8: 1/203
+00A1
+// [ 427] node=35 (root|k168_f1), disease=9: 4/203
+0285
+// [ 428] node=35 (root|k168_f1), disease=10: 26/203
+1064
+// [ 429] node=35 (root|k168_f1), disease=14: 2/203
+0142
+// [ 430] node=35 (root|k168_f1), disease=15: 3/203
+01E4
+// [ 431] node=35 (root|k168_f1), disease=16: 14/203
+08D3
+// [ 432] node=36 (root|k168_f2), disease=2: 10/203
+064E
+// [ 433] node=36 (root|k168_f2), disease=3: 2/203
+0142
+// [ 434] node=36 (root|k168_f2), disease=4: 6/203
+03C8
+// [ 435] node=36 (root|k168_f2), disease=5: 5/203
+0327
+// [ 436] node=36 (root|k168_f2), disease=6: 16/203
+0A16
+// [ 437] node=36 (root|k168_f2), disease=7: 1/203
+00A1
+// [ 438] node=36 (root|k168_f2), disease=8: 1/203
+00A1
+// [ 439] node=36 (root|k168_f2), disease=9: 4/203
+0285
+// [ 440] node=36 (root|k168_f2), disease=10: 20/203
+0C9C
+// [ 441] node=36 (root|k168_f2), disease=14: 2/203
+0142
+// [ 442] node=36 (root|k168_f2), disease=15: 1/203
+00A1
+// [ 443] node=36 (root|k168_f2), disease=16: 7/203
+0469
+// [ 444] node=37 (root|k169_f1), disease=2: 30/204
+12D2
+// [ 445] node=37 (root|k169_f1), disease=3: 5/204
+0323
+// [ 446] node=37 (root|k169_f1), disease=4: 9/204
+05A5
+// [ 447] node=37 (root|k169_f1), disease=5: 5/204
+0323
+// [ 448] node=37 (root|k169_f1), disease=6: 9/204
+05A5
+// [ 449] node=37 (root|k169_f1), disease=7: 0/204
+0000
+// [ 450] node=37 (root|k169_f1), disease=8: 0/204
+0000
+// [ 451] node=37 (root|k169_f1), disease=9: 7/204
+0464
+// [ 452] node=37 (root|k169_f1), disease=10: 18/204
+0B4B
+// [ 453] node=37 (root|k169_f1), disease=14: 1/204
+00A0
+// [ 454] node=37 (root|k169_f1), disease=15: 4/204
+0282
+// [ 455] node=37 (root|k169_f1), disease=16: 15/204
+0969
+// [ 456] node=38 (root|k169_f2), disease=2: 8/202
+0511
+// [ 457] node=38 (root|k169_f2), disease=3: 9/202
+05B3
+// [ 458] node=38 (root|k169_f2), disease=4: 4/202
+0288
+// [ 459] node=38 (root|k169_f2), disease=5: 8/202
+0511
+// [ 460] node=38 (root|k169_f2), disease=6: 15/202
+0981
+// [ 461] node=38 (root|k169_f2), disease=7: 3/202
+01E6
+// [ 462] node=38 (root|k169_f2), disease=8: 2/202
+0144
+// [ 463] node=38 (root|k169_f2), disease=9: 1/202
+00A2
+// [ 464] node=38 (root|k169_f2), disease=10: 28/202
+11BE
+// [ 465] node=38 (root|k169_f2), disease=14: 3/202
+01E6
+// [ 466] node=38 (root|k169_f2), disease=15: 0/202
+0000
+// [ 467] node=38 (root|k169_f2), disease=16: 6/202
+03CD
+// [ 468] node=39 (root|k171_f1), disease=2: 20/203
+0C9C
+// [ 469] node=39 (root|k171_f1), disease=3: 10/203
+064E
+// [ 470] node=39 (root|k171_f1), disease=4: 11/203
+06EF
+// [ 471] node=39 (root|k171_f1), disease=5: 8/203
+050B
+// [ 472] node=39 (root|k171_f1), disease=6: 14/203
+08D3
+// [ 473] node=39 (root|k171_f1), disease=7: 3/203
+01E4
+// [ 474] node=39 (root|k171_f1), disease=8: 2/203
+0142
+// [ 475] node=39 (root|k171_f1), disease=9: 4/203
+0285
+// [ 476] node=39 (root|k171_f1), disease=10: 21/203
+0D3D
+// [ 477] node=39 (root|k171_f1), disease=14: 0/203
+0000
+// [ 478] node=39 (root|k171_f1), disease=15: 4/203
+0285
+// [ 479] node=39 (root|k171_f1), disease=16: 12/203
+0791
+// [ 480] node=40 (root|k171_f2), disease=2: 18/203
+0B59
+// [ 481] node=40 (root|k171_f2), disease=3: 4/203
+0285
+// [ 482] node=40 (root|k171_f2), disease=4: 2/203
+0142
+// [ 483] node=40 (root|k171_f2), disease=5: 5/203
+0327
+// [ 484] node=40 (root|k171_f2), disease=6: 10/203
+064E
+// [ 485] node=40 (root|k171_f2), disease=7: 0/203
+0000
+// [ 486] node=40 (root|k171_f2), disease=8: 0/203
+0000
+// [ 487] node=40 (root|k171_f2), disease=9: 4/203
+0285
+// [ 488] node=40 (root|k171_f2), disease=10: 25/203
+0FC3
+// [ 489] node=40 (root|k171_f2), disease=14: 4/203
+0285
+// [ 490] node=40 (root|k171_f2), disease=15: 0/203
+0000
+// [ 491] node=40 (root|k171_f2), disease=16: 9/203
+05AC
+// [ 492] node=41 (root|k172_f1), disease=2: 19/203
+0BFA
+// [ 493] node=41 (root|k172_f1), disease=3: 7/203
+0469
+// [ 494] node=41 (root|k172_f1), disease=4: 3/203
+01E4
+// [ 495] node=41 (root|k172_f1), disease=5: 9/203
+05AC
+// [ 496] node=41 (root|k172_f1), disease=6: 9/203
+05AC
+// [ 497] node=41 (root|k172_f1), disease=7: 1/203
+00A1
+// [ 498] node=41 (root|k172_f1), disease=8: 2/203
+0142
+// [ 499] node=41 (root|k172_f1), disease=9: 4/203
+0285
+// [ 500] node=41 (root|k172_f1), disease=10: 40/203
+1938
+// [ 501] node=41 (root|k172_f1), disease=14: 3/203
+01E4
+// [ 502] node=41 (root|k172_f1), disease=15: 0/203
+0000
+// [ 503] node=41 (root|k172_f1), disease=16: 7/203
+0469
+// [ 504] node=42 (root|k172_f2), disease=2: 19/203
+0BFA
+// [ 505] node=42 (root|k172_f2), disease=3: 7/203
+0469
+// [ 506] node=42 (root|k172_f2), disease=4: 10/203
+064E
+// [ 507] node=42 (root|k172_f2), disease=5: 4/203
+0285
+// [ 508] node=42 (root|k172_f2), disease=6: 15/203
+0975
+// [ 509] node=42 (root|k172_f2), disease=7: 2/203
+0142
+// [ 510] node=42 (root|k172_f2), disease=8: 0/203
+0000
+// [ 511] node=42 (root|k172_f2), disease=9: 4/203
+0285
+// [ 512] node=42 (root|k172_f2), disease=10: 6/203
+03C8
+// [ 513] node=42 (root|k172_f2), disease=14: 1/203
+00A1
+// [ 514] node=42 (root|k172_f2), disease=15: 4/203
+0285
+// [ 515] node=42 (root|k172_f2), disease=16: 14/203
+08D3
+// [ 516] node=43 (root|k176_f1), disease=2: 37/206
+16FD
+// [ 517] node=43 (root|k176_f1), disease=3: 9/206
+0597
+// [ 518] node=43 (root|k176_f1), disease=4: 13/206
+0813
+// [ 519] node=43 (root|k176_f1), disease=5: 8/206
+04F8
+// [ 520] node=43 (root|k176_f1), disease=6: 12/206
+0774
+// [ 521] node=43 (root|k176_f1), disease=7: 0/206
+0000
+// [ 522] node=43 (root|k176_f1), disease=8: 1/206
+009F
+// [ 523] node=43 (root|k176_f1), disease=9: 7/206
+0459
+// [ 524] node=43 (root|k176_f1), disease=10: 15/206
+0952
+// [ 525] node=43 (root|k176_f1), disease=14: 1/206
+009F
+// [ 526] node=43 (root|k176_f1), disease=15: 3/206
+01DD
+// [ 527] node=43 (root|k176_f1), disease=16: 11/206
+06D5
+// [ 528] node=44 (root|k176_f2), disease=2: 1/200
+00A3
+// [ 529] node=44 (root|k176_f2), disease=3: 5/200
+0333
+// [ 530] node=44 (root|k176_f2), disease=4: 0/200
+0000
+// [ 531] node=44 (root|k176_f2), disease=5: 5/200
+0333
+// [ 532] node=44 (root|k176_f2), disease=6: 12/200
+07AE
+// [ 533] node=44 (root|k176_f2), disease=7: 3/200
+01EB
+// [ 534] node=44 (root|k176_f2), disease=8: 1/200
+00A3
+// [ 535] node=44 (root|k176_f2), disease=9: 1/200
+00A3
+// [ 536] node=44 (root|k176_f2), disease=10: 31/200
+13D7
+// [ 537] node=44 (root|k176_f2), disease=14: 3/200
+01EB
+// [ 538] node=44 (root|k176_f2), disease=15: 1/200
+00A3
+// [ 539] node=44 (root|k176_f2), disease=16: 10/200
+0666
+// [ 540] node=45 (root|k177_f1), disease=2: 20/206
+0C6D
+// [ 541] node=45 (root|k177_f1), disease=3: 10/206
+0636
+// [ 542] node=45 (root|k177_f1), disease=4: 11/206
+06D5
+// [ 543] node=45 (root|k177_f1), disease=5: 9/206
+0597
+// [ 544] node=45 (root|k177_f1), disease=6: 9/206
+0597
+// [ 545] node=45 (root|k177_f1), disease=7: 2/206
+013E
+// [ 546] node=45 (root|k177_f1), disease=8: 2/206
+013E
+// [ 547] node=45 (root|k177_f1), disease=9: 1/206
+009F
+// [ 548] node=45 (root|k177_f1), disease=10: 32/206
+13E2
+// [ 549] node=45 (root|k177_f1), disease=14: 0/206
+0000
+// [ 550] node=45 (root|k177_f1), disease=15: 3/206
+01DD
+// [ 551] node=45 (root|k177_f1), disease=16: 7/206
+0459
+// [ 552] node=46 (root|k177_f2), disease=2: 18/200
+0B85
+// [ 553] node=46 (root|k177_f2), disease=3: 4/200
+028F
+// [ 554] node=46 (root|k177_f2), disease=4: 2/200
+0147
+// [ 555] node=46 (root|k177_f2), disease=5: 4/200
+028F
+// [ 556] node=46 (root|k177_f2), disease=6: 15/200
+0999
+// [ 557] node=46 (root|k177_f2), disease=7: 1/200
+00A3
+// [ 558] node=46 (root|k177_f2), disease=8: 0/200
+0000
+// [ 559] node=46 (root|k177_f2), disease=9: 7/200
+047A
+// [ 560] node=46 (root|k177_f2), disease=10: 14/200
+08F5
+// [ 561] node=46 (root|k177_f2), disease=14: 4/200
+028F
+// [ 562] node=46 (root|k177_f2), disease=15: 1/200
+00A3
+// [ 563] node=46 (root|k177_f2), disease=16: 14/200
+08F5
+// [ 564] node=47 (root|k178_f1), disease=2: 28/204
+1191
+// [ 565] node=47 (root|k178_f1), disease=3: 11/204
+06E6
+// [ 566] node=47 (root|k178_f1), disease=4: 12/204
+0787
+// [ 567] node=47 (root|k178_f1), disease=5: 8/204
+0505
+// [ 568] node=47 (root|k178_f1), disease=6: 10/204
+0646
+// [ 569] node=47 (root|k178_f1), disease=7: 2/204
+0141
+// [ 570] node=47 (root|k178_f1), disease=8: 2/204
+0141
+// [ 571] node=47 (root|k178_f1), disease=9: 5/204
+0323
+// [ 572] node=47 (root|k178_f1), disease=10: 18/204
+0B4B
+// [ 573] node=47 (root|k178_f1), disease=14: 1/204
+00A0
+// [ 574] node=47 (root|k178_f1), disease=15: 3/204
+01E1
+// [ 575] node=47 (root|k178_f1), disease=16: 11/204
+06E6
+// [ 576] node=48 (root|k178_f2), disease=2: 10/202
+0656
+// [ 577] node=48 (root|k178_f2), disease=3: 3/202
+01E6
+// [ 578] node=48 (root|k178_f2), disease=4: 1/202
+00A2
+// [ 579] node=48 (root|k178_f2), disease=5: 5/202
+032B
+// [ 580] node=48 (root|k178_f2), disease=6: 14/202
+08DF
+// [ 581] node=48 (root|k178_f2), disease=7: 1/202
+00A2
+// [ 582] node=48 (root|k178_f2), disease=8: 0/202
+0000
+// [ 583] node=48 (root|k178_f2), disease=9: 3/202
+01E6
+// [ 584] node=48 (root|k178_f2), disease=10: 28/202
+11BE
+// [ 585] node=48 (root|k178_f2), disease=14: 3/202
+01E6
+// [ 586] node=48 (root|k178_f2), disease=15: 1/202
+00A2
+// [ 587] node=48 (root|k178_f2), disease=16: 10/202
+0656
+// [ 588] node=49 (root|k181_f1), disease=2: 22/205
+0DBC
+// [ 589] node=49 (root|k181_f1), disease=3: 8/205
+04FE
+// [ 590] node=49 (root|k181_f1), disease=4: 6/205
+03BF
+// [ 591] node=49 (root|k181_f1), disease=5: 5/205
+031F
+// [ 592] node=49 (root|k181_f1), disease=6: 17/205
+0A9D
+// [ 593] node=49 (root|k181_f1), disease=7: 2/205
+013F
+// [ 594] node=49 (root|k181_f1), disease=8: 2/205
+013F
+// [ 595] node=49 (root|k181_f1), disease=9: 4/205
+027F
+// [ 596] node=49 (root|k181_f1), disease=10: 19/205
+0BDD
+// [ 597] node=49 (root|k181_f1), disease=14: 0/205
+0000
+// [ 598] node=49 (root|k181_f1), disease=15: 1/205
+009F
+// [ 599] node=49 (root|k181_f1), disease=16: 10/205
+063E
+// [ 600] node=50 (root|k181_f2), disease=2: 16/201
+0A30
+// [ 601] node=50 (root|k181_f2), disease=3: 6/201
+03D2
+// [ 602] node=50 (root|k181_f2), disease=4: 7/201
+0475
+// [ 603] node=50 (root|k181_f2), disease=5: 8/201
+0518
+// [ 604] node=50 (root|k181_f2), disease=6: 7/201
+0475
+// [ 605] node=50 (root|k181_f2), disease=7: 1/201
+00A3
+// [ 606] node=50 (root|k181_f2), disease=8: 0/201
+0000
+// [ 607] node=50 (root|k181_f2), disease=9: 4/201
+028C
+// [ 608] node=50 (root|k181_f2), disease=10: 27/201
+1131
+// [ 609] node=50 (root|k181_f2), disease=14: 4/201
+028C
+// [ 610] node=50 (root|k181_f2), disease=15: 3/201
+01E9
+// [ 611] node=50 (root|k181_f2), disease=16: 11/201
+0701
+// [ 612] node=51 (root|k187_f1), disease=2: 20/205
+0C7C
+// [ 613] node=51 (root|k187_f1), disease=3: 7/205
+045E
+// [ 614] node=51 (root|k187_f1), disease=4: 12/205
+077E
+// [ 615] node=51 (root|k187_f1), disease=5: 6/205
+03BF
+// [ 616] node=51 (root|k187_f1), disease=6: 13/205
+081D
+// [ 617] node=51 (root|k187_f1), disease=7: 2/205
+013F
+// [ 618] node=51 (root|k187_f1), disease=8: 2/205
+013F
+// [ 619] node=51 (root|k187_f1), disease=9: 6/205
+03BF
+// [ 620] node=51 (root|k187_f1), disease=10: 21/205
+0D1C
+// [ 621] node=51 (root|k187_f1), disease=14: 1/205
+009F
+// [ 622] node=51 (root|k187_f1), disease=15: 1/205
+009F
+// [ 623] node=51 (root|k187_f1), disease=16: 8/205
+04FE
+// [ 624] node=52 (root|k187_f2), disease=2: 18/201
+0B76
+// [ 625] node=52 (root|k187_f2), disease=3: 7/201
+0475
+// [ 626] node=52 (root|k187_f2), disease=4: 1/201
+00A3
+// [ 627] node=52 (root|k187_f2), disease=5: 7/201
+0475
+// [ 628] node=52 (root|k187_f2), disease=6: 11/201
+0701
+// [ 629] node=52 (root|k187_f2), disease=7: 1/201
+00A3
+// [ 630] node=52 (root|k187_f2), disease=8: 0/201
+0000
+// [ 631] node=52 (root|k187_f2), disease=9: 2/201
+0146
+// [ 632] node=52 (root|k187_f2), disease=10: 25/201
+0FEB
+// [ 633] node=52 (root|k187_f2), disease=14: 3/201
+01E9
+// [ 634] node=52 (root|k187_f2), disease=15: 3/201
+01E9
+// [ 635] node=52 (root|k187_f2), disease=16: 13/201
+0847
+// [ 636] node=53 (root|k188_f1), disease=2: 23/204
+0E6E
+// [ 637] node=53 (root|k188_f1), disease=3: 6/204
+03C3
+// [ 638] node=53 (root|k188_f1), disease=4: 13/204
+0828
+// [ 639] node=53 (root|k188_f1), disease=5: 5/204
+0323
+// [ 640] node=53 (root|k188_f1), disease=6: 13/204
+0828
+// [ 641] node=53 (root|k188_f1), disease=7: 2/204
+0141
+// [ 642] node=53 (root|k188_f1), disease=8: 2/204
+0141
+// [ 643] node=53 (root|k188_f1), disease=9: 4/204
+0282
+// [ 644] node=53 (root|k188_f1), disease=10: 15/204
+0969
+// [ 645] node=53 (root|k188_f1), disease=14: 1/204
+00A0
+// [ 646] node=53 (root|k188_f1), disease=15: 2/204
+0141
+// [ 647] node=53 (root|k188_f1), disease=16: 9/204
+05A5
+// [ 648] node=54 (root|k188_f2), disease=2: 15/202
+0981
+// [ 649] node=54 (root|k188_f2), disease=3: 8/202
+0511
+// [ 650] node=54 (root|k188_f2), disease=4: 0/202
+0000
+// [ 651] node=54 (root|k188_f2), disease=5: 8/202
+0511
+// [ 652] node=54 (root|k188_f2), disease=6: 11/202
+06F8
+// [ 653] node=54 (root|k188_f2), disease=7: 1/202
+00A2
+// [ 654] node=54 (root|k188_f2), disease=8: 0/202
+0000
+// [ 655] node=54 (root|k188_f2), disease=9: 4/202
+0288
+// [ 656] node=54 (root|k188_f2), disease=10: 31/202
+13A4
+// [ 657] node=54 (root|k188_f2), disease=14: 3/202
+01E6
+// [ 658] node=54 (root|k188_f2), disease=15: 2/202
+0144
+// [ 659] node=54 (root|k188_f2), disease=16: 12/202
+079A
+// [ 660] node=55 (root|k190_f1), disease=2: 25/203
+0FC3
+// [ 661] node=55 (root|k190_f1), disease=3: 3/203
+01E4
+// [ 662] node=55 (root|k190_f1), disease=4: 1/203
+00A1
+// [ 663] node=55 (root|k190_f1), disease=5: 6/203
+03C8
+// [ 664] node=55 (root|k190_f1), disease=6: 12/203
+0791
+// [ 665] node=55 (root|k190_f1), disease=7: 0/203
+0000
+// [ 666] node=55 (root|k190_f1), disease=8: 0/203
+0000
+// [ 667] node=55 (root|k190_f1), disease=9: 5/203
+0327
+// [ 668] node=55 (root|k190_f1), disease=10: 22/203
+0DDF
+// [ 669] node=55 (root|k190_f1), disease=14: 2/203
+0142
+// [ 670] node=55 (root|k190_f1), disease=15: 0/203
+0000
+// [ 671] node=55 (root|k190_f1), disease=16: 12/203
+0791
+// [ 672] node=56 (root|k190_f2), disease=2: 13/203
+0832
+// [ 673] node=56 (root|k190_f2), disease=3: 11/203
+06EF
+// [ 674] node=56 (root|k190_f2), disease=4: 12/203
+0791
+// [ 675] node=56 (root|k190_f2), disease=5: 7/203
+0469
+// [ 676] node=56 (root|k190_f2), disease=6: 12/203
+0791
+// [ 677] node=56 (root|k190_f2), disease=7: 3/203
+01E4
+// [ 678] node=56 (root|k190_f2), disease=8: 2/203
+0142
+// [ 679] node=56 (root|k190_f2), disease=9: 3/203
+01E4
+// [ 680] node=56 (root|k190_f2), disease=10: 24/203
+0F22
+// [ 681] node=56 (root|k190_f2), disease=14: 2/203
+0142
+// [ 682] node=56 (root|k190_f2), disease=15: 4/203
+0285
+// [ 683] node=56 (root|k190_f2), disease=16: 9/203
+05AC
+// [ 684] node=57 (root|k197_f1), disease=2: 21/205
+0D1C
+// [ 685] node=57 (root|k197_f1), disease=3: 3/205
+01DF
+// [ 686] node=57 (root|k197_f1), disease=4: 8/205
+04FE
+// [ 687] node=57 (root|k197_f1), disease=5: 3/205
+01DF
+// [ 688] node=57 (root|k197_f1), disease=6: 12/205
+077E
+// [ 689] node=57 (root|k197_f1), disease=7: 0/205
+0000
+// [ 690] node=57 (root|k197_f1), disease=8: 0/205
+0000
+// [ 691] node=57 (root|k197_f1), disease=9: 7/205
+045E
+// [ 692] node=57 (root|k197_f1), disease=10: 13/205
+081D
+// [ 693] node=57 (root|k197_f1), disease=14: 3/205
+01DF
+// [ 694] node=57 (root|k197_f1), disease=15: 1/205
+009F
+// [ 695] node=57 (root|k197_f1), disease=16: 14/205
+08BD
+// [ 696] node=58 (root|k197_f2), disease=2: 17/201
+0AD3
+// [ 697] node=58 (root|k197_f2), disease=3: 11/201
+0701
+// [ 698] node=58 (root|k197_f2), disease=4: 5/201
+032F
+// [ 699] node=58 (root|k197_f2), disease=5: 10/201
+065E
+// [ 700] node=58 (root|k197_f2), disease=6: 12/201
+07A4
+// [ 701] node=58 (root|k197_f2), disease=7: 3/201
+01E9
+// [ 702] node=58 (root|k197_f2), disease=8: 2/201
+0146
+// [ 703] node=58 (root|k197_f2), disease=9: 1/201
+00A3
+// [ 704] node=58 (root|k197_f2), disease=10: 33/201
+1503
+// [ 705] node=58 (root|k197_f2), disease=14: 1/201
+00A3
+// [ 706] node=58 (root|k197_f2), disease=15: 3/201
+01E9
+// [ 707] node=58 (root|k197_f2), disease=16: 7/201
+0475
+// [ 708] node=59 (root|k198_f1), disease=2: 12/204
+0787
+// [ 709] node=59 (root|k198_f1), disease=3: 2/204
+0141
+// [ 710] node=59 (root|k198_f1), disease=4: 4/204
+0282
+// [ 711] node=59 (root|k198_f1), disease=5: 4/204
+0282
+// [ 712] node=59 (root|k198_f1), disease=6: 13/204
+0828
+// [ 713] node=59 (root|k198_f1), disease=7: 1/204
+00A0
+// [ 714] node=59 (root|k198_f1), disease=8: 0/204
+0000
+// [ 715] node=59 (root|k198_f1), disease=9: 2/204
+0141
+// [ 716] node=59 (root|k198_f1), disease=10: 22/204
+0DCD
+// [ 717] node=59 (root|k198_f1), disease=14: 3/204
+01E1
+// [ 718] node=59 (root|k198_f1), disease=15: 0/204
+0000
+// [ 719] node=59 (root|k198_f1), disease=16: 11/204
+06E6
+// [ 720] node=60 (root|k198_f2), disease=2: 26/202
+1079
+// [ 721] node=60 (root|k198_f2), disease=3: 12/202
+079A
+// [ 722] node=60 (root|k198_f2), disease=4: 9/202
+05B3
+// [ 723] node=60 (root|k198_f2), disease=5: 9/202
+05B3
+// [ 724] node=60 (root|k198_f2), disease=6: 11/202
+06F8
+// [ 725] node=60 (root|k198_f2), disease=7: 2/202
+0144
+// [ 726] node=60 (root|k198_f2), disease=8: 2/202
+0144
+// [ 727] node=60 (root|k198_f2), disease=9: 6/202
+03CD
+// [ 728] node=60 (root|k198_f2), disease=10: 24/202
+0F35
+// [ 729] node=60 (root|k198_f2), disease=14: 1/202
+00A2
+// [ 730] node=60 (root|k198_f2), disease=15: 4/202
+0288
+// [ 731] node=60 (root|k198_f2), disease=16: 10/202
+0656
+// [ 732] node=61 (root|k201_f1), disease=2: 10/203
+064E
+// [ 733] node=61 (root|k201_f1), disease=3: 7/203
+0469
+// [ 734] node=61 (root|k201_f1), disease=4: 1/203
+00A1
+// [ 735] node=61 (root|k201_f1), disease=5: 7/203
+0469
+// [ 736] node=61 (root|k201_f1), disease=6: 10/203
+064E
+// [ 737] node=61 (root|k201_f1), disease=7: 1/203
+00A1
+// [ 738] node=61 (root|k201_f1), disease=8: 0/203
+0000
+// [ 739] node=61 (root|k201_f1), disease=9: 2/203
+0142
+// [ 740] node=61 (root|k201_f1), disease=10: 26/203
+1064
+// [ 741] node=61 (root|k201_f1), disease=14: 3/203
+01E4
+// [ 742] node=61 (root|k201_f1), disease=15: 3/203
+01E4
+// [ 743] node=61 (root|k201_f1), disease=16: 13/203
+0832
+// [ 744] node=62 (root|k201_f2), disease=2: 28/203
+11A7
+// [ 745] node=62 (root|k201_f2), disease=3: 7/203
+0469
+// [ 746] node=62 (root|k201_f2), disease=4: 12/203
+0791
+// [ 747] node=62 (root|k201_f2), disease=5: 6/203
+03C8
+// [ 748] node=62 (root|k201_f2), disease=6: 14/203
+08D3
+// [ 749] node=62 (root|k201_f2), disease=7: 2/203
+0142
+// [ 750] node=62 (root|k201_f2), disease=8: 2/203
+0142
+// [ 751] node=62 (root|k201_f2), disease=9: 6/203
+03C8
+// [ 752] node=62 (root|k201_f2), disease=10: 20/203
+0C9C
+// [ 753] node=62 (root|k201_f2), disease=14: 1/203
+00A1
+// [ 754] node=62 (root|k201_f2), disease=15: 1/203
+00A1
+// [ 755] node=62 (root|k201_f2), disease=16: 8/203
+050B
+// [ 756] node=63 (root|k207_f1), disease=2: 14/205
+08BD
+// [ 757] node=63 (root|k207_f1), disease=3: 8/205
+04FE
+// [ 758] node=63 (root|k207_f1), disease=4: 2/205
+013F
+// [ 759] node=63 (root|k207_f1), disease=5: 9/205
+059E
+// [ 760] node=63 (root|k207_f1), disease=6: 11/205
+06DE
+// [ 761] node=63 (root|k207_f1), disease=7: 1/205
+009F
+// [ 762] node=63 (root|k207_f1), disease=8: 0/205
+0000
+// [ 763] node=63 (root|k207_f1), disease=9: 2/205
+013F
+// [ 764] node=63 (root|k207_f1), disease=10: 26/205
+103B
+// [ 765] node=63 (root|k207_f1), disease=14: 3/205
+01DF
+// [ 766] node=63 (root|k207_f1), disease=15: 3/205
+01DF
+// [ 767] node=63 (root|k207_f1), disease=16: 12/205
+077E
+// [ 768] node=64 (root|k207_f2), disease=2: 24/201
+0F48
+// [ 769] node=64 (root|k207_f2), disease=3: 6/201
+03D2
+// [ 770] node=64 (root|k207_f2), disease=4: 11/201
+0701
+// [ 771] node=64 (root|k207_f2), disease=5: 4/201
+028C
+// [ 772] node=64 (root|k207_f2), disease=6: 13/201
+0847
+// [ 773] node=64 (root|k207_f2), disease=7: 2/201
+0146
+// [ 774] node=64 (root|k207_f2), disease=8: 2/201
+0146
+// [ 775] node=64 (root|k207_f2), disease=9: 6/201
+03D2
+// [ 776] node=64 (root|k207_f2), disease=10: 20/201
+0CBC
+// [ 777] node=64 (root|k207_f2), disease=14: 1/201
+00A3
+// [ 778] node=64 (root|k207_f2), disease=15: 1/201
+00A3
+// [ 779] node=64 (root|k207_f2), disease=16: 9/201
+05BB
+// [ 780] node=65 (root|k208_f1), disease=2: 23/203
+0E80
+// [ 781] node=65 (root|k208_f1), disease=3: 8/203
+050B
+// [ 782] node=65 (root|k208_f1), disease=4: 3/203
+01E4
+// [ 783] node=65 (root|k208_f1), disease=5: 8/203
+050B
+// [ 784] node=65 (root|k208_f1), disease=6: 9/203
+05AC
+// [ 785] node=65 (root|k208_f1), disease=7: 1/203
+00A1
+// [ 786] node=65 (root|k208_f1), disease=8: 0/203
+0000
+// [ 787] node=65 (root|k208_f1), disease=9: 3/203
+01E4
+// [ 788] node=65 (root|k208_f1), disease=10: 27/203
+1106
+// [ 789] node=65 (root|k208_f1), disease=14: 3/203
+01E4
+// [ 790] node=65 (root|k208_f1), disease=15: 2/203
+0142
+// [ 791] node=65 (root|k208_f1), disease=16: 11/203
+06EF
+// [ 792] node=66 (root|k208_f2), disease=2: 15/203
+0975
+// [ 793] node=66 (root|k208_f2), disease=3: 6/203
+03C8
+// [ 794] node=66 (root|k208_f2), disease=4: 10/203
+064E
+// [ 795] node=66 (root|k208_f2), disease=5: 5/203
+0327
+// [ 796] node=66 (root|k208_f2), disease=6: 15/203
+0975
+// [ 797] node=66 (root|k208_f2), disease=7: 2/203
+0142
+// [ 798] node=66 (root|k208_f2), disease=8: 2/203
+0142
+// [ 799] node=66 (root|k208_f2), disease=9: 5/203
+0327
+// [ 800] node=66 (root|k208_f2), disease=10: 19/203
+0BFA
+// [ 801] node=66 (root|k208_f2), disease=14: 1/203
+00A1
+// [ 802] node=66 (root|k208_f2), disease=15: 2/203
+0142
+// [ 803] node=66 (root|k208_f2), disease=16: 10/203
+064E
+// [ 804] node=67 (root|k217_f1), disease=2: 22/203
+0DDF
+// [ 805] node=67 (root|k217_f1), disease=3: 7/203
+0469
+// [ 806] node=67 (root|k217_f1), disease=4: 11/203
+06EF
+// [ 807] node=67 (root|k217_f1), disease=5: 6/203
+03C8
+// [ 808] node=67 (root|k217_f1), disease=6: 11/203
+06EF
+// [ 809] node=67 (root|k217_f1), disease=7: 2/203
+0142
+// [ 810] node=67 (root|k217_f1), disease=8: 2/203
+0142
+// [ 811] node=67 (root|k217_f1), disease=9: 3/203
+01E4
+// [ 812] node=67 (root|k217_f1), disease=10: 25/203
+0FC3
+// [ 813] node=67 (root|k217_f1), disease=14: 0/203
+0000
+// [ 814] node=67 (root|k217_f1), disease=15: 2/203
+0142
+// [ 815] node=67 (root|k217_f1), disease=16: 10/203
+064E
+// [ 816] node=68 (root|k217_f2), disease=2: 16/203
+0A16
+// [ 817] node=68 (root|k217_f2), disease=3: 7/203
+0469
+// [ 818] node=68 (root|k217_f2), disease=4: 2/203
+0142
+// [ 819] node=68 (root|k217_f2), disease=5: 7/203
+0469
+// [ 820] node=68 (root|k217_f2), disease=6: 13/203
+0832
+// [ 821] node=68 (root|k217_f2), disease=7: 1/203
+00A1
+// [ 822] node=68 (root|k217_f2), disease=8: 0/203
+0000
+// [ 823] node=68 (root|k217_f2), disease=9: 5/203
+0327
+// [ 824] node=68 (root|k217_f2), disease=10: 21/203
+0D3D
+// [ 825] node=68 (root|k217_f2), disease=14: 4/203
+0285
+// [ 826] node=68 (root|k217_f2), disease=15: 2/203
+0142
+// [ 827] node=68 (root|k217_f2), disease=16: 11/203
+06EF
+// [ 828] node=69 (root|k218_f1), disease=2: 27/204
+10F0
+// [ 829] node=69 (root|k218_f1), disease=3: 9/204
+05A5
+// [ 830] node=69 (root|k218_f1), disease=4: 13/204
+0828
+// [ 831] node=69 (root|k218_f1), disease=5: 4/204
+0282
+// [ 832] node=69 (root|k218_f1), disease=6: 11/204
+06E6
+// [ 833] node=69 (root|k218_f1), disease=7: 2/204
+0141
+// [ 834] node=69 (root|k218_f1), disease=8: 2/204
+0141
+// [ 835] node=69 (root|k218_f1), disease=9: 4/204
+0282
+// [ 836] node=69 (root|k218_f1), disease=10: 20/204
+0C8C
+// [ 837] node=69 (root|k218_f1), disease=14: 1/204
+00A0
+// [ 838] node=69 (root|k218_f1), disease=15: 3/204
+01E1
+// [ 839] node=69 (root|k218_f1), disease=16: 10/204
+0646
+// [ 840] node=70 (root|k218_f2), disease=2: 11/202
+06F8
+// [ 841] node=70 (root|k218_f2), disease=3: 5/202
+032B
+// [ 842] node=70 (root|k218_f2), disease=4: 0/202
+0000
+// [ 843] node=70 (root|k218_f2), disease=5: 9/202
+05B3
+// [ 844] node=70 (root|k218_f2), disease=6: 13/202
+083C
+// [ 845] node=70 (root|k218_f2), disease=7: 1/202
+00A2
+// [ 846] node=70 (root|k218_f2), disease=8: 0/202
+0000
+// [ 847] node=70 (root|k218_f2), disease=9: 4/202
+0288
+// [ 848] node=70 (root|k218_f2), disease=10: 26/202
+1079
+// [ 849] node=70 (root|k218_f2), disease=14: 3/202
+01E6
+// [ 850] node=70 (root|k218_f2), disease=15: 1/202
+00A2
+// [ 851] node=70 (root|k218_f2), disease=16: 11/202
+06F8
+// [ 852] node=71 (root|k227_f1), disease=2: 24/204
+0F0F
+// [ 853] node=71 (root|k227_f1), disease=3: 12/204
+0787
+// [ 854] node=71 (root|k227_f1), disease=4: 7/204
+0464
+// [ 855] node=71 (root|k227_f1), disease=5: 2/204
+0141
+// [ 856] node=71 (root|k227_f1), disease=6: 14/204
+08C8
+// [ 857] node=71 (root|k227_f1), disease=7: 3/204
+01E1
+// [ 858] node=71 (root|k227_f1), disease=8: 1/204
+00A0
+// [ 859] node=71 (root|k227_f1), disease=9: 8/204
+0505
+// [ 860] node=71 (root|k227_f1), disease=10: 6/204
+03C3
+// [ 861] node=71 (root|k227_f1), disease=14: 3/204
+01E1
+// [ 862] node=71 (root|k227_f1), disease=15: 0/204
+0000
+// [ 863] node=71 (root|k227_f1), disease=16: 12/204
+0787
+// [ 864] node=72 (root|k227_f2), disease=2: 14/202
+08DF
+// [ 865] node=72 (root|k227_f2), disease=3: 2/202
+0144
+// [ 866] node=72 (root|k227_f2), disease=4: 6/202
+03CD
+// [ 867] node=72 (root|k227_f2), disease=5: 11/202
+06F8
+// [ 868] node=72 (root|k227_f2), disease=6: 10/202
+0656
+// [ 869] node=72 (root|k227_f2), disease=7: 0/202
+0000
+// [ 870] node=72 (root|k227_f2), disease=8: 1/202
+00A2
+// [ 871] node=72 (root|k227_f2), disease=9: 0/202
+0000
+// [ 872] node=72 (root|k227_f2), disease=10: 40/202
+1958
+// [ 873] node=72 (root|k227_f2), disease=14: 1/202
+00A2
+// [ 874] node=72 (root|k227_f2), disease=15: 4/202
+0288
+// [ 875] node=72 (root|k227_f2), disease=16: 9/202
+05B3
+// [ 876] node=73 (root|k228_f1), disease=2: 16/203
+0A16
+// [ 877] node=73 (root|k228_f1), disease=3: 8/203
+050B
+// [ 878] node=73 (root|k228_f1), disease=4: 2/203
+0142
+// [ 879] node=73 (root|k228_f1), disease=5: 3/203
+01E4
+// [ 880] node=73 (root|k228_f1), disease=6: 14/203
+08D3
+// [ 881] node=73 (root|k228_f1), disease=7: 2/203
+0142
+// [ 882] node=73 (root|k228_f1), disease=8: 1/203
+00A1
+// [ 883] node=73 (root|k228_f1), disease=9: 3/203
+01E4
+// [ 884] node=73 (root|k228_f1), disease=10: 12/203
+0791
+// [ 885] node=73 (root|k228_f1), disease=14: 2/203
+0142
+// [ 886] node=73 (root|k228_f1), disease=15: 2/203
+0142
+// [ 887] node=73 (root|k228_f1), disease=16: 11/203
+06EF
+// [ 888] node=74 (root|k228_f2), disease=2: 22/203
+0DDF
+// [ 889] node=74 (root|k228_f2), disease=3: 6/203
+03C8
+// [ 890] node=74 (root|k228_f2), disease=4: 11/203
+06EF
+// [ 891] node=74 (root|k228_f2), disease=5: 10/203
+064E
+// [ 892] node=74 (root|k228_f2), disease=6: 10/203
+064E
+// [ 893] node=74 (root|k228_f2), disease=7: 1/203
+00A1
+// [ 894] node=74 (root|k228_f2), disease=8: 1/203
+00A1
+// [ 895] node=74 (root|k228_f2), disease=9: 5/203
+0327
+// [ 896] node=74 (root|k228_f2), disease=10: 34/203
+1570
+// [ 897] node=74 (root|k228_f2), disease=14: 2/203
+0142
+// [ 898] node=74 (root|k228_f2), disease=15: 2/203
+0142
+// [ 899] node=74 (root|k228_f2), disease=16: 10/203
+064E
+// [ 900] node=75 (root|k232_f1), disease=2: 25/205
+0F9C
+// [ 901] node=75 (root|k232_f1), disease=3: 1/205
+009F
+// [ 902] node=75 (root|k232_f1), disease=4: 6/205
+03BF
+// [ 903] node=75 (root|k232_f1), disease=5: 5/205
+031F
+// [ 904] node=75 (root|k232_f1), disease=6: 8/205
+04FE
+// [ 905] node=75 (root|k232_f1), disease=7: 2/205
+013F
+// [ 906] node=75 (root|k232_f1), disease=8: 0/205
+0000
+// [ 907] node=75 (root|k232_f1), disease=9: 5/205
+031F
+// [ 908] node=75 (root|k232_f1), disease=10: 17/205
+0A9D
+// [ 909] node=75 (root|k232_f1), disease=14: 4/205
+027F
+// [ 910] node=75 (root|k232_f1), disease=15: 2/205
+013F
+// [ 911] node=75 (root|k232_f1), disease=16: 15/205
+095D
+// [ 912] node=76 (root|k232_f2), disease=2: 13/201
+0847
+// [ 913] node=76 (root|k232_f2), disease=3: 13/201
+0847
+// [ 914] node=76 (root|k232_f2), disease=4: 7/201
+0475
+// [ 915] node=76 (root|k232_f2), disease=5: 8/201
+0518
+// [ 916] node=76 (root|k232_f2), disease=6: 16/201
+0A30
+// [ 917] node=76 (root|k232_f2), disease=7: 1/201
+00A3
+// [ 918] node=76 (root|k232_f2), disease=8: 2/201
+0146
+// [ 919] node=76 (root|k232_f2), disease=9: 3/201
+01E9
+// [ 920] node=76 (root|k232_f2), disease=10: 29/201
+1277
+// [ 921] node=76 (root|k232_f2), disease=14: 0/201
+0000
+// [ 922] node=76 (root|k232_f2), disease=15: 2/201
+0146
+// [ 923] node=76 (root|k232_f2), disease=16: 6/201
+03D2
+// [ 924] node=77 (root|k237_f1), disease=2: 24/203
+0F22
+// [ 925] node=77 (root|k237_f1), disease=3: 12/203
+0791
+// [ 926] node=77 (root|k237_f1), disease=4: 5/203
+0327
+// [ 927] node=77 (root|k237_f1), disease=5: 2/203
+0142
+// [ 928] node=77 (root|k237_f1), disease=6: 14/203
+08D3
+// [ 929] node=77 (root|k237_f1), disease=7: 2/203
+0142
+// [ 930] node=77 (root|k237_f1), disease=8: 0/203
+0000
+// [ 931] node=77 (root|k237_f1), disease=9: 8/203
+050B
+// [ 932] node=77 (root|k237_f1), disease=10: 10/203
+064E
+// [ 933] node=77 (root|k237_f1), disease=14: 4/203
+0285
+// [ 934] node=77 (root|k237_f1), disease=15: 4/203
+0285
+// [ 935] node=77 (root|k237_f1), disease=16: 14/203
+08D3
+// [ 936] node=78 (root|k237_f2), disease=2: 14/203
+08D3
+// [ 937] node=78 (root|k237_f2), disease=3: 2/203
+0142
+// [ 938] node=78 (root|k237_f2), disease=4: 8/203
+050B
+// [ 939] node=78 (root|k237_f2), disease=5: 11/203
+06EF
+// [ 940] node=78 (root|k237_f2), disease=6: 10/203
+064E
+// [ 941] node=78 (root|k237_f2), disease=7: 1/203
+00A1
+// [ 942] node=78 (root|k237_f2), disease=8: 2/203
+0142
+// [ 943] node=78 (root|k237_f2), disease=9: 0/203
+0000
+// [ 944] node=78 (root|k237_f2), disease=10: 36/203
+16B3
+// [ 945] node=78 (root|k237_f2), disease=14: 0/203
+0000
+// [ 946] node=78 (root|k237_f2), disease=15: 0/203
+0000
+// [ 947] node=78 (root|k237_f2), disease=16: 7/203
+0469
+// [ 948] node=79 (root|k238_f1), disease=2: 26/204
+1050
+// [ 949] node=79 (root|k238_f1), disease=3: 13/204
+0828
+// [ 950] node=79 (root|k238_f1), disease=4: 4/204
+0282
+// [ 951] node=79 (root|k238_f1), disease=5: 7/204
+0464
+// [ 952] node=79 (root|k238_f1), disease=6: 10/204
+0646
+// [ 953] node=79 (root|k238_f1), disease=7: 3/204
+01E1
+// [ 954] node=79 (root|k238_f1), disease=8: 1/204
+00A0
+// [ 955] node=79 (root|k238_f1), disease=9: 4/204
+0282
+// [ 956] node=79 (root|k238_f1), disease=10: 20/204
+0C8C
+// [ 957] node=79 (root|k238_f1), disease=14: 3/204
+01E1
+// [ 958] node=79 (root|k238_f1), disease=15: 4/204
+0282
+// [ 959] node=79 (root|k238_f1), disease=16: 8/204
+0505
+// [ 960] node=80 (root|k238_f2), disease=2: 12/202
+079A
+// [ 961] node=80 (root|k238_f2), disease=3: 1/202
+00A2
+// [ 962] node=80 (root|k238_f2), disease=4: 9/202
+05B3
+// [ 963] node=80 (root|k238_f2), disease=5: 6/202
+03CD
+// [ 964] node=80 (root|k238_f2), disease=6: 14/202
+08DF
+// [ 965] node=80 (root|k238_f2), disease=7: 0/202
+0000
+// [ 966] node=80 (root|k238_f2), disease=8: 1/202
+00A2
+// [ 967] node=80 (root|k238_f2), disease=9: 4/202
+0288
+// [ 968] node=80 (root|k238_f2), disease=10: 26/202
+1079
+// [ 969] node=80 (root|k238_f2), disease=14: 1/202
+00A2
+// [ 970] node=80 (root|k238_f2), disease=15: 0/202
+0000
+// [ 971] node=80 (root|k238_f2), disease=16: 13/202
+083C
+// [ 972] node=81 (root|k242_f1), disease=2: 27/204
+10F0
+// [ 973] node=81 (root|k242_f1), disease=3: 1/204
+00A0
+// [ 974] node=81 (root|k242_f1), disease=4: 7/204
+0464
+// [ 975] node=81 (root|k242_f1), disease=5: 9/204
+05A5
+// [ 976] node=81 (root|k242_f1), disease=6: 7/204
+0464
+// [ 977] node=81 (root|k242_f1), disease=7: 2/204
+0141
+// [ 978] node=81 (root|k242_f1), disease=8: 2/204
+0141
+// [ 979] node=81 (root|k242_f1), disease=9: 8/204
+0505
+// [ 980] node=81 (root|k242_f1), disease=10: 21/204
+0D2D
+// [ 981] node=81 (root|k242_f1), disease=14: 4/204
+0282
+// [ 982] node=81 (root|k242_f1), disease=15: 3/204
+01E1
+// [ 983] node=81 (root|k242_f1), disease=16: 15/204
+0969
+// [ 984] node=82 (root|k242_f2), disease=2: 11/202
+06F8
+// [ 985] node=82 (root|k242_f2), disease=3: 13/202
+083C
+// [ 986] node=82 (root|k242_f2), disease=4: 6/202
+03CD
+// [ 987] node=82 (root|k242_f2), disease=5: 4/202
+0288
+// [ 988] node=82 (root|k242_f2), disease=6: 17/202
+0AC5
+// [ 989] node=82 (root|k242_f2), disease=7: 1/202
+00A2
+// [ 990] node=82 (root|k242_f2), disease=8: 0/202
+0000
+// [ 991] node=82 (root|k242_f2), disease=9: 0/202
+0000
+// [ 992] node=82 (root|k242_f2), disease=10: 25/202
+0FD7
+// [ 993] node=82 (root|k242_f2), disease=14: 0/202
+0000
+// [ 994] node=82 (root|k242_f2), disease=15: 1/202
+00A2
+// [ 995] node=82 (root|k242_f2), disease=16: 6/202
+03CD
+// [ 996] node=83 (root|k247_f1), disease=2: 22/203
+0DDF
+// [ 997] node=83 (root|k247_f1), disease=3: 14/203
+08D3
+// [ 998] node=83 (root|k247_f1), disease=4: 5/203
+0327
+// [ 999] node=83 (root|k247_f1), disease=5: 4/203
+0285
+// [1000] node=83 (root|k247_f1), disease=6: 12/203
+0791
+// [1001] node=83 (root|k247_f1), disease=7: 2/203
+0142
+// [1002] node=83 (root|k247_f1), disease=8: 1/203
+00A1
+// [1003] node=83 (root|k247_f1), disease=9: 8/203
+050B
+// [1004] node=83 (root|k247_f1), disease=10: 19/203
+0BFA
+// [1005] node=83 (root|k247_f1), disease=14: 4/203
+0285
+// [1006] node=83 (root|k247_f1), disease=15: 4/203
+0285
+// [1007] node=83 (root|k247_f1), disease=16: 12/203
+0791
+// [1008] node=84 (root|k247_f2), disease=2: 16/203
+0A16
+// [1009] node=84 (root|k247_f2), disease=3: 0/203
+0000
+// [1010] node=84 (root|k247_f2), disease=4: 8/203
+050B
+// [1011] node=84 (root|k247_f2), disease=5: 9/203
+05AC
+// [1012] node=84 (root|k247_f2), disease=6: 12/203
+0791
+// [1013] node=84 (root|k247_f2), disease=7: 1/203
+00A1
+// [1014] node=84 (root|k247_f2), disease=8: 1/203
+00A1
+// [1015] node=84 (root|k247_f2), disease=9: 0/203
+0000
+// [1016] node=84 (root|k247_f2), disease=10: 27/203
+1106
+// [1017] node=84 (root|k247_f2), disease=14: 0/203
+0000
+// [1018] node=84 (root|k247_f2), disease=15: 0/203
+0000
+// [1019] node=84 (root|k247_f2), disease=16: 9/203
+05AC
+// [1020] node=85 (root|k248_f1), disease=2: 31/203
+138B
+// [1021] node=85 (root|k248_f1), disease=3: 13/203
+0832
+// [1022] node=85 (root|k248_f1), disease=4: 6/203
+03C8
+// [1023] node=85 (root|k248_f1), disease=5: 9/203
+05AC
+// [1024] node=85 (root|k248_f1), disease=6: 12/203
+0791
+// [1025] node=85 (root|k248_f1), disease=7: 1/203
+00A1
+// [1026] node=85 (root|k248_f1), disease=8: 1/203
+00A1
+// [1027] node=85 (root|k248_f1), disease=9: 5/203
+0327
+// [1028] node=85 (root|k248_f1), disease=10: 20/203
+0C9C
+// [1029] node=85 (root|k248_f1), disease=14: 3/203
+01E4
+// [1030] node=85 (root|k248_f1), disease=15: 3/203
+01E4
+// [1031] node=85 (root|k248_f1), disease=16: 9/203
+05AC
+// [1032] node=86 (root|k248_f2), disease=2: 7/203
+0469
+// [1033] node=86 (root|k248_f2), disease=3: 1/203
+00A1
+// [1034] node=86 (root|k248_f2), disease=4: 7/203
+0469
+// [1035] node=86 (root|k248_f2), disease=5: 4/203
+0285
+// [1036] node=86 (root|k248_f2), disease=6: 12/203
+0791
+// [1037] node=86 (root|k248_f2), disease=7: 2/203
+0142
+// [1038] node=86 (root|k248_f2), disease=8: 1/203
+00A1
+// [1039] node=86 (root|k248_f2), disease=9: 3/203
+01E4
+// [1040] node=86 (root|k248_f2), disease=10: 26/203
+1064
+// [1041] node=86 (root|k248_f2), disease=14: 1/203
+00A1
+// [1042] node=86 (root|k248_f2), disease=15: 1/203
+00A1
+// [1043] node=86 (root|k248_f2), disease=16: 12/203
+0791
+// [1044] node=87 (root|k251_f1), disease=2: 17/204
+0AAA
+// [1045] node=87 (root|k251_f1), disease=3: 13/204
+0828
+// [1046] node=87 (root|k251_f1), disease=4: 5/204
+0323
+// [1047] node=87 (root|k251_f1), disease=5: 8/204
+0505
+// [1048] node=87 (root|k251_f1), disease=6: 12/204
+0787
+// [1049] node=87 (root|k251_f1), disease=7: 1/204
+00A0
+// [1050] node=87 (root|k251_f1), disease=8: 1/204
+00A0
+// [1051] node=87 (root|k251_f1), disease=9: 8/204
+0505
+// [1052] node=87 (root|k251_f1), disease=10: 20/204
+0C8C
+// [1053] node=87 (root|k251_f1), disease=14: 1/204
+00A0
+// [1054] node=87 (root|k251_f1), disease=15: 3/204
+01E1
+// [1055] node=87 (root|k251_f1), disease=16: 7/204
+0464
+// [1056] node=88 (root|k251_f2), disease=2: 21/202
+0D4E
+// [1057] node=88 (root|k251_f2), disease=3: 1/202
+00A2
+// [1058] node=88 (root|k251_f2), disease=4: 8/202
+0511
+// [1059] node=88 (root|k251_f2), disease=5: 5/202
+032B
+// [1060] node=88 (root|k251_f2), disease=6: 12/202
+079A
+// [1061] node=88 (root|k251_f2), disease=7: 2/202
+0144
+// [1062] node=88 (root|k251_f2), disease=8: 1/202
+00A2
+// [1063] node=88 (root|k251_f2), disease=9: 0/202
+0000
+// [1064] node=88 (root|k251_f2), disease=10: 26/202
+1079
+// [1065] node=88 (root|k251_f2), disease=14: 3/202
+01E6
+// [1066] node=88 (root|k251_f2), disease=15: 1/202
+00A2
+// [1067] node=88 (root|k251_f2), disease=16: 14/202
+08DF
+// [1068] node=89 (root|k252_f1), disease=2: 26/204
+1050
+// [1069] node=89 (root|k252_f1), disease=3: 6/204
+03C3
+// [1070] node=89 (root|k252_f1), disease=4: 6/204
+03C3
+// [1071] node=89 (root|k252_f1), disease=5: 9/204
+05A5
+// [1072] node=89 (root|k252_f1), disease=6: 10/204
+0646
+// [1073] node=89 (root|k252_f1), disease=7: 2/204
+0141
+// [1074] node=89 (root|k252_f1), disease=8: 2/204
+0141
+// [1075] node=89 (root|k252_f1), disease=9: 6/204
+03C3
+// [1076] node=89 (root|k252_f1), disease=10: 25/204
+0FAF
+// [1077] node=89 (root|k252_f1), disease=14: 3/204
+01E1
+// [1078] node=89 (root|k252_f1), disease=15: 3/204
+01E1
+// [1079] node=89 (root|k252_f1), disease=16: 15/204
+0969
+// [1080] node=90 (root|k252_f2), disease=2: 12/202
+079A
+// [1081] node=90 (root|k252_f2), disease=3: 8/202
+0511
+// [1082] node=90 (root|k252_f2), disease=4: 7/202
+046F
+// [1083] node=90 (root|k252_f2), disease=5: 4/202
+0288
+// [1084] node=90 (root|k252_f2), disease=6: 14/202
+08DF
+// [1085] node=90 (root|k252_f2), disease=7: 1/202
+00A2
+// [1086] node=90 (root|k252_f2), disease=8: 0/202
+0000
+// [1087] node=90 (root|k252_f2), disease=9: 2/202
+0144
+// [1088] node=90 (root|k252_f2), disease=10: 21/202
+0D4E
+// [1089] node=90 (root|k252_f2), disease=14: 1/202
+00A2
+// [1090] node=90 (root|k252_f2), disease=15: 1/202
+00A2
+// [1091] node=90 (root|k252_f2), disease=16: 6/202
+03CD
+// [1092] node=91 (root|k256_f1), disease=2: 34/204
+1555
+// [1093] node=91 (root|k256_f1), disease=3: 8/204
+0505
+// [1094] node=91 (root|k256_f1), disease=4: 9/204
+05A5
+// [1095] node=91 (root|k256_f1), disease=5: 7/204
+0464
+// [1096] node=91 (root|k256_f1), disease=6: 8/204
+0505
+// [1097] node=91 (root|k256_f1), disease=7: 1/204
+00A0
+// [1098] node=91 (root|k256_f1), disease=8: 1/204
+00A0
+// [1099] node=91 (root|k256_f1), disease=9: 3/204
+01E1
+// [1100] node=91 (root|k256_f1), disease=10: 18/204
+0B4B
+// [1101] node=91 (root|k256_f1), disease=14: 0/204
+0000
+// [1102] node=91 (root|k256_f1), disease=15: 4/204
+0282
+// [1103] node=91 (root|k256_f1), disease=16: 9/204
+05A5
+// [1104] node=92 (root|k256_f2), disease=2: 4/202
+0288
+// [1105] node=92 (root|k256_f2), disease=3: 6/202
+03CD
+// [1106] node=92 (root|k256_f2), disease=4: 4/202
+0288
+// [1107] node=92 (root|k256_f2), disease=5: 6/202
+03CD
+// [1108] node=92 (root|k256_f2), disease=6: 16/202
+0A23
+// [1109] node=92 (root|k256_f2), disease=7: 2/202
+0144
+// [1110] node=92 (root|k256_f2), disease=8: 1/202
+00A2
+// [1111] node=92 (root|k256_f2), disease=9: 5/202
+032B
+// [1112] node=92 (root|k256_f2), disease=10: 28/202
+11BE
+// [1113] node=92 (root|k256_f2), disease=14: 4/202
+0288
+// [1114] node=92 (root|k256_f2), disease=15: 0/202
+0000
+// [1115] node=92 (root|k256_f2), disease=16: 12/202
+079A
+// [1116] node=93 (root|k257_f1), disease=2: 24/203
+0F22
+// [1117] node=93 (root|k257_f1), disease=3: 14/203
+08D3
+// [1118] node=93 (root|k257_f1), disease=4: 7/203
+0469
+// [1119] node=93 (root|k257_f1), disease=5: 10/203
+064E
+// [1120] node=93 (root|k257_f1), disease=6: 9/203
+05AC
+// [1121] node=93 (root|k257_f1), disease=7: 2/203
+0142
+// [1122] node=93 (root|k257_f1), disease=8: 1/203
+00A1
+// [1123] node=93 (root|k257_f1), disease=9: 8/203
+050B
+// [1124] node=93 (root|k257_f1), disease=10: 20/203
+0C9C
+// [1125] node=93 (root|k257_f1), disease=14: 1/203
+00A1
+// [1126] node=93 (root|k257_f1), disease=15: 3/203
+01E4
+// [1127] node=93 (root|k257_f1), disease=16: 9/203
+05AC
+// [1128] node=94 (root|k257_f2), disease=2: 14/203
+08D3
+// [1129] node=94 (root|k257_f2), disease=3: 0/203
+0000
+// [1130] node=94 (root|k257_f2), disease=4: 6/203
+03C8
+// [1131] node=94 (root|k257_f2), disease=5: 3/203
+01E4
+// [1132] node=94 (root|k257_f2), disease=6: 15/203
+0975
+// [1133] node=94 (root|k257_f2), disease=7: 1/203
+00A1
+// [1134] node=94 (root|k257_f2), disease=8: 1/203
+00A1
+// [1135] node=94 (root|k257_f2), disease=9: 0/203
+0000
+// [1136] node=94 (root|k257_f2), disease=10: 26/203
+1064
+// [1137] node=94 (root|k257_f2), disease=14: 3/203
+01E4
+// [1138] node=94 (root|k257_f2), disease=15: 1/203
+00A1
+// [1139] node=94 (root|k257_f2), disease=16: 12/203
+0791
+// [1140] node=95 (root|k258_f1), disease=2: 33/203
+14CE
+// [1141] node=95 (root|k258_f1), disease=3: 12/203
+0791
+// [1142] node=95 (root|k258_f1), disease=4: 7/203
+0469
+// [1143] node=95 (root|k258_f1), disease=5: 10/203
+064E
+// [1144] node=95 (root|k258_f1), disease=6: 7/203
+0469
+// [1145] node=95 (root|k258_f1), disease=7: 1/203
+00A1
+// [1146] node=95 (root|k258_f1), disease=8: 1/203
+00A1
+// [1147] node=95 (root|k258_f1), disease=9: 7/203
+0469
+// [1148] node=95 (root|k258_f1), disease=10: 15/203
+0975
+// [1149] node=95 (root|k258_f1), disease=14: 0/203
+0000
+// [1150] node=95 (root|k258_f1), disease=15: 3/203
+01E4
+// [1151] node=95 (root|k258_f1), disease=16: 10/203
+064E
+// [1152] node=96 (root|k258_f2), disease=2: 5/203
+0327
+// [1153] node=96 (root|k258_f2), disease=3: 2/203
+0142
+// [1154] node=96 (root|k258_f2), disease=4: 6/203
+03C8
+// [1155] node=96 (root|k258_f2), disease=5: 3/203
+01E4
+// [1156] node=96 (root|k258_f2), disease=6: 17/203
+0AB8
+// [1157] node=96 (root|k258_f2), disease=7: 2/203
+0142
+// [1158] node=96 (root|k258_f2), disease=8: 1/203
+00A1
+// [1159] node=96 (root|k258_f2), disease=9: 1/203
+00A1
+// [1160] node=96 (root|k258_f2), disease=10: 31/203
+138B
+// [1161] node=96 (root|k258_f2), disease=14: 4/203
+0285
+// [1162] node=96 (root|k258_f2), disease=15: 1/203
+00A1
+// [1163] node=96 (root|k258_f2), disease=16: 11/203
+06EF
+// [1164] node=97 (root|k267_f1), disease=2: 18/203
+0B59
+// [1165] node=97 (root|k267_f1), disease=3: 14/203
+08D3
+// [1166] node=97 (root|k267_f1), disease=4: 9/203
+05AC
+// [1167] node=97 (root|k267_f1), disease=5: 11/203
+06EF
+// [1168] node=97 (root|k267_f1), disease=6: 6/203
+03C8
+// [1169] node=97 (root|k267_f1), disease=7: 1/203
+00A1
+// [1170] node=97 (root|k267_f1), disease=8: 1/203
+00A1
+// [1171] node=97 (root|k267_f1), disease=9: 2/203
+0142
+// [1172] node=97 (root|k267_f1), disease=10: 26/203
+1064
+// [1173] node=97 (root|k267_f1), disease=14: 0/203
+0000
+// [1174] node=97 (root|k267_f1), disease=15: 3/203
+01E4
+// [1175] node=97 (root|k267_f1), disease=16: 9/203
+05AC
+// [1176] node=98 (root|k267_f2), disease=2: 20/203
+0C9C
+// [1177] node=98 (root|k267_f2), disease=3: 0/203
+0000
+// [1178] node=98 (root|k267_f2), disease=4: 4/203
+0285
+// [1179] node=98 (root|k267_f2), disease=5: 2/203
+0142
+// [1180] node=98 (root|k267_f2), disease=6: 18/203
+0B59
+// [1181] node=98 (root|k267_f2), disease=7: 2/203
+0142
+// [1182] node=98 (root|k267_f2), disease=8: 1/203
+00A1
+// [1183] node=98 (root|k267_f2), disease=9: 6/203
+03C8
+// [1184] node=98 (root|k267_f2), disease=10: 20/203
+0C9C
+// [1185] node=98 (root|k267_f2), disease=14: 4/203
+0285
+// [1186] node=98 (root|k267_f2), disease=15: 1/203
+00A1
+// [1187] node=98 (root|k267_f2), disease=16: 12/203
+0791
+// [1188] node=99 (root|k268_f1), disease=2: 32/203
+142D
+// [1189] node=99 (root|k268_f1), disease=3: 14/203
+08D3
+// [1190] node=99 (root|k268_f1), disease=4: 12/203
+0791
+// [1191] node=99 (root|k268_f1), disease=5: 10/203
+064E
+// [1192] node=99 (root|k268_f1), disease=6: 8/203
+050B
+// [1193] node=99 (root|k268_f1), disease=7: 1/203
+00A1
+// [1194] node=99 (root|k268_f1), disease=8: 1/203
+00A1
+// [1195] node=99 (root|k268_f1), disease=9: 4/203
+0285
+// [1196] node=99 (root|k268_f1), disease=10: 16/203
+0A16
+// [1197] node=99 (root|k268_f1), disease=14: 0/203
+0000
+// [1198] node=99 (root|k268_f1), disease=15: 2/203
+0142
+// [1199] node=99 (root|k268_f1), disease=16: 9/203
+05AC
+// [1200] node=100 (root|k268_f2), disease=2: 6/203
+03C8
+// [1201] node=100 (root|k268_f2), disease=3: 0/203
+0000
+// [1202] node=100 (root|k268_f2), disease=4: 1/203
+00A1
+// [1203] node=100 (root|k268_f2), disease=5: 3/203
+01E4
+// [1204] node=100 (root|k268_f2), disease=6: 16/203
+0A16
+// [1205] node=100 (root|k268_f2), disease=7: 2/203
+0142
+// [1206] node=100 (root|k268_f2), disease=8: 1/203
+00A1
+// [1207] node=100 (root|k268_f2), disease=9: 4/203
+0285
+// [1208] node=100 (root|k268_f2), disease=10: 30/203
+12EA
+// [1209] node=100 (root|k268_f2), disease=14: 4/203
+0285
+// [1210] node=100 (root|k268_f2), disease=15: 2/203
+0142
+// [1211] node=100 (root|k268_f2), disease=16: 12/203
+0791
+// [1212] node=101 (root|k271_f1), disease=2: 16/205
+09FD
+// [1213] node=101 (root|k271_f1), disease=3: 11/205
+06DE
+// [1214] node=101 (root|k271_f1), disease=4: 10/205
+063E
+// [1215] node=101 (root|k271_f1), disease=5: 9/205
+059E
+// [1216] node=101 (root|k271_f1), disease=6: 15/205
+095D
+// [1217] node=101 (root|k271_f1), disease=7: 1/205
+009F
+// [1218] node=101 (root|k271_f1), disease=8: 1/205
+009F
+// [1219] node=101 (root|k271_f1), disease=9: 3/205
+01DF
+// [1220] node=101 (root|k271_f1), disease=10: 18/205
+0B3D
+// [1221] node=101 (root|k271_f1), disease=14: 0/205
+0000
+// [1222] node=101 (root|k271_f1), disease=15: 4/205
+027F
+// [1223] node=101 (root|k271_f1), disease=16: 10/205
+063E
+// [1224] node=102 (root|k271_f2), disease=2: 22/201
+0E02
+// [1225] node=102 (root|k271_f2), disease=3: 3/201
+01E9
+// [1226] node=102 (root|k271_f2), disease=4: 3/201
+01E9
+// [1227] node=102 (root|k271_f2), disease=5: 4/201
+028C
+// [1228] node=102 (root|k271_f2), disease=6: 9/201
+05BB
+// [1229] node=102 (root|k271_f2), disease=7: 2/201
+0146
+// [1230] node=102 (root|k271_f2), disease=8: 1/201
+00A3
+// [1231] node=102 (root|k271_f2), disease=9: 5/201
+032F
+// [1232] node=102 (root|k271_f2), disease=10: 28/201
+11D4
+// [1233] node=102 (root|k271_f2), disease=14: 4/201
+028C
+// [1234] node=102 (root|k271_f2), disease=15: 0/201
+0000
+// [1235] node=102 (root|k271_f2), disease=16: 11/201
+0701
+// [1236] node=103 (root|k277_f1), disease=2: 17/204
+0AAA
+// [1237] node=103 (root|k277_f1), disease=3: 12/204
+0787
+// [1238] node=103 (root|k277_f1), disease=4: 11/204
+06E6
+// [1239] node=103 (root|k277_f1), disease=5: 11/204
+06E6
+// [1240] node=103 (root|k277_f1), disease=6: 7/204
+0464
+// [1241] node=103 (root|k277_f1), disease=7: 1/204
+00A0
+// [1242] node=103 (root|k277_f1), disease=8: 1/204
+00A0
+// [1243] node=103 (root|k277_f1), disease=9: 0/204
+0000
+// [1244] node=103 (root|k277_f1), disease=10: 28/204
+1191
+// [1245] node=103 (root|k277_f1), disease=14: 1/204
+00A0
+// [1246] node=103 (root|k277_f1), disease=15: 4/204
+0282
+// [1247] node=103 (root|k277_f1), disease=16: 8/204
+0505
+// [1248] node=104 (root|k277_f2), disease=2: 21/202
+0D4E
+// [1249] node=104 (root|k277_f2), disease=3: 2/202
+0144
+// [1250] node=104 (root|k277_f2), disease=4: 2/202
+0144
+// [1251] node=104 (root|k277_f2), disease=5: 2/202
+0144
+// [1252] node=104 (root|k277_f2), disease=6: 17/202
+0AC5
+// [1253] node=104 (root|k277_f2), disease=7: 2/202
+0144
+// [1254] node=104 (root|k277_f2), disease=8: 1/202
+00A2
+// [1255] node=104 (root|k277_f2), disease=9: 8/202
+0511
+// [1256] node=104 (root|k277_f2), disease=10: 18/202
+0B67
+// [1257] node=104 (root|k277_f2), disease=14: 3/202
+01E6
+// [1258] node=104 (root|k277_f2), disease=15: 0/202
+0000
+// [1259] node=104 (root|k277_f2), disease=16: 13/202
+083C
+// [1260] node=105 (root|k278_f1), disease=2: 30/203
+12EA
+// [1261] node=105 (root|k278_f1), disease=3: 12/203
+0791
+// [1262] node=105 (root|k278_f1), disease=4: 13/203
+0832
+// [1263] node=105 (root|k278_f1), disease=5: 10/203
+064E
+// [1264] node=105 (root|k278_f1), disease=6: 6/203
+03C8
+// [1265] node=105 (root|k278_f1), disease=7: 2/203
+0142
+// [1266] node=105 (root|k278_f1), disease=8: 1/203
+00A1
+// [1267] node=105 (root|k278_f1), disease=9: 5/203
+0327
+// [1268] node=105 (root|k278_f1), disease=10: 19/203
+0BFA
+// [1269] node=105 (root|k278_f1), disease=14: 1/203
+00A1
+// [1270] node=105 (root|k278_f1), disease=15: 3/203
+01E4
+// [1271] node=105 (root|k278_f1), disease=16: 8/203
+050B
+// [1272] node=106 (root|k278_f2), disease=2: 8/203
+050B
+// [1273] node=106 (root|k278_f2), disease=3: 2/203
+0142
+// [1274] node=106 (root|k278_f2), disease=4: 0/203
+0000
+// [1275] node=106 (root|k278_f2), disease=5: 3/203
+01E4
+// [1276] node=106 (root|k278_f2), disease=6: 18/203
+0B59
+// [1277] node=106 (root|k278_f2), disease=7: 1/203
+00A1
+// [1278] node=106 (root|k278_f2), disease=8: 1/203
+00A1
+// [1279] node=106 (root|k278_f2), disease=9: 3/203
+01E4
+// [1280] node=106 (root|k278_f2), disease=10: 27/203
+1106
+// [1281] node=106 (root|k278_f2), disease=14: 3/203
+01E4
+// [1282] node=106 (root|k278_f2), disease=15: 1/203
+00A1
+// [1283] node=106 (root|k278_f2), disease=16: 13/203
+0832

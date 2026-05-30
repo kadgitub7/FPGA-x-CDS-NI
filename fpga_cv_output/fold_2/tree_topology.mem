@@ -1,0 +1,460 @@
+// Tree Topology — 113 nodes, 3 words each
+// Addr = node_index * 3 + word_offset
+// Format per node: 3 x 16-bit words
+//   Word 0: branch_feature_idx (low 9 bits significant)
+//   Word 1: branch_low  (Q s11.4)
+//   Word 2: branch_high (Q s11.4)
+// Total entries: 339
+//
+// Node 0: root
+0000
+C000
+3FF0
+// Node 1: root|k0_f1
+0000
+0000
+02E0
+// Node 2: root|k0_f2
+0000
+02E0
+0530
+// Node 3: root|k3_f1
+0003
+0060
+0440
+// Node 4: root|k3_f2
+0003
+0440
+0B00
+// Node 5: root|k4_f1
+0004
+0370
+0560
+// Node 6: root|k4_f2
+0004
+0560
+0BC0
+// Node 7: root|k8_f1
+0008
+0000
+05A0
+// Node 8: root|k8_f2
+0008
+05A0
+0CC0
+// Node 9: root|k9_f1
+0009
+F540
+0280
+// Node 10: root|k9_f2
+0009
+0280
+0A90
+// Node 11: root|k12_f1
+000C
+F790
+0280
+// Node 12: root|k12_f2
+000C
+0280
+0A60
+// Node 13: root|k14_f1
+000E
+02C0
+0480
+// Node 14: root|k14_f2
+000E
+0480
+0A30
+// Node 15: root|k32_f1
+0020
+0000
+01C0
+// Node 16: root|k32_f2
+0020
+01C0
+04C0
+// Node 17: root|k44_f1
+002C
+0000
+01C0
+// Node 18: root|k44_f2
+002C
+01C0
+05C0
+// Node 19: root|k65_f1
+0041
+0000
+0040
+// Node 20: root|k65_f2
+0041
+0040
+05C0
+// Node 21: root|k77_f1
+004D
+0000
+0000
+// Node 22: root|k77_f2
+004D
+0000
+0780
+// Node 23: root|k136_f1
+0088
+0000
+02C0
+// Node 24: root|k136_f2
+0088
+02C0
+0880
+// Node 25: root|k161_f1
+00A1
+0000
+005B
+// Node 26: root|k161_f2
+00A1
+005B
+013E
+// Node 27: root|k162_f1
+00A2
+FF23
+FFF5
+// Node 28: root|k162_f2
+00A2
+FFF5
+0000
+// Node 29: root|k167_f1
+00A7
+FDEB
+00BB
+// Node 30: root|k167_f2
+00A7
+00BB
+09B3
+// Node 31: root|k168_f1
+00A8
+FD93
+014C
+// Node 32: root|k168_f2
+00A8
+014C
+04A5
+// Node 33: root|k171_f1
+00AB
+0000
+006C
+// Node 34: root|k171_f2
+00AB
+006C
+0133
+// Node 35: root|k178_f1
+00B2
+FD98
+018D
+// Node 36: root|k178_f2
+00B2
+018D
+054D
+// Node 37: root|k181_f1
+00B5
+0000
+0028
+// Node 38: root|k181_f2
+00B5
+0028
+015B
+// Node 39: root|k187_f1
+00BB
+FB60
+002D
+// Node 40: root|k187_f2
+00BB
+002D
+042B
+// Node 41: root|k188_f1
+00BC
+FC56
+0050
+// Node 42: root|k188_f2
+00BC
+0050
+05FD
+// Node 43: root|k190_f1
+00BE
+FF00
+FFA6
+// Node 44: root|k190_f2
+00BE
+FFA6
+0000
+// Node 45: root|k197_f1
+00C5
+F9F8
+FF1B
+// Node 46: root|k197_f2
+00C5
+FF1B
+01A5
+// Node 47: root|k198_f1
+00C6
+FAD5
+FE98
+// Node 48: root|k198_f2
+00C6
+FE98
+00AB
+// Node 49: root|k201_f1
+00C9
+0000
+002B
+// Node 50: root|k201_f2
+00C9
+002B
+00FA
+// Node 51: root|k202_f1
+00CA
+FF2B
+FFFD
+// Node 52: root|k202_f2
+00CA
+FFFD
+0000
+// Node 53: root|k205_f1
+00CD
+FFEA
+0000
+// Node 54: root|k205_f2
+00CD
+0000
+0020
+// Node 55: root|k206_f1
+00CE
+FF95
+0006
+// Node 56: root|k206_f2
+00CE
+0006
+0052
+// Node 57: root|k207_f1
+00CF
+FD95
+003D
+// Node 58: root|k207_f2
+00CF
+003D
+0736
+// Node 59: root|k208_f1
+00D0
+FD5E
+0072
+// Node 60: root|k208_f2
+00D0
+0072
+02C5
+// Node 61: root|k217_f1
+00D9
+FD40
+0096
+// Node 62: root|k217_f2
+00D9
+0096
+0403
+// Node 63: root|k218_f1
+00DA
+FCEA
+00EC
+// Node 64: root|k218_f2
+00DA
+00EC
+0416
+// Node 65: root|k225_f1
+00E1
+FFC8
+FFFA
+// Node 66: root|k225_f2
+00E1
+FFFA
+001D
+// Node 67: root|k227_f1
+00E3
+F280
+FEE6
+// Node 68: root|k227_f2
+00E3
+FEE6
+10CE
+// Node 69: root|k228_f1
+00E4
+F94D
+FEFB
+// Node 70: root|k228_f2
+00E4
+FEFB
+0F72
+// Node 71: root|k232_f1
+00E8
+FD4B
+FF7A
+// Node 72: root|k232_f2
+00E8
+FF7A
+0000
+// Node 73: root|k236_f1
+00EC
+FF76
+0026
+// Node 74: root|k236_f2
+00EC
+0026
+00D3
+// Node 75: root|k237_f1
+00ED
+F688
+FF01
+// Node 76: root|k237_f2
+00ED
+FF01
+085E
+// Node 77: root|k238_f1
+00EE
+FA0E
+008F
+// Node 78: root|k238_f2
+00EE
+008F
+07BA
+// Node 79: root|k241_f1
+00F1
+0000
+0072
+// Node 80: root|k241_f2
+00F1
+0072
+01C6
+// Node 81: root|k242_f1
+00F2
+FCFA
+FF72
+// Node 82: root|k242_f2
+00F2
+FF72
+0000
+// Node 83: root|k246_f1
+00F6
+FF43
+003C
+// Node 84: root|k246_f2
+00F6
+003C
+00EA
+// Node 85: root|k247_f1
+00F7
+F472
+FFAB
+// Node 86: root|k247_f2
+00F7
+FFAB
+0A56
+// Node 87: root|k248_f1
+00F8
+F6DD
+01FE
+// Node 88: root|k248_f2
+00F8
+01FE
+089D
+// Node 89: root|k251_f1
+00FB
+0000
+00B2
+// Node 90: root|k251_f2
+00FB
+00B2
+0246
+// Node 91: root|k252_f1
+00FC
+FD52
+FF9F
+// Node 92: root|k252_f2
+00FC
+FF9F
+0000
+// Node 93: root|k257_f1
+0101
+F833
+00AF
+// Node 94: root|k257_f2
+0101
+00AF
+0676
+// Node 95: root|k258_f1
+0102
+F5EA
+01F4
+// Node 96: root|k258_f2
+0102
+01F4
+0B65
+// Node 97: root|k261_f1
+0105
+0000
+00AF
+// Node 98: root|k261_f2
+0105
+00AF
+01D8
+// Node 99: root|k267_f1
+010B
+FC73
+0126
+// Node 100: root|k267_f2
+010B
+0126
+0522
+// Node 101: root|k268_f1
+010C
+FC06
+01DE
+// Node 102: root|k268_f2
+010C
+01DE
+07FE
+// Node 103: root|k271_f1
+010F
+0000
+008C
+// Node 104: root|k271_f2
+010F
+008C
+017A
+// Node 105: root|k272_f1
+0110
+FE36
+FFED
+// Node 106: root|k272_f2
+0110
+FFED
+0000
+// Node 107: root|k276_f1
+0114
+FFA0
+0016
+// Node 108: root|k276_f2
+0114
+0016
+0060
+// Node 109: root|k277_f1
+0115
+FD3D
+0122
+// Node 110: root|k277_f2
+0115
+0122
+0566
+// Node 111: root|k278_f1
+0116
+FDED
+01BA
+// Node 112: root|k278_f2
+0116
+01BA
+073E

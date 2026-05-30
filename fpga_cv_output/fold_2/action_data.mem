@@ -1,0 +1,10763 @@
+// Action Data BRAM — 3585 actions
+// Max per (node, disease): 46
+// Addr = (start_addr + action_idx) * 2 + word
+// Format: 2 x 16-bit words per action
+//   Word 0: feature_idx (low 9 bits significant)
+//   Word 1: r_j_h (Q s1.15)
+// Total entries: 7170
+//
+// node=0, disease=2, feat=266
+010A
+2257
+// node=0, disease=2, feat=249
+00F9
+1C19
+// node=0, disease=2, feat=246
+00F6
+18FA
+// node=0, disease=2, feat=268
+010C
+18FA
+// node=0, disease=2, feat=256
+0100
+18FA
+// node=0, disease=2, feat=13
+000D
+1555
+// node=0, disease=2, feat=278
+0116
+12BB
+// node=0, disease=2, feat=239
+00EF
+12BB
+// node=0, disease=2, feat=276
+0114
+0F9C
+// node=0, disease=2, feat=12
+000C
+0C7D
+// node=0, disease=2, feat=259
+0103
+0C7D
+// node=0, disease=2, feat=104
+0068
+095E
+// node=0, disease=2, feat=169
+00A9
+095E
+// node=0, disease=2, feat=187
+00BB
+095E
+// node=0, disease=2, feat=198
+00C6
+095E
+// node=0, disease=2, feat=211
+00D3
+095E
+// node=0, disease=2, feat=217
+00D9
+095E
+// node=0, disease=2, feat=232
+00E8
+095E
+// node=0, disease=2, feat=235
+00EB
+095E
+// node=0, disease=2, feat=32
+0020
+063E
+// node=0, disease=2, feat=166
+00A6
+063E
+// node=0, disease=2, feat=178
+00B2
+063E
+// node=0, disease=2, feat=205
+00CD
+063E
+// node=0, disease=2, feat=219
+00DB
+063E
+// node=0, disease=2, feat=225
+00E1
+063E
+// node=0, disease=2, feat=228
+00E4
+063E
+// node=0, disease=2, feat=229
+00E5
+063E
+// node=0, disease=2, feat=237
+00ED
+063E
+// node=0, disease=2, feat=242
+00F2
+063E
+// node=0, disease=2, feat=3
+0003
+031F
+// node=0, disease=2, feat=9
+0009
+031F
+// node=0, disease=2, feat=24
+0018
+031F
+// node=0, disease=2, feat=60
+003C
+031F
+// node=0, disease=2, feat=65
+0041
+031F
+// node=0, disease=2, feat=75
+004B
+031F
+// node=0, disease=2, feat=90
+005A
+031F
+// node=0, disease=2, feat=92
+005C
+031F
+// node=0, disease=2, feat=99
+0063
+031F
+// node=0, disease=2, feat=102
+0066
+031F
+// node=0, disease=2, feat=111
+006F
+031F
+// node=0, disease=2, feat=191
+00BF
+031F
+// node=0, disease=2, feat=192
+00C0
+031F
+// node=0, disease=2, feat=193
+00C1
+031F
+// node=0, disease=2, feat=221
+00DD
+031F
+// node=0, disease=2, feat=223
+00DF
+031F
+// node=0, disease=2, feat=236
+00EC
+031F
+// node=0, disease=3, feat=136
+0088
+2762
+// node=0, disease=3, feat=230
+00E6
+2762
+// node=0, disease=3, feat=14
+000E
+13B1
+// node=0, disease=3, feat=140
+008C
+13B1
+// node=0, disease=5, feat=2
+0002
+313B
+// node=1, disease=2, feat=256
+0100
+3B14
+// node=1, disease=2, feat=266
+010A
+3B14
+// node=1, disease=2, feat=276
+0114
+3B14
+// node=1, disease=2, feat=10
+000A
+2762
+// node=1, disease=2, feat=166
+00A6
+2762
+// node=1, disease=2, feat=246
+00F6
+2762
+// node=1, disease=2, feat=278
+0116
+2762
+// node=1, disease=2, feat=75
+004B
+1D8A
+// node=1, disease=2, feat=169
+00A9
+1D8A
+// node=1, disease=2, feat=171
+00AB
+1D8A
+// node=1, disease=2, feat=206
+00CE
+1D8A
+// node=1, disease=2, feat=104
+0068
+13B1
+// node=1, disease=2, feat=175
+00AF
+13B1
+// node=1, disease=2, feat=196
+00C4
+13B1
+// node=1, disease=2, feat=210
+00D2
+13B1
+// node=1, disease=2, feat=235
+00EB
+13B1
+// node=1, disease=2, feat=236
+00EC
+13B1
+// node=1, disease=2, feat=241
+00F1
+13B1
+// node=1, disease=2, feat=28
+001C
+09D9
+// node=1, disease=2, feat=29
+001D
+09D9
+// node=1, disease=2, feat=90
+005A
+09D9
+// node=1, disease=2, feat=102
+0066
+09D9
+// node=1, disease=2, feat=125
+007D
+09D9
+// node=1, disease=2, feat=212
+00D4
+09D9
+// node=1, disease=2, feat=221
+00DD
+09D9
+// node=1, disease=2, feat=223
+00DF
+09D9
+// node=1, disease=2, feat=227
+00E3
+09D9
+// node=1, disease=2, feat=232
+00E8
+09D9
+// node=1, disease=3, feat=230
+00E6
+6000
+// node=1, disease=5, feat=14
+000E
+6000
+// node=1, disease=5, feat=183
+00B7
+2000
+// node=1, disease=5, feat=92
+005C
+1000
+// node=1, disease=6, feat=16
+0010
+09D9
+// node=1, disease=9, feat=89
+0059
+7FFF
+// node=2, disease=2, feat=13
+000D
+22E9
+// node=2, disease=2, feat=249
+00F9
+2000
+// node=2, disease=2, feat=216
+00D8
+16DB
+// node=2, disease=2, feat=246
+00F6
+16DB
+// node=2, disease=2, feat=256
+0100
+16DB
+// node=2, disease=2, feat=266
+010A
+16DB
+// node=2, disease=2, feat=268
+010C
+16DB
+// node=2, disease=2, feat=189
+00BD
+1249
+// node=2, disease=2, feat=239
+00EF
+1249
+// node=2, disease=2, feat=166
+00A6
+0DB7
+// node=2, disease=2, feat=259
+0103
+0DB7
+// node=2, disease=2, feat=276
+0114
+0DB7
+// node=2, disease=2, feat=8
+0008
+0925
+// node=2, disease=2, feat=117
+0075
+0925
+// node=2, disease=2, feat=179
+00B3
+0925
+// node=2, disease=2, feat=219
+00DB
+0925
+// node=2, disease=2, feat=251
+00FB
+0925
+// node=2, disease=2, feat=14
+000E
+0492
+// node=2, disease=2, feat=16
+0010
+0492
+// node=2, disease=2, feat=18
+0012
+0492
+// node=2, disease=2, feat=24
+0018
+0492
+// node=2, disease=2, feat=32
+0020
+0492
+// node=2, disease=2, feat=44
+002C
+0492
+// node=2, disease=2, feat=75
+004B
+0492
+// node=2, disease=2, feat=92
+005C
+0492
+// node=2, disease=2, feat=99
+0063
+0492
+// node=2, disease=2, feat=223
+00DF
+0492
+// node=2, disease=3, feat=136
+0088
+1C72
+// node=2, disease=3, feat=20
+0014
+0E39
+// node=2, disease=3, feat=140
+008C
+0E39
+// node=2, disease=4, feat=40
+0028
+0AAB
+// node=2, disease=7, feat=2
+0002
+4000
+// node=2, disease=8, feat=9
+0009
+4000
+// node=3, disease=2, feat=10
+000A
+52D3
+// node=3, disease=2, feat=196
+00C4
+4E39
+// node=3, disease=2, feat=266
+010A
+31C7
+// node=3, disease=2, feat=241
+00F1
+2AAB
+// node=3, disease=2, feat=276
+0114
+2AAB
+// node=3, disease=2, feat=249
+00F9
+238E
+// node=3, disease=2, feat=6
+0006
+1C72
+// node=3, disease=2, feat=256
+0100
+1C72
+// node=3, disease=2, feat=12
+000C
+1555
+// node=3, disease=2, feat=88
+0058
+1555
+// node=3, disease=2, feat=169
+00A9
+1555
+// node=3, disease=2, feat=228
+00E4
+1555
+// node=3, disease=2, feat=231
+00E7
+1555
+// node=3, disease=2, feat=235
+00EB
+1555
+// node=3, disease=2, feat=219
+00DB
+0E39
+// node=3, disease=2, feat=236
+00EC
+0E39
+// node=3, disease=2, feat=9
+0009
+071C
+// node=3, disease=2, feat=29
+001D
+071C
+// node=3, disease=2, feat=90
+005A
+071C
+// node=3, disease=2, feat=99
+0063
+071C
+// node=3, disease=2, feat=104
+0068
+071C
+// node=3, disease=2, feat=125
+007D
+071C
+// node=3, disease=2, feat=187
+00BB
+071C
+// node=3, disease=2, feat=210
+00D2
+071C
+// node=3, disease=2, feat=223
+00DF
+071C
+// node=3, disease=2, feat=227
+00E3
+071C
+// node=3, disease=3, feat=14
+000E
+199A
+// node=3, disease=9, feat=16
+0010
+7FFF
+// node=4, disease=2, feat=249
+00F9
+26F5
+// node=4, disease=2, feat=246
+00F6
+2164
+// node=4, disease=2, feat=268
+010C
+2164
+// node=4, disease=2, feat=256
+0100
+1BD3
+// node=4, disease=2, feat=259
+0103
+1643
+// node=4, disease=2, feat=266
+010A
+1643
+// node=4, disease=2, feat=12
+000C
+10B2
+// node=4, disease=2, feat=121
+0079
+10B2
+// node=4, disease=2, feat=189
+00BD
+10B2
+// node=4, disease=2, feat=216
+00D8
+10B2
+// node=4, disease=2, feat=239
+00EF
+10B2
+// node=4, disease=2, feat=258
+0102
+10B2
+// node=4, disease=2, feat=14
+000E
+0B21
+// node=4, disease=2, feat=104
+0068
+0B21
+// node=4, disease=2, feat=237
+00ED
+0B21
+// node=4, disease=2, feat=276
+0114
+0B21
+// node=4, disease=2, feat=2
+0002
+0591
+// node=4, disease=2, feat=3
+0003
+0591
+// node=4, disease=2, feat=24
+0018
+0591
+// node=4, disease=2, feat=32
+0020
+0591
+// node=4, disease=2, feat=92
+005C
+0591
+// node=4, disease=2, feat=102
+0066
+0591
+// node=4, disease=2, feat=111
+006F
+0591
+// node=4, disease=2, feat=135
+0087
+0591
+// node=4, disease=2, feat=178
+00B2
+0591
+// node=4, disease=2, feat=193
+00C1
+0591
+// node=4, disease=2, feat=205
+00CD
+0591
+// node=4, disease=2, feat=225
+00E1
+0591
+// node=4, disease=2, feat=227
+00E3
+0591
+// node=4, disease=2, feat=242
+00F2
+0591
+// node=4, disease=4, feat=40
+0028
+0CCD
+// node=5, disease=2, feat=276
+0114
+2AAB
+// node=5, disease=2, feat=12
+000C
+199A
+// node=5, disease=2, feat=246
+00F6
+199A
+// node=5, disease=2, feat=198
+00C6
+1111
+// node=5, disease=2, feat=249
+00F9
+1111
+// node=5, disease=2, feat=259
+0103
+1111
+// node=5, disease=2, feat=0
+0000
+0889
+// node=5, disease=2, feat=2
+0002
+0889
+// node=5, disease=2, feat=24
+0018
+0889
+// node=5, disease=2, feat=40
+0028
+0889
+// node=5, disease=2, feat=166
+00A6
+0889
+// node=5, disease=2, feat=215
+00D7
+0889
+// node=5, disease=2, feat=230
+00E6
+0889
+// node=5, disease=2, feat=239
+00EF
+0889
+// node=5, disease=3, feat=111
+006F
+7FFF
+// node=5, disease=3, feat=116
+0074
+7FFF
+// node=5, disease=3, feat=99
+0063
+6000
+// node=5, disease=3, feat=14
+000E
+4000
+// node=5, disease=3, feat=136
+0088
+2000
+// node=5, disease=3, feat=191
+00BF
+2000
+// node=5, disease=4, feat=210
+00D2
+4000
+// node=5, disease=4, feat=44
+002C
+1555
+// node=5, disease=4, feat=104
+0068
+1555
+// node=5, disease=4, feat=227
+00E3
+1555
+// node=5, disease=5, feat=60
+003C
+0BA3
+// node=5, disease=5, feat=183
+00B7
+0BA3
+// node=5, disease=5, feat=226
+00E2
+0BA3
+// node=5, disease=6, feat=233
+00E9
+0889
+// node=6, disease=2, feat=246
+00F6
+313B
+// node=6, disease=2, feat=249
+00F9
+2762
+// node=6, disease=2, feat=266
+010A
+2276
+// node=6, disease=2, feat=176
+00B0
+1D8A
+// node=6, disease=2, feat=179
+00B3
+1D8A
+// node=6, disease=2, feat=216
+00D8
+1D8A
+// node=6, disease=2, feat=278
+0116
+1D8A
+// node=6, disease=2, feat=239
+00EF
+189E
+// node=6, disease=2, feat=268
+010C
+189E
+// node=6, disease=2, feat=276
+0114
+189E
+// node=6, disease=2, feat=169
+00A9
+13B1
+// node=6, disease=2, feat=189
+00BD
+13B1
+// node=6, disease=2, feat=235
+00EB
+13B1
+// node=6, disease=2, feat=12
+000C
+0EC5
+// node=6, disease=2, feat=80
+0050
+0EC5
+// node=6, disease=2, feat=104
+0068
+0EC5
+// node=6, disease=2, feat=171
+00AB
+0EC5
+// node=6, disease=2, feat=217
+00D9
+0EC5
+// node=6, disease=2, feat=237
+00ED
+0EC5
+// node=6, disease=2, feat=251
+00FB
+0EC5
+// node=6, disease=2, feat=7
+0007
+09D9
+// node=6, disease=2, feat=18
+0012
+09D9
+// node=6, disease=2, feat=32
+0020
+09D9
+// node=6, disease=2, feat=205
+00CD
+09D9
+// node=6, disease=2, feat=227
+00E3
+09D9
+// node=6, disease=2, feat=242
+00F2
+09D9
+// node=6, disease=2, feat=92
+005C
+04EC
+// node=6, disease=2, feat=102
+0066
+04EC
+// node=6, disease=2, feat=191
+00BF
+04EC
+// node=6, disease=2, feat=223
+00DF
+04EC
+// node=6, disease=3, feat=87
+0057
+1C72
+// node=6, disease=3, feat=140
+008C
+1C72
+// node=6, disease=5, feat=14
+000E
+7FFF
+// node=6, disease=6, feat=16
+0010
+1000
+// node=6, disease=8, feat=89
+0059
+4000
+// node=7, disease=2, feat=216
+00D8
+286C
+// node=7, disease=2, feat=246
+00F6
+21AF
+// node=7, disease=2, feat=268
+010C
+21AF
+// node=7, disease=2, feat=249
+00F9
+1AF3
+// node=7, disease=2, feat=256
+0100
+1AF3
+// node=7, disease=2, feat=259
+0103
+1AF3
+// node=7, disease=2, feat=266
+010A
+1AF3
+// node=7, disease=2, feat=276
+0114
+1AF3
+// node=7, disease=2, feat=12
+000C
+1436
+// node=7, disease=2, feat=14
+000E
+1436
+// node=7, disease=2, feat=198
+00C6
+1436
+// node=7, disease=2, feat=239
+00EF
+1436
+// node=7, disease=2, feat=125
+007D
+0D79
+// node=7, disease=2, feat=162
+00A2
+0D79
+// node=7, disease=2, feat=228
+00E4
+0D79
+// node=7, disease=2, feat=235
+00EB
+0D79
+// node=7, disease=2, feat=252
+00FC
+0D79
+// node=7, disease=2, feat=3
+0003
+06BD
+// node=7, disease=2, feat=9
+0009
+06BD
+// node=7, disease=2, feat=75
+004B
+06BD
+// node=7, disease=2, feat=92
+005C
+06BD
+// node=7, disease=2, feat=104
+0068
+06BD
+// node=7, disease=2, feat=172
+00AC
+06BD
+// node=7, disease=2, feat=220
+00DC
+06BD
+// node=7, disease=2, feat=227
+00E3
+06BD
+// node=7, disease=2, feat=255
+00FF
+06BD
+// node=7, disease=3, feat=260
+0104
+2AAB
+// node=7, disease=4, feat=193
+00C1
+2000
+// node=7, disease=5, feat=0
+0000
+38E4
+// node=7, disease=5, feat=5
+0005
+0E39
+// node=7, disease=5, feat=223
+00DF
+0E39
+// node=7, disease=6, feat=28
+001C
+09D9
+// node=8, disease=2, feat=266
+010A
+28BA
+// node=8, disease=2, feat=249
+00F9
+28BA
+// node=8, disease=2, feat=276
+0114
+28BA
+// node=8, disease=2, feat=256
+0100
+22E9
+// node=8, disease=2, feat=10
+000A
+21AF
+// node=8, disease=2, feat=259
+0103
+1D17
+// node=8, disease=2, feat=246
+00F6
+1746
+// node=8, disease=2, feat=27
+001B
+1174
+// node=8, disease=2, feat=100
+0064
+1174
+// node=8, disease=2, feat=171
+00AB
+1174
+// node=8, disease=2, feat=179
+00B3
+1174
+// node=8, disease=2, feat=236
+00EC
+1174
+// node=8, disease=2, feat=237
+00ED
+1174
+// node=8, disease=2, feat=239
+00EF
+1174
+// node=8, disease=2, feat=268
+010C
+1174
+// node=8, disease=2, feat=6
+0006
+0BA3
+// node=8, disease=2, feat=7
+0007
+0BA3
+// node=8, disease=2, feat=80
+0050
+0BA3
+// node=8, disease=2, feat=104
+0068
+0BA3
+// node=8, disease=2, feat=187
+00BB
+0BA3
+// node=8, disease=2, feat=205
+00CD
+0BA3
+// node=8, disease=2, feat=215
+00D7
+0BA3
+// node=8, disease=2, feat=251
+00FB
+0BA3
+// node=8, disease=2, feat=267
+010B
+0BA3
+// node=8, disease=2, feat=24
+0018
+05D1
+// node=8, disease=2, feat=75
+004B
+05D1
+// node=8, disease=2, feat=90
+005A
+05D1
+// node=8, disease=2, feat=111
+006F
+05D1
+// node=8, disease=2, feat=199
+00C7
+05D1
+// node=8, disease=2, feat=225
+00E1
+05D1
+// node=8, disease=3, feat=14
+000E
+199A
+// node=8, disease=3, feat=140
+008C
+0CCD
+// node=8, disease=5, feat=60
+003C
+2000
+// node=9, disease=2, feat=249
+00F9
+2666
+// node=9, disease=2, feat=266
+010A
+2666
+// node=9, disease=2, feat=268
+010C
+2666
+// node=9, disease=2, feat=12
+000C
+2000
+// node=9, disease=2, feat=13
+000D
+2000
+// node=9, disease=2, feat=216
+00D8
+2000
+// node=9, disease=2, feat=246
+00F6
+2000
+// node=9, disease=2, feat=276
+0114
+2000
+// node=9, disease=2, feat=248
+00F8
+199A
+// node=9, disease=2, feat=259
+0103
+199A
+// node=9, disease=2, feat=14
+000E
+0CCD
+// node=9, disease=2, feat=104
+0068
+0CCD
+// node=9, disease=2, feat=159
+009F
+0CCD
+// node=9, disease=2, feat=169
+00A9
+0CCD
+// node=9, disease=2, feat=178
+00B2
+0CCD
+// node=9, disease=2, feat=217
+00D9
+0CCD
+// node=9, disease=2, feat=220
+00DC
+0CCD
+// node=9, disease=2, feat=223
+00DF
+0CCD
+// node=9, disease=2, feat=225
+00E1
+0CCD
+// node=9, disease=2, feat=242
+00F2
+0CCD
+// node=9, disease=2, feat=24
+0018
+0666
+// node=9, disease=2, feat=34
+0022
+0666
+// node=9, disease=2, feat=63
+003F
+0666
+// node=9, disease=2, feat=65
+0041
+0666
+// node=9, disease=2, feat=102
+0066
+0666
+// node=9, disease=2, feat=227
+00E3
+0666
+// node=9, disease=3, feat=136
+0088
+1249
+// node=9, disease=5, feat=2
+0002
+199A
+// node=10, disease=2, feat=196
+00C4
+3CF4
+// node=10, disease=2, feat=239
+00EF
+2AAB
+// node=10, disease=2, feat=256
+0100
+2AAB
+// node=10, disease=2, feat=249
+00F9
+2492
+// node=10, disease=2, feat=75
+004B
+1E7A
+// node=10, disease=2, feat=189
+00BD
+1E7A
+// node=10, disease=2, feat=219
+00DB
+1E7A
+// node=10, disease=2, feat=27
+001B
+1862
+// node=10, disease=2, feat=211
+00D3
+1862
+// node=10, disease=2, feat=278
+0116
+1862
+// node=10, disease=2, feat=6
+0006
+1249
+// node=10, disease=2, feat=222
+00DE
+1249
+// node=10, disease=2, feat=236
+00EC
+1249
+// node=10, disease=2, feat=7
+0007
+0C31
+// node=10, disease=2, feat=181
+00B5
+0C31
+// node=10, disease=2, feat=205
+00CD
+0C31
+// node=10, disease=2, feat=227
+00E3
+0C31
+// node=10, disease=2, feat=232
+00E8
+0C31
+// node=10, disease=2, feat=235
+00EB
+0C31
+// node=10, disease=2, feat=0
+0000
+0618
+// node=10, disease=2, feat=8
+0008
+0618
+// node=10, disease=2, feat=12
+000C
+0618
+// node=10, disease=2, feat=65
+0041
+0618
+// node=10, disease=2, feat=104
+0068
+0618
+// node=10, disease=2, feat=242
+00F2
+0618
+// node=10, disease=3, feat=99
+0063
+7FFF
+// node=10, disease=3, feat=230
+00E6
+6AAB
+// node=10, disease=3, feat=14
+000E
+1555
+// node=10, disease=5, feat=2
+0002
+4000
+// node=11, disease=2, feat=216
+00D8
+286C
+// node=11, disease=2, feat=13
+000D
+2492
+// node=11, disease=2, feat=12
+000C
+21AF
+// node=11, disease=2, feat=246
+00F6
+21AF
+// node=11, disease=2, feat=266
+010A
+21AF
+// node=11, disease=2, feat=268
+010C
+21AF
+// node=11, disease=2, feat=198
+00C6
+1AF3
+// node=11, disease=2, feat=249
+00F9
+1AF3
+// node=11, disease=2, feat=259
+0103
+1AF3
+// node=11, disease=2, feat=269
+010D
+1AF3
+// node=11, disease=2, feat=248
+00F8
+1436
+// node=11, disease=2, feat=14
+000E
+0D79
+// node=11, disease=2, feat=159
+009F
+0D79
+// node=11, disease=2, feat=166
+00A6
+0D79
+// node=11, disease=2, feat=169
+00A9
+0D79
+// node=11, disease=2, feat=178
+00B2
+0D79
+// node=11, disease=2, feat=217
+00D9
+0D79
+// node=11, disease=2, feat=223
+00DF
+0D79
+// node=11, disease=2, feat=225
+00E1
+0D79
+// node=11, disease=2, feat=231
+00E7
+0D79
+// node=11, disease=2, feat=237
+00ED
+0D79
+// node=11, disease=2, feat=242
+00F2
+0D79
+// node=11, disease=2, feat=275
+0113
+0D79
+// node=11, disease=2, feat=24
+0018
+06BD
+// node=11, disease=2, feat=92
+005C
+06BD
+// node=11, disease=2, feat=172
+00AC
+06BD
+// node=11, disease=3, feat=136
+0088
+1249
+// node=11, disease=4, feat=32
+0020
+22E9
+// node=11, disease=7, feat=2
+0002
+4000
+// node=11, disease=9, feat=167
+00A7
+2AAB
+// node=12, disease=2, feat=10
+000A
+3333
+// node=12, disease=2, feat=196
+00C4
+2E8C
+// node=12, disease=2, feat=256
+0100
+2E8C
+// node=12, disease=2, feat=249
+00F9
+22E9
+// node=12, disease=2, feat=75
+004B
+1D17
+// node=12, disease=2, feat=189
+00BD
+1D17
+// node=12, disease=2, feat=246
+00F6
+1D17
+// node=12, disease=2, feat=13
+000D
+1746
+// node=12, disease=2, feat=159
+009F
+1746
+// node=12, disease=2, feat=239
+00EF
+1746
+// node=12, disease=2, feat=268
+010C
+1746
+// node=12, disease=2, feat=278
+0116
+1746
+// node=12, disease=2, feat=6
+0006
+1174
+// node=12, disease=2, feat=179
+00B3
+1174
+// node=12, disease=2, feat=211
+00D3
+1174
+// node=12, disease=2, feat=219
+00DB
+1174
+// node=12, disease=2, feat=222
+00DE
+1174
+// node=12, disease=2, feat=235
+00EB
+1174
+// node=12, disease=2, feat=7
+0007
+0BA3
+// node=12, disease=2, feat=44
+002C
+0BA3
+// node=12, disease=2, feat=64
+0040
+0BA3
+// node=12, disease=2, feat=104
+0068
+0BA3
+// node=12, disease=2, feat=205
+00CD
+0BA3
+// node=12, disease=2, feat=232
+00E8
+0BA3
+// node=12, disease=2, feat=8
+0008
+05D1
+// node=12, disease=2, feat=65
+0041
+05D1
+// node=12, disease=2, feat=102
+0066
+05D1
+// node=12, disease=2, feat=193
+00C1
+05D1
+// node=12, disease=2, feat=221
+00DD
+05D1
+// node=12, disease=2, feat=227
+00E3
+05D1
+// node=12, disease=2, feat=242
+00F2
+05D1
+// node=12, disease=3, feat=99
+0063
+7FFF
+// node=12, disease=3, feat=230
+00E6
+6AAB
+// node=12, disease=3, feat=14
+000E
+1555
+// node=12, disease=5, feat=2
+0002
+4000
+// node=13, disease=2, feat=246
+00F6
+2AAB
+// node=13, disease=2, feat=121
+0079
+2000
+// node=13, disease=2, feat=249
+00F9
+2000
+// node=13, disease=2, feat=266
+010A
+2000
+// node=13, disease=2, feat=268
+010C
+2000
+// node=13, disease=2, feat=276
+0114
+2000
+// node=13, disease=2, feat=137
+0089
+1555
+// node=13, disease=2, feat=159
+009F
+1555
+// node=13, disease=2, feat=166
+00A6
+1555
+// node=13, disease=2, feat=180
+00B4
+1555
+// node=13, disease=2, feat=198
+00C6
+1555
+// node=13, disease=2, feat=206
+00CE
+1555
+// node=13, disease=2, feat=239
+00EF
+1555
+// node=13, disease=2, feat=12
+000C
+0AAB
+// node=13, disease=2, feat=29
+001D
+0AAB
+// node=13, disease=2, feat=82
+0052
+0AAB
+// node=13, disease=2, feat=92
+005C
+0AAB
+// node=13, disease=2, feat=181
+00B5
+0AAB
+// node=13, disease=2, feat=199
+00C7
+0AAB
+// node=13, disease=2, feat=216
+00D8
+0AAB
+// node=13, disease=2, feat=221
+00DD
+0AAB
+// node=13, disease=2, feat=222
+00DE
+0AAB
+// node=13, disease=2, feat=226
+00E2
+0AAB
+// node=13, disease=3, feat=99
+0063
+7FFF
+// node=13, disease=3, feat=116
+0074
+7FFF
+// node=13, disease=3, feat=230
+00E6
+4CCD
+// node=13, disease=3, feat=68
+0044
+3333
+// node=13, disease=3, feat=259
+0103
+3333
+// node=13, disease=3, feat=56
+0038
+199A
+// node=13, disease=6, feat=14
+000E
+4859
+// node=13, disease=6, feat=102
+0066
+0591
+// node=13, disease=10, feat=223
+00DF
+2E14
+// node=13, disease=10, feat=90
+005A
+28F6
+// node=13, disease=16, feat=40
+0028
+1746
+// node=14, disease=2, feat=256
+0100
+3961
+// node=14, disease=2, feat=249
+00F9
+2C23
+// node=14, disease=2, feat=266
+010A
+234F
+// node=14, disease=2, feat=259
+0103
+1EE6
+// node=14, disease=2, feat=10
+000A
+189E
+// node=14, disease=2, feat=246
+00F6
+1612
+// node=14, disease=2, feat=12
+000C
+11A8
+// node=14, disease=2, feat=236
+00EC
+11A8
+// node=14, disease=2, feat=239
+00EF
+11A8
+// node=14, disease=2, feat=255
+00FF
+11A8
+// node=14, disease=2, feat=8
+0008
+0D3E
+// node=14, disease=2, feat=104
+0068
+0D3E
+// node=14, disease=2, feat=162
+00A2
+0D3E
+// node=14, disease=2, feat=169
+00A9
+0D3E
+// node=14, disease=2, feat=171
+00AB
+0D3E
+// node=14, disease=2, feat=231
+00E7
+0D3E
+// node=14, disease=2, feat=235
+00EB
+0D3E
+// node=14, disease=2, feat=241
+00F1
+0D3E
+// node=14, disease=2, feat=7
+0007
+08D4
+// node=14, disease=2, feat=18
+0012
+08D4
+// node=14, disease=2, feat=32
+0020
+08D4
+// node=14, disease=2, feat=205
+00CD
+08D4
+// node=14, disease=2, feat=227
+00E3
+08D4
+// node=14, disease=2, feat=242
+00F2
+08D4
+// node=14, disease=2, feat=17
+0011
+046A
+// node=14, disease=2, feat=24
+0018
+046A
+// node=14, disease=2, feat=60
+003C
+046A
+// node=14, disease=2, feat=102
+0066
+046A
+// node=14, disease=2, feat=140
+008C
+046A
+// node=14, disease=2, feat=223
+00DF
+046A
+// node=14, disease=3, feat=14
+000E
+2000
+// node=15, disease=2, feat=13
+000D
+6000
+// node=15, disease=2, feat=10
+000A
+4000
+// node=15, disease=2, feat=159
+009F
+2762
+// node=15, disease=2, feat=196
+00C4
+2762
+// node=15, disease=2, feat=249
+00F9
+2762
+// node=15, disease=2, feat=161
+00A1
+1D8A
+// node=15, disease=2, feat=166
+00A6
+1D8A
+// node=15, disease=2, feat=246
+00F6
+1D8A
+// node=15, disease=2, feat=256
+0100
+1D8A
+// node=15, disease=2, feat=259
+0103
+1D8A
+// node=15, disease=2, feat=266
+010A
+1D8A
+// node=15, disease=2, feat=276
+0114
+1D8A
+// node=15, disease=2, feat=7
+0007
+13B1
+// node=15, disease=2, feat=12
+000C
+13B1
+// node=15, disease=2, feat=14
+000E
+13B1
+// node=15, disease=2, feat=104
+0068
+13B1
+// node=15, disease=2, feat=198
+00C6
+13B1
+// node=15, disease=2, feat=201
+00C9
+13B1
+// node=15, disease=2, feat=232
+00E8
+13B1
+// node=15, disease=2, feat=252
+00FC
+13B1
+// node=15, disease=2, feat=6
+0006
+09D9
+// node=15, disease=2, feat=8
+0008
+09D9
+// node=15, disease=2, feat=42
+002A
+09D9
+// node=15, disease=2, feat=75
+004B
+09D9
+// node=15, disease=2, feat=80
+0050
+09D9
+// node=15, disease=2, feat=136
+0088
+09D9
+// node=15, disease=2, feat=199
+00C7
+09D9
+// node=15, disease=2, feat=205
+00CD
+09D9
+// node=15, disease=2, feat=215
+00D7
+09D9
+// node=15, disease=2, feat=219
+00DB
+09D9
+// node=15, disease=2, feat=227
+00E3
+09D9
+// node=15, disease=2, feat=251
+00FB
+09D9
+// node=15, disease=3, feat=112
+0070
+7FFF
+// node=15, disease=3, feat=172
+00AC
+2AAB
+// node=15, disease=3, feat=87
+0057
+1C72
+// node=16, disease=2, feat=249
+00F9
+2925
+// node=16, disease=2, feat=276
+0114
+2925
+// node=16, disease=2, feat=246
+00F6
+2492
+// node=16, disease=2, feat=10
+000A
+1EB8
+// node=16, disease=2, feat=256
+0100
+1B6E
+// node=16, disease=2, feat=189
+00BD
+16DB
+// node=16, disease=2, feat=13
+000D
+1249
+// node=16, disease=2, feat=169
+00A9
+1249
+// node=16, disease=2, feat=235
+00EB
+1249
+// node=16, disease=2, feat=162
+00A2
+0DB7
+// node=16, disease=2, feat=211
+00D3
+0DB7
+// node=16, disease=2, feat=228
+00E4
+0DB7
+// node=16, disease=2, feat=237
+00ED
+0DB7
+// node=16, disease=2, feat=239
+00EF
+0DB7
+// node=16, disease=2, feat=6
+0006
+0925
+// node=16, disease=2, feat=32
+0020
+0925
+// node=16, disease=2, feat=104
+0068
+0925
+// node=16, disease=2, feat=186
+00BA
+0925
+// node=16, disease=2, feat=242
+00F2
+0925
+// node=16, disease=2, feat=275
+0113
+0925
+// node=16, disease=2, feat=9
+0009
+0492
+// node=16, disease=2, feat=24
+0018
+0492
+// node=16, disease=2, feat=29
+001D
+0492
+// node=16, disease=2, feat=60
+003C
+0492
+// node=16, disease=2, feat=90
+005A
+0492
+// node=16, disease=2, feat=99
+0063
+0492
+// node=16, disease=2, feat=178
+00B2
+0492
+// node=16, disease=2, feat=192
+00C0
+0492
+// node=16, disease=3, feat=140
+008C
+4000
+// node=16, disease=3, feat=14
+000E
+2000
+// node=17, disease=2, feat=266
+010A
+286C
+// node=17, disease=2, feat=268
+010C
+286C
+// node=17, disease=2, feat=10
+000A
+25A6
+// node=17, disease=2, feat=276
+0114
+21AF
+// node=17, disease=2, feat=12
+000C
+1AF3
+// node=17, disease=2, feat=198
+00C6
+1AF3
+// node=17, disease=2, feat=246
+00F6
+1AF3
+// node=17, disease=2, feat=248
+00F8
+1AF3
+// node=17, disease=2, feat=220
+00DC
+1436
+// node=17, disease=2, feat=104
+0068
+0D79
+// node=17, disease=2, feat=217
+00D9
+0D79
+// node=17, disease=2, feat=223
+00DF
+0D79
+// node=17, disease=2, feat=225
+00E1
+0D79
+// node=17, disease=2, feat=229
+00E5
+0D79
+// node=17, disease=2, feat=237
+00ED
+0D79
+// node=17, disease=2, feat=249
+00F9
+0D79
+// node=17, disease=2, feat=259
+0103
+0D79
+// node=17, disease=2, feat=0
+0000
+06BD
+// node=17, disease=2, feat=24
+0018
+06BD
+// node=17, disease=2, feat=75
+004B
+06BD
+// node=17, disease=2, feat=99
+0063
+06BD
+// node=17, disease=2, feat=215
+00D7
+06BD
+// node=17, disease=2, feat=227
+00E3
+06BD
+// node=17, disease=2, feat=233
+00E9
+06BD
+// node=17, disease=2, feat=242
+00F2
+06BD
+// node=17, disease=3, feat=128
+0080
+38E4
+// node=17, disease=3, feat=135
+0087
+2AAB
+// node=17, disease=3, feat=136
+0088
+1C72
+// node=17, disease=3, feat=14
+000E
+0E39
+// node=18, disease=2, feat=249
+00F9
+345D
+// node=18, disease=2, feat=276
+0114
+22E9
+// node=18, disease=2, feat=256
+0100
+1D17
+// node=18, disease=2, feat=259
+0103
+1D17
+// node=18, disease=2, feat=27
+001B
+1746
+// node=18, disease=2, feat=189
+00BD
+1746
+// node=18, disease=2, feat=239
+00EF
+1746
+// node=18, disease=2, feat=246
+00F6
+1746
+// node=18, disease=2, feat=179
+00B3
+1174
+// node=18, disease=2, feat=211
+00D3
+1174
+// node=18, disease=2, feat=3
+0003
+0BA3
+// node=18, disease=2, feat=4
+0004
+0BA3
+// node=18, disease=2, feat=7
+0007
+0BA3
+// node=18, disease=2, feat=18
+0012
+0BA3
+// node=18, disease=2, feat=80
+0050
+0BA3
+// node=18, disease=2, feat=104
+0068
+0BA3
+// node=18, disease=2, feat=170
+00AA
+0BA3
+// node=18, disease=2, feat=171
+00AB
+0BA3
+// node=18, disease=2, feat=222
+00DE
+0BA3
+// node=18, disease=2, feat=235
+00EB
+0BA3
+// node=18, disease=2, feat=278
+0116
+0BA3
+// node=18, disease=2, feat=60
+003C
+05D1
+// node=18, disease=2, feat=65
+0041
+05D1
+// node=18, disease=2, feat=111
+006F
+05D1
+// node=18, disease=2, feat=125
+007D
+05D1
+// node=18, disease=2, feat=192
+00C0
+05D1
+// node=18, disease=2, feat=221
+00DD
+05D1
+// node=18, disease=2, feat=227
+00E3
+05D1
+// node=18, disease=2, feat=275
+0113
+05D1
+// node=18, disease=3, feat=99
+0063
+7FFF
+// node=18, disease=3, feat=14
+000E
+2000
+// node=18, disease=5, feat=2
+0002
+4000
+// node=18, disease=5, feat=223
+00DF
+1000
+// node=18, disease=9, feat=199
+00C7
+2AAB
+// node=19, disease=2, feat=246
+00F6
+3800
+// node=19, disease=2, feat=10
+000A
+2800
+// node=19, disease=2, feat=266
+010A
+2800
+// node=19, disease=2, feat=7
+0007
+2000
+// node=19, disease=2, feat=249
+00F9
+2000
+// node=19, disease=2, feat=268
+010C
+2000
+// node=19, disease=2, feat=216
+00D8
+1800
+// node=19, disease=2, feat=248
+00F8
+1800
+// node=19, disease=2, feat=12
+000C
+1000
+// node=19, disease=2, feat=220
+00DC
+1000
+// node=19, disease=2, feat=259
+0103
+1000
+// node=19, disease=2, feat=0
+0000
+0800
+// node=19, disease=2, feat=6
+0006
+0800
+// node=19, disease=2, feat=24
+0018
+0800
+// node=19, disease=2, feat=75
+004B
+0800
+// node=19, disease=2, feat=77
+004D
+0800
+// node=19, disease=2, feat=102
+0066
+0800
+// node=19, disease=2, feat=104
+0068
+0800
+// node=19, disease=2, feat=110
+006E
+0800
+// node=19, disease=2, feat=166
+00A6
+0800
+// node=19, disease=3, feat=14
+000E
+2666
+// node=19, disease=3, feat=136
+0088
+199A
+// node=19, disease=3, feat=140
+008C
+0CCD
+// node=19, disease=3, feat=162
+00A2
+0CCD
+// node=19, disease=4, feat=34
+0022
+4000
+// node=19, disease=5, feat=226
+00E2
+2000
+// node=19, disease=5, feat=227
+00E3
+2000
+// node=19, disease=8, feat=89
+0059
+7FFF
+// node=19, disease=10, feat=223
+00DF
+5555
+// node=20, disease=2, feat=256
+0100
+47AE
+// node=20, disease=2, feat=10
+000A
+3CF4
+// node=20, disease=2, feat=276
+0114
+2E14
+// node=20, disease=2, feat=13
+000D
+2AAB
+// node=20, disease=2, feat=249
+00F9
+28F6
+// node=20, disease=2, feat=189
+00BD
+23D7
+// node=20, disease=2, feat=259
+0103
+23D7
+// node=20, disease=2, feat=169
+00A9
+1EB8
+// node=20, disease=2, feat=278
+0116
+1EB8
+// node=20, disease=2, feat=166
+00A6
+199A
+// node=20, disease=2, feat=179
+00B3
+199A
+// node=20, disease=2, feat=206
+00CE
+199A
+// node=20, disease=2, feat=27
+001B
+147B
+// node=20, disease=2, feat=104
+0068
+0F5C
+// node=20, disease=2, feat=187
+00BB
+0F5C
+// node=20, disease=2, feat=199
+00C7
+0F5C
+// node=20, disease=2, feat=205
+00CD
+0F5C
+// node=20, disease=2, feat=211
+00D3
+0F5C
+// node=20, disease=2, feat=235
+00EB
+0F5C
+// node=20, disease=2, feat=237
+00ED
+0F5C
+// node=20, disease=2, feat=251
+00FB
+0F5C
+// node=20, disease=2, feat=6
+0006
+0A3D
+// node=20, disease=2, feat=8
+0008
+0A3D
+// node=20, disease=2, feat=18
+0012
+0A3D
+// node=20, disease=2, feat=170
+00AA
+0A3D
+// node=20, disease=2, feat=171
+00AB
+0A3D
+// node=20, disease=2, feat=227
+00E3
+0A3D
+// node=20, disease=2, feat=60
+003C
+051F
+// node=20, disease=2, feat=111
+006F
+051F
+// node=20, disease=4, feat=40
+0028
+0AAB
+// node=20, disease=5, feat=14
+000E
+71C7
+// node=21, disease=2, feat=196
+00C4
+2AAB
+// node=21, disease=2, feat=216
+00D8
+1E7A
+// node=21, disease=2, feat=239
+00EF
+1E7A
+// node=21, disease=2, feat=246
+00F6
+1E7A
+// node=21, disease=2, feat=249
+00F9
+1E7A
+// node=21, disease=2, feat=278
+0116
+1862
+// node=21, disease=2, feat=219
+00DB
+1249
+// node=21, disease=2, feat=229
+00E5
+1249
+// node=21, disease=2, feat=256
+0100
+1249
+// node=21, disease=2, feat=8
+0008
+0C31
+// node=21, disease=2, feat=14
+000E
+0C31
+// node=21, disease=2, feat=18
+0012
+0C31
+// node=21, disease=2, feat=32
+0020
+0C31
+// node=21, disease=2, feat=80
+0050
+0C31
+// node=21, disease=2, feat=104
+0068
+0C31
+// node=21, disease=2, feat=169
+00A9
+0C31
+// node=21, disease=2, feat=205
+00CD
+0C31
+// node=21, disease=2, feat=259
+0103
+0C31
+// node=21, disease=2, feat=60
+003C
+0618
+// node=21, disease=2, feat=75
+004B
+0618
+// node=21, disease=2, feat=102
+0066
+0618
+// node=21, disease=2, feat=111
+006F
+0618
+// node=21, disease=2, feat=192
+00C0
+0618
+// node=21, disease=2, feat=233
+00E9
+0618
+// node=21, disease=3, feat=124
+007C
+7FFF
+// node=21, disease=3, feat=87
+0057
+2AAB
+// node=21, disease=4, feat=92
+005C
+09D9
+// node=21, disease=5, feat=9
+0009
+36DB
+// node=21, disease=16, feat=5
+0005
+0BA3
+// node=22, disease=2, feat=266
+010A
+399A
+// node=22, disease=2, feat=256
+0100
+399A
+// node=22, disease=2, feat=276
+0114
+3333
+// node=22, disease=2, feat=249
+00F9
+2000
+// node=22, disease=2, feat=259
+0103
+2000
+// node=22, disease=2, feat=10
+000A
+1C72
+// node=22, disease=2, feat=12
+000C
+199A
+// node=22, disease=2, feat=231
+00E7
+199A
+// node=22, disease=2, feat=246
+00F6
+199A
+// node=22, disease=2, feat=178
+00B2
+1333
+// node=22, disease=2, feat=218
+00DA
+1333
+// node=22, disease=2, feat=239
+00EF
+1333
+// node=22, disease=2, feat=166
+00A6
+0CCD
+// node=22, disease=2, feat=215
+00D7
+0CCD
+// node=22, disease=2, feat=217
+00D9
+0CCD
+// node=22, disease=2, feat=225
+00E1
+0CCD
+// node=22, disease=2, feat=230
+00E6
+0CCD
+// node=22, disease=2, feat=6
+0006
+0666
+// node=22, disease=2, feat=7
+0007
+0666
+// node=22, disease=2, feat=9
+0009
+0666
+// node=22, disease=2, feat=24
+0018
+0666
+// node=22, disease=2, feat=42
+002A
+0666
+// node=22, disease=2, feat=76
+004C
+0666
+// node=22, disease=2, feat=90
+005A
+0666
+// node=22, disease=2, feat=92
+005C
+0666
+// node=22, disease=2, feat=99
+0063
+0666
+// node=22, disease=2, feat=104
+0068
+0666
+// node=22, disease=2, feat=140
+008C
+0666
+// node=22, disease=2, feat=205
+00CD
+0666
+// node=22, disease=2, feat=221
+00DD
+0666
+// node=22, disease=2, feat=223
+00DF
+0666
+// node=22, disease=3, feat=250
+00FA
+4000
+// node=22, disease=3, feat=14
+000E
+199A
+// node=22, disease=5, feat=0
+0000
+5555
+// node=22, disease=9, feat=16
+0010
+7FFF
+// node=22, disease=10, feat=102
+0066
+26CA
+// node=23, disease=2, feat=216
+00D8
+2AAB
+// node=23, disease=2, feat=12
+000C
+2222
+// node=23, disease=2, feat=169
+00A9
+2222
+// node=23, disease=2, feat=179
+00B3
+2222
+// node=23, disease=2, feat=259
+0103
+2222
+// node=23, disease=2, feat=268
+010C
+2222
+// node=23, disease=2, feat=276
+0114
+2222
+// node=23, disease=2, feat=13
+000D
+2000
+// node=23, disease=2, feat=189
+00BD
+199A
+// node=23, disease=2, feat=246
+00F6
+199A
+// node=23, disease=2, feat=5
+0005
+1111
+// node=23, disease=2, feat=117
+0075
+1111
+// node=23, disease=2, feat=175
+00AF
+1111
+// node=23, disease=2, feat=178
+00B2
+1111
+// node=23, disease=2, feat=187
+00BB
+1111
+// node=23, disease=2, feat=211
+00D3
+1111
+// node=23, disease=2, feat=215
+00D7
+1111
+// node=23, disease=2, feat=228
+00E4
+1111
+// node=23, disease=2, feat=235
+00EB
+1111
+// node=23, disease=2, feat=239
+00EF
+1111
+// node=23, disease=2, feat=3
+0003
+0889
+// node=23, disease=2, feat=6
+0006
+0889
+// node=23, disease=2, feat=75
+004B
+0889
+// node=23, disease=2, feat=92
+005C
+0889
+// node=23, disease=2, feat=111
+006F
+0889
+// node=23, disease=2, feat=128
+0080
+0889
+// node=23, disease=2, feat=135
+0087
+0889
+// node=23, disease=2, feat=180
+00B4
+0889
+// node=23, disease=2, feat=193
+00C1
+0889
+// node=23, disease=2, feat=206
+00CE
+0889
+// node=23, disease=2, feat=223
+00DF
+0889
+// node=23, disease=2, feat=231
+00E7
+0889
+// node=23, disease=2, feat=242
+00F2
+0889
+// node=23, disease=3, feat=136
+0088
+3333
+// node=23, disease=3, feat=237
+00ED
+3333
+// node=23, disease=3, feat=14
+000E
+0CCD
+// node=23, disease=4, feat=227
+00E3
+1555
+// node=23, disease=5, feat=60
+003C
+09D9
+// node=24, disease=2, feat=256
+0100
+2762
+// node=24, disease=2, feat=266
+010A
+2762
+// node=24, disease=2, feat=246
+00F6
+2276
+// node=24, disease=2, feat=249
+00F9
+2276
+// node=24, disease=2, feat=242
+00F2
+189E
+// node=24, disease=2, feat=259
+0103
+189E
+// node=24, disease=2, feat=10
+000A
+1555
+// node=24, disease=2, feat=239
+00EF
+13B1
+// node=24, disease=2, feat=248
+00F8
+13B1
+// node=24, disease=2, feat=276
+0114
+13B1
+// node=24, disease=2, feat=104
+0068
+0EC5
+// node=24, disease=2, feat=237
+00ED
+0EC5
+// node=24, disease=2, feat=3
+0003
+09D9
+// node=24, disease=2, feat=166
+00A6
+09D9
+// node=24, disease=2, feat=227
+00E3
+09D9
+// node=24, disease=2, feat=0
+0000
+04EC
+// node=24, disease=2, feat=2
+0002
+04EC
+// node=24, disease=2, feat=9
+0009
+04EC
+// node=24, disease=2, feat=14
+000E
+04EC
+// node=24, disease=2, feat=24
+0018
+04EC
+// node=24, disease=2, feat=32
+0020
+04EC
+// node=24, disease=2, feat=60
+003C
+04EC
+// node=24, disease=2, feat=90
+005A
+04EC
+// node=24, disease=2, feat=125
+007D
+04EC
+// node=24, disease=2, feat=140
+008C
+04EC
+// node=24, disease=2, feat=192
+00C0
+04EC
+// node=24, disease=2, feat=230
+00E6
+04EC
+// node=24, disease=3, feat=111
+006F
+7FFF
+// node=24, disease=6, feat=76
+004C
+1AF3
+// node=25, disease=2, feat=196
+00C4
+5249
+// node=25, disease=2, feat=266
+010A
+5249
+// node=25, disease=2, feat=10
+000A
+4EC5
+// node=25, disease=2, feat=13
+000D
+4CCD
+// node=25, disease=2, feat=166
+00A6
+4000
+// node=25, disease=2, feat=189
+00BD
+2DB7
+// node=25, disease=2, feat=276
+0114
+2DB7
+// node=25, disease=2, feat=169
+00A9
+2492
+// node=25, disease=2, feat=192
+00C0
+1B6E
+// node=25, disease=2, feat=206
+00CE
+1B6E
+// node=25, disease=2, feat=235
+00EB
+1B6E
+// node=25, disease=2, feat=239
+00EF
+1B6E
+// node=25, disease=2, feat=246
+00F6
+1B6E
+// node=25, disease=2, feat=278
+0116
+1B6E
+// node=25, disease=2, feat=7
+0007
+1249
+// node=25, disease=2, feat=32
+0020
+1249
+// node=25, disease=2, feat=219
+00DB
+1249
+// node=25, disease=2, feat=226
+00E2
+1249
+// node=25, disease=2, feat=228
+00E4
+1249
+// node=25, disease=2, feat=65
+0041
+0925
+// node=25, disease=2, feat=90
+005A
+0925
+// node=25, disease=2, feat=92
+005C
+0925
+// node=25, disease=2, feat=168
+00A8
+0925
+// node=25, disease=2, feat=177
+00B1
+0925
+// node=25, disease=2, feat=207
+00CF
+0925
+// node=25, disease=2, feat=222
+00DE
+0925
+// node=25, disease=2, feat=227
+00E3
+0925
+// node=25, disease=2, feat=242
+00F2
+0925
+// node=25, disease=3, feat=116
+0074
+7FFF
+// node=25, disease=3, feat=99
+0063
+71C7
+// node=25, disease=3, feat=14
+000E
+1C72
+// node=25, disease=3, feat=140
+008C
+1C72
+// node=25, disease=3, feat=201
+00C9
+1C72
+// node=26, disease=2, feat=249
+00F9
+25ED
+// node=26, disease=2, feat=256
+0100
+25ED
+// node=26, disease=2, feat=266
+010A
+25ED
+// node=26, disease=2, feat=268
+010C
+212F
+// node=26, disease=2, feat=13
+000D
+1D8A
+// node=26, disease=2, feat=246
+00F6
+1C72
+// node=26, disease=2, feat=10
+000A
+1AAB
+// node=26, disease=2, feat=12
+000C
+12F7
+// node=26, disease=2, feat=189
+00BD
+12F7
+// node=26, disease=2, feat=104
+0068
+0E39
+// node=26, disease=2, feat=166
+00A6
+0E39
+// node=26, disease=2, feat=229
+00E5
+0E39
+// node=26, disease=2, feat=259
+0103
+0E39
+// node=26, disease=2, feat=14
+000E
+097B
+// node=26, disease=2, feat=169
+00A9
+097B
+// node=26, disease=2, feat=178
+00B2
+097B
+// node=26, disease=2, feat=217
+00D9
+097B
+// node=26, disease=2, feat=220
+00DC
+097B
+// node=26, disease=2, feat=225
+00E1
+097B
+// node=26, disease=2, feat=227
+00E3
+097B
+// node=26, disease=2, feat=237
+00ED
+097B
+// node=26, disease=2, feat=247
+00F7
+097B
+// node=26, disease=2, feat=275
+0113
+097B
+// node=26, disease=2, feat=4
+0004
+04BE
+// node=26, disease=2, feat=9
+0009
+04BE
+// node=26, disease=2, feat=17
+0011
+04BE
+// node=26, disease=2, feat=18
+0012
+04BE
+// node=26, disease=2, feat=24
+0018
+04BE
+// node=26, disease=2, feat=60
+003C
+04BE
+// node=26, disease=2, feat=75
+004B
+04BE
+// node=26, disease=2, feat=87
+0057
+04BE
+// node=26, disease=2, feat=111
+006F
+04BE
+// node=26, disease=2, feat=221
+00DD
+04BE
+// node=26, disease=2, feat=223
+00DF
+04BE
+// node=26, disease=3, feat=136
+0088
+2000
+// node=27, disease=2, feat=13
+000D
+7000
+// node=27, disease=2, feat=196
+00C4
+430C
+// node=27, disease=2, feat=10
+000A
+4000
+// node=27, disease=2, feat=256
+0100
+3CF4
+// node=27, disease=2, feat=176
+00B0
+36DB
+// node=27, disease=2, feat=266
+010A
+36DB
+// node=27, disease=2, feat=169
+00A9
+2492
+// node=27, disease=2, feat=179
+00B3
+2492
+// node=27, disease=2, feat=216
+00D8
+2492
+// node=27, disease=2, feat=249
+00F9
+2492
+// node=27, disease=2, feat=268
+010C
+1E7A
+// node=27, disease=2, feat=12
+000C
+1862
+// node=27, disease=2, feat=27
+001B
+1862
+// node=27, disease=2, feat=198
+00C6
+1862
+// node=27, disease=2, feat=259
+0103
+1862
+// node=27, disease=2, feat=53
+0035
+1249
+// node=27, disease=2, feat=171
+00AB
+1249
+// node=27, disease=2, feat=215
+00D7
+1249
+// node=27, disease=2, feat=237
+00ED
+1249
+// node=27, disease=2, feat=257
+0101
+1249
+// node=27, disease=2, feat=192
+00C0
+0C31
+// node=27, disease=2, feat=205
+00CD
+0C31
+// node=27, disease=2, feat=235
+00EB
+0C31
+// node=27, disease=2, feat=242
+00F2
+0C31
+// node=27, disease=2, feat=9
+0009
+0618
+// node=27, disease=2, feat=90
+005A
+0618
+// node=27, disease=2, feat=92
+005C
+0618
+// node=27, disease=2, feat=100
+0064
+0618
+// node=27, disease=2, feat=170
+00AA
+0618
+// node=27, disease=2, feat=210
+00D2
+0618
+// node=27, disease=2, feat=223
+00DF
+0618
+// node=27, disease=3, feat=99
+0063
+7FFF
+// node=27, disease=3, feat=14
+000E
+1555
+// node=28, disease=2, feat=249
+00F9
+2CCD
+// node=28, disease=2, feat=276
+0114
+2666
+// node=28, disease=2, feat=10
+000A
+21AF
+// node=28, disease=2, feat=246
+00F6
+2000
+// node=28, disease=2, feat=259
+0103
+199A
+// node=28, disease=2, feat=189
+00BD
+1333
+// node=28, disease=2, feat=225
+00E1
+1333
+// node=28, disease=2, feat=166
+00A6
+1333
+// node=28, disease=2, feat=6
+0006
+0CCD
+// node=28, disease=2, feat=7
+0007
+0CCD
+// node=28, disease=2, feat=12
+000C
+0CCD
+// node=28, disease=2, feat=104
+0068
+0CCD
+// node=28, disease=2, feat=0
+0000
+0666
+// node=28, disease=2, feat=24
+0018
+0666
+// node=28, disease=2, feat=34
+0022
+0666
+// node=28, disease=2, feat=75
+004B
+0666
+// node=28, disease=2, feat=77
+004D
+0666
+// node=28, disease=2, feat=99
+0063
+0666
+// node=28, disease=2, feat=102
+0066
+0666
+// node=28, disease=2, feat=219
+00DB
+0666
+// node=28, disease=2, feat=226
+00E2
+0666
+// node=28, disease=2, feat=227
+00E3
+0666
+// node=28, disease=2, feat=233
+00E9
+0666
+// node=28, disease=2, feat=237
+00ED
+0666
+// node=28, disease=3, feat=112
+0070
+7FFF
+// node=28, disease=3, feat=136
+0088
+2492
+// node=28, disease=3, feat=230
+00E6
+2492
+// node=28, disease=3, feat=14
+000E
+1249
+// node=28, disease=3, feat=140
+008C
+1249
+// node=29, disease=2, feat=13
+000D
+6000
+// node=29, disease=2, feat=266
+010A
+5249
+// node=29, disease=2, feat=196
+00C4
+4000
+// node=29, disease=2, feat=256
+0100
+4000
+// node=29, disease=2, feat=169
+00A9
+2DB7
+// node=29, disease=2, feat=236
+00EC
+2DB7
+// node=29, disease=2, feat=278
+0116
+2DB7
+// node=29, disease=2, feat=159
+009F
+2492
+// node=29, disease=2, feat=235
+00EB
+2492
+// node=29, disease=2, feat=249
+00F9
+2492
+// node=29, disease=2, feat=268
+010C
+2492
+// node=29, disease=2, feat=219
+00DB
+1B6E
+// node=29, disease=2, feat=239
+00EF
+1B6E
+// node=29, disease=2, feat=12
+000C
+1249
+// node=29, disease=2, feat=32
+0020
+1249
+// node=29, disease=2, feat=177
+00B1
+1249
+// node=29, disease=2, feat=187
+00BB
+1249
+// node=29, disease=2, feat=199
+00C7
+1249
+// node=29, disease=2, feat=205
+00CD
+1249
+// node=29, disease=2, feat=211
+00D3
+1249
+// node=29, disease=2, feat=227
+00E3
+1249
+// node=29, disease=2, feat=241
+00F1
+1249
+// node=29, disease=2, feat=242
+00F2
+1249
+// node=29, disease=2, feat=252
+00FC
+1249
+// node=29, disease=2, feat=29
+001D
+0925
+// node=29, disease=2, feat=65
+0041
+0925
+// node=29, disease=2, feat=92
+005C
+0925
+// node=29, disease=2, feat=104
+0068
+0925
+// node=29, disease=2, feat=223
+00DF
+0925
+// node=29, disease=3, feat=99
+0063
+7000
+// node=29, disease=3, feat=14
+000E
+2000
+// node=29, disease=5, feat=2
+0002
+5000
+// node=29, disease=6, feat=102
+0066
+0E39
+// node=30, disease=2, feat=246
+00F6
+2AAB
+// node=30, disease=2, feat=249
+00F9
+212F
+// node=30, disease=2, feat=276
+0114
+212F
+// node=30, disease=2, feat=216
+00D8
+1C72
+// node=30, disease=2, feat=12
+000C
+17B4
+// node=30, disease=2, feat=256
+0100
+17B4
+// node=30, disease=2, feat=248
+00F8
+12F7
+// node=30, disease=2, feat=259
+0103
+12F7
+// node=30, disease=2, feat=14
+000E
+0E39
+// node=30, disease=2, feat=166
+00A6
+0E39
+// node=30, disease=2, feat=104
+0068
+097B
+// node=30, disease=2, feat=181
+00B5
+097B
+// node=30, disease=2, feat=230
+00E6
+097B
+// node=30, disease=2, feat=0
+0000
+04BE
+// node=30, disease=2, feat=17
+0011
+04BE
+// node=30, disease=2, feat=24
+0018
+04BE
+// node=30, disease=2, feat=34
+0022
+04BE
+// node=30, disease=2, feat=75
+004B
+04BE
+// node=30, disease=2, feat=77
+004D
+04BE
+// node=30, disease=2, feat=110
+006E
+04BE
+// node=30, disease=2, feat=178
+00B2
+04BE
+// node=30, disease=2, feat=195
+00C3
+04BE
+// node=30, disease=2, feat=226
+00E2
+04BE
+// node=30, disease=2, feat=227
+00E3
+04BE
+// node=30, disease=2, feat=275
+0113
+04BE
+// node=30, disease=3, feat=111
+006F
+7FFF
+// node=30, disease=3, feat=87
+0057
+3333
+// node=30, disease=3, feat=136
+0088
+199A
+// node=30, disease=4, feat=140
+008C
+2000
+// node=31, disease=2, feat=13
+000D
+36DB
+// node=31, disease=2, feat=7
+0007
+2C23
+// node=31, disease=2, feat=246
+00F6
+2C23
+// node=31, disease=2, feat=249
+00F9
+27B9
+// node=31, disease=2, feat=256
+0100
+27B9
+// node=31, disease=2, feat=276
+0114
+27B9
+// node=31, disease=2, feat=75
+004B
+1612
+// node=31, disease=2, feat=179
+00B3
+1612
+// node=31, disease=2, feat=268
+010C
+1612
+// node=31, disease=2, feat=12
+000C
+11A8
+// node=31, disease=2, feat=161
+00A1
+11A8
+// node=31, disease=2, feat=167
+00A7
+11A8
+// node=31, disease=2, feat=227
+00E3
+11A8
+// node=31, disease=2, feat=239
+00EF
+11A8
+// node=31, disease=2, feat=235
+00EB
+0D3E
+// node=31, disease=2, feat=8
+0008
+08D4
+// node=31, disease=2, feat=20
+0014
+08D4
+// node=31, disease=2, feat=193
+00C1
+08D4
+// node=31, disease=2, feat=215
+00D7
+08D4
+// node=31, disease=2, feat=251
+00FB
+08D4
+// node=31, disease=2, feat=64
+0040
+046A
+// node=31, disease=2, feat=104
+0068
+046A
+// node=31, disease=2, feat=223
+00DF
+046A
+// node=31, disease=2, feat=230
+00E6
+046A
+// node=31, disease=3, feat=14
+000E
+1746
+// node=31, disease=10, feat=40
+0028
+04EC
+// node=32, disease=2, feat=249
+00F9
+3555
+// node=32, disease=2, feat=216
+00D8
+2AAB
+// node=32, disease=2, feat=259
+0103
+2000
+// node=32, disease=2, feat=266
+010A
+2000
+// node=32, disease=2, feat=104
+0068
+1555
+// node=32, disease=2, feat=189
+00BD
+1555
+// node=32, disease=2, feat=225
+00E1
+1555
+// node=32, disease=2, feat=229
+00E5
+1555
+// node=32, disease=2, feat=247
+00F7
+1555
+// node=32, disease=2, feat=9
+0009
+0AAB
+// node=32, disease=2, feat=14
+000E
+0AAB
+// node=32, disease=2, feat=17
+0011
+0AAB
+// node=32, disease=2, feat=24
+0018
+0AAB
+// node=32, disease=2, feat=90
+005A
+0AAB
+// node=32, disease=2, feat=99
+0063
+0AAB
+// node=32, disease=2, feat=102
+0066
+0AAB
+// node=32, disease=2, feat=178
+00B2
+0AAB
+// node=32, disease=2, feat=191
+00BF
+0AAB
+// node=32, disease=2, feat=198
+00C6
+0AAB
+// node=32, disease=2, feat=223
+00DF
+0AAB
+// node=32, disease=2, feat=227
+00E3
+0AAB
+// node=32, disease=2, feat=242
+00F2
+0AAB
+// node=32, disease=4, feat=32
+0020
+1555
+// node=32, disease=4, feat=87
+0057
+1555
+// node=32, disease=4, feat=124
+007C
+1555
+// node=32, disease=6, feat=75
+004B
+0889
+// node=33, disease=2, feat=256
+0100
+21AF
+// node=33, disease=2, feat=266
+010A
+21AF
+// node=33, disease=2, feat=268
+010C
+21AF
+// node=33, disease=2, feat=276
+0114
+21AF
+// node=33, disease=2, feat=12
+000C
+1AF3
+// node=33, disease=2, feat=249
+00F9
+1AF3
+// node=33, disease=2, feat=100
+0064
+1436
+// node=33, disease=2, feat=178
+00B2
+1436
+// node=33, disease=2, feat=218
+00DA
+1436
+// node=33, disease=2, feat=246
+00F6
+1436
+// node=33, disease=2, feat=251
+00FB
+1436
+// node=33, disease=2, feat=267
+010B
+1436
+// node=33, disease=2, feat=4
+0004
+0D79
+// node=33, disease=2, feat=34
+0022
+0D79
+// node=33, disease=2, feat=197
+00C5
+0D79
+// node=33, disease=2, feat=215
+00D7
+0D79
+// node=33, disease=2, feat=216
+00D8
+0D79
+// node=33, disease=2, feat=223
+00DF
+0D79
+// node=33, disease=2, feat=229
+00E5
+0D79
+// node=33, disease=2, feat=232
+00E8
+0D79
+// node=33, disease=2, feat=237
+00ED
+0D79
+// node=33, disease=2, feat=242
+00F2
+0D79
+// node=33, disease=2, feat=252
+00FC
+0D79
+// node=33, disease=2, feat=9
+0009
+06BD
+// node=33, disease=2, feat=14
+000E
+06BD
+// node=33, disease=2, feat=24
+0018
+06BD
+// node=33, disease=2, feat=135
+0087
+06BD
+// node=33, disease=2, feat=219
+00DB
+06BD
+// node=33, disease=2, feat=225
+00E1
+06BD
+// node=33, disease=2, feat=245
+00F5
+06BD
+// node=33, disease=3, feat=136
+0088
+2666
+// node=33, disease=5, feat=2
+0002
+5000
+// node=33, disease=6, feat=233
+00E9
+0AAB
+// node=34, disease=2, feat=249
+00F9
+28BA
+// node=34, disease=2, feat=266
+010A
+22E9
+// node=34, disease=2, feat=246
+00F6
+22E9
+// node=34, disease=2, feat=276
+0114
+22E9
+// node=34, disease=2, feat=75
+004B
+1D17
+// node=34, disease=2, feat=256
+0100
+1D17
+// node=34, disease=2, feat=104
+0068
+1746
+// node=34, disease=2, feat=232
+00E8
+1746
+// node=34, disease=2, feat=211
+00D3
+1174
+// node=34, disease=2, feat=101
+0065
+0BA3
+// node=34, disease=2, feat=170
+00AA
+0BA3
+// node=34, disease=2, feat=205
+00CD
+0BA3
+// node=34, disease=2, feat=231
+00E7
+0BA3
+// node=34, disease=2, feat=235
+00EB
+0BA3
+// node=34, disease=2, feat=7
+0007
+05D1
+// node=34, disease=2, feat=60
+003C
+05D1
+// node=34, disease=2, feat=65
+0041
+05D1
+// node=34, disease=2, feat=102
+0066
+05D1
+// node=34, disease=2, feat=193
+00C1
+05D1
+// node=34, disease=2, feat=227
+00E3
+05D1
+// node=34, disease=3, feat=14
+000E
+2AAB
+// node=34, disease=9, feat=64
+0040
+7FFF
+// node=34, disease=10, feat=223
+00DF
+35E5
+// node=35, disease=2, feat=266
+010A
+2AAB
+// node=35, disease=2, feat=268
+010C
+2666
+// node=35, disease=2, feat=13
+000D
+2000
+// node=35, disease=2, feat=246
+00F6
+1DDE
+// node=35, disease=2, feat=249
+00F9
+1DDE
+// node=35, disease=2, feat=256
+0100
+1DDE
+// node=35, disease=2, feat=276
+0114
+1DDE
+// node=35, disease=2, feat=278
+0116
+1DDE
+// node=35, disease=2, feat=12
+000C
+1555
+// node=35, disease=2, feat=259
+0103
+1555
+// node=35, disease=2, feat=267
+010B
+1555
+// node=35, disease=2, feat=231
+00E7
+1555
+// node=35, disease=2, feat=239
+00EF
+1555
+// node=35, disease=2, feat=241
+00F1
+1555
+// node=35, disease=2, feat=175
+00AF
+1111
+// node=35, disease=2, feat=251
+00FB
+1111
+// node=35, disease=2, feat=100
+0064
+0CCD
+// node=35, disease=2, feat=166
+00A6
+0CCD
+// node=35, disease=2, feat=188
+00BC
+0CCD
+// node=35, disease=2, feat=208
+00D0
+0CCD
+// node=35, disease=2, feat=215
+00D7
+0CCD
+// node=35, disease=2, feat=261
+0105
+0CCD
+// node=35, disease=2, feat=0
+0000
+0889
+// node=35, disease=2, feat=8
+0008
+0889
+// node=35, disease=2, feat=34
+0022
+0889
+// node=35, disease=2, feat=46
+002E
+0889
+// node=35, disease=2, feat=90
+005A
+0889
+// node=35, disease=2, feat=104
+0068
+0889
+// node=35, disease=2, feat=177
+00B1
+0889
+// node=35, disease=2, feat=227
+00E3
+0889
+// node=35, disease=2, feat=242
+00F2
+0889
+// node=35, disease=2, feat=24
+0018
+0444
+// node=35, disease=2, feat=65
+0041
+0444
+// node=35, disease=2, feat=136
+0088
+0444
+// node=35, disease=2, feat=225
+00E1
+0444
+// node=35, disease=3, feat=14
+000E
+1746
+// node=36, disease=2, feat=176
+00B0
+2E8C
+// node=36, disease=2, feat=249
+00F9
+22E9
+// node=36, disease=2, feat=3
+0003
+1746
+// node=36, disease=2, feat=6
+0006
+1746
+// node=36, disease=2, feat=166
+00A6
+1746
+// node=36, disease=2, feat=189
+00BD
+1746
+// node=36, disease=2, feat=196
+00C4
+1746
+// node=36, disease=2, feat=216
+00D8
+1746
+// node=36, disease=2, feat=226
+00E2
+1746
+// node=36, disease=2, feat=246
+00F6
+1746
+// node=36, disease=2, feat=14
+000E
+0BA3
+// node=36, disease=2, feat=32
+0020
+0BA3
+// node=36, disease=2, feat=65
+0041
+0BA3
+// node=36, disease=2, feat=75
+004B
+0BA3
+// node=36, disease=2, feat=102
+0066
+0BA3
+// node=36, disease=2, feat=104
+0068
+0BA3
+// node=36, disease=2, feat=205
+00CD
+0BA3
+// node=36, disease=2, feat=221
+00DD
+0BA3
+// node=36, disease=2, feat=251
+00FB
+0BA3
+// node=36, disease=2, feat=258
+0102
+0BA3
+// node=36, disease=3, feat=7
+0007
+4000
+// node=36, disease=3, feat=168
+00A8
+4000
+// node=36, disease=3, feat=200
+00C8
+4000
+// node=36, disease=3, feat=13
+000D
+1AAB
+// node=36, disease=5, feat=60
+003C
+199A
+// node=36, disease=5, feat=212
+00D4
+199A
+// node=36, disease=9, feat=64
+0040
+5555
+// node=36, disease=10, feat=223
+00DF
+3216
+// node=36, disease=10, feat=52
+0034
+2C86
+// node=37, disease=2, feat=268
+010C
+22E9
+// node=37, disease=2, feat=246
+00F6
+22E9
+// node=37, disease=2, feat=249
+00F9
+22E9
+// node=37, disease=2, feat=12
+000C
+1D17
+// node=37, disease=2, feat=256
+0100
+1D17
+// node=37, disease=2, feat=276
+0114
+1D17
+// node=37, disease=2, feat=248
+00F8
+1746
+// node=37, disease=2, feat=215
+00D7
+1174
+// node=37, disease=2, feat=218
+00DA
+1174
+// node=37, disease=2, feat=14
+000E
+0BA3
+// node=37, disease=2, feat=104
+0068
+0BA3
+// node=37, disease=2, feat=159
+009F
+0BA3
+// node=37, disease=2, feat=169
+00A9
+0BA3
+// node=37, disease=2, feat=217
+00D9
+0BA3
+// node=37, disease=2, feat=220
+00DC
+0BA3
+// node=37, disease=2, feat=223
+00DF
+0BA3
+// node=37, disease=2, feat=225
+00E1
+0BA3
+// node=37, disease=2, feat=237
+00ED
+0BA3
+// node=37, disease=2, feat=242
+00F2
+0BA3
+// node=37, disease=2, feat=252
+00FC
+0BA3
+// node=37, disease=2, feat=2
+0002
+05D1
+// node=37, disease=2, feat=7
+0007
+05D1
+// node=37, disease=2, feat=24
+0018
+05D1
+// node=37, disease=2, feat=34
+0022
+05D1
+// node=37, disease=2, feat=233
+00E9
+05D1
+// node=37, disease=3, feat=136
+0088
+1000
+// node=37, disease=3, feat=167
+00A7
+1000
+// node=38, disease=2, feat=256
+0100
+5794
+// node=38, disease=2, feat=10
+000A
+471C
+// node=38, disease=2, feat=196
+00C4
+435E
+// node=38, disease=2, feat=249
+00F9
+286C
+// node=38, disease=2, feat=75
+004B
+21AF
+// node=38, disease=2, feat=189
+00BD
+21AF
+// node=38, disease=2, feat=206
+00CE
+21AF
+// node=38, disease=2, feat=259
+0103
+21AF
+// node=38, disease=2, feat=27
+001B
+1AF3
+// node=38, disease=2, feat=211
+00D3
+1AF3
+// node=38, disease=2, feat=278
+0116
+1AF3
+// node=38, disease=2, feat=6
+0006
+1436
+// node=38, disease=2, feat=236
+00EC
+1436
+// node=38, disease=2, feat=64
+0040
+0D79
+// node=38, disease=2, feat=199
+00C7
+0D79
+// node=38, disease=2, feat=205
+00CD
+0D79
+// node=38, disease=2, feat=231
+00E7
+0D79
+// node=38, disease=2, feat=232
+00E8
+0D79
+// node=38, disease=2, feat=235
+00EB
+0D79
+// node=38, disease=2, feat=251
+00FB
+0D79
+// node=38, disease=2, feat=104
+0068
+06BD
+// node=38, disease=2, feat=227
+00E3
+06BD
+// node=38, disease=2, feat=230
+00E6
+06BD
+// node=38, disease=2, feat=242
+00F2
+06BD
+// node=38, disease=3, feat=116
+0074
+7FFF
+// node=38, disease=3, feat=14
+000E
+199A
+// node=38, disease=4, feat=44
+002C
+3000
+// node=39, disease=2, feat=266
+010A
+2AAB
+// node=39, disease=2, feat=268
+010C
+2AAB
+// node=39, disease=2, feat=13
+000D
+2492
+// node=39, disease=2, feat=246
+00F6
+238E
+// node=39, disease=2, feat=249
+00F9
+238E
+// node=39, disease=2, feat=276
+0114
+238E
+// node=39, disease=2, feat=12
+000C
+1C72
+// node=39, disease=2, feat=248
+00F8
+1C72
+// node=39, disease=2, feat=218
+00DA
+1555
+// node=39, disease=2, feat=259
+0103
+1555
+// node=39, disease=2, feat=11
+000B
+0E39
+// node=39, disease=2, feat=104
+0068
+0E39
+// node=39, disease=2, feat=159
+009F
+0E39
+// node=39, disease=2, feat=178
+00B2
+0E39
+// node=39, disease=2, feat=215
+00D7
+0E39
+// node=39, disease=2, feat=217
+00D9
+0E39
+// node=39, disease=2, feat=223
+00DF
+0E39
+// node=39, disease=2, feat=229
+00E5
+0E39
+// node=39, disease=2, feat=242
+00F2
+0E39
+// node=39, disease=2, feat=14
+000E
+071C
+// node=39, disease=2, feat=24
+0018
+071C
+// node=39, disease=2, feat=34
+0022
+071C
+// node=39, disease=2, feat=63
+003F
+071C
+// node=39, disease=2, feat=65
+0041
+071C
+// node=39, disease=2, feat=187
+00BB
+071C
+// node=39, disease=2, feat=225
+00E1
+071C
+// node=39, disease=2, feat=227
+00E3
+071C
+// node=39, disease=3, feat=136
+0088
+2000
+// node=39, disease=5, feat=2
+0002
+1555
+// node=40, disease=2, feat=196
+00C4
+42C8
+// node=40, disease=2, feat=249
+00F9
+2C86
+// node=40, disease=2, feat=256
+0100
+26F5
+// node=40, disease=2, feat=189
+00BD
+2164
+// node=40, disease=2, feat=75
+004B
+1BD3
+// node=40, disease=2, feat=6
+0006
+1643
+// node=40, disease=2, feat=27
+001B
+1643
+// node=40, disease=2, feat=211
+00D3
+1643
+// node=40, disease=2, feat=246
+00F6
+1643
+// node=40, disease=2, feat=278
+0116
+1643
+// node=40, disease=2, feat=219
+00DB
+10B2
+// node=40, disease=2, feat=236
+00EC
+10B2
+// node=40, disease=2, feat=7
+0007
+0B21
+// node=40, disease=2, feat=8
+0008
+0B21
+// node=40, disease=2, feat=12
+000C
+0B21
+// node=40, disease=2, feat=181
+00B5
+0B21
+// node=40, disease=2, feat=205
+00CD
+0B21
+// node=40, disease=2, feat=222
+00DE
+0B21
+// node=40, disease=2, feat=232
+00E8
+0B21
+// node=40, disease=2, feat=235
+00EB
+0B21
+// node=40, disease=2, feat=0
+0000
+0591
+// node=40, disease=2, feat=44
+002C
+0591
+// node=40, disease=2, feat=65
+0041
+0591
+// node=40, disease=2, feat=104
+0068
+0591
+// node=40, disease=2, feat=193
+00C1
+0591
+// node=40, disease=2, feat=227
+00E3
+0591
+// node=40, disease=2, feat=242
+00F2
+0591
+// node=40, disease=3, feat=99
+0063
+7FFF
+// node=40, disease=3, feat=230
+00E6
+6666
+// node=40, disease=3, feat=14
+000E
+199A
+// node=40, disease=5, feat=2
+0002
+2492
+// node=41, disease=2, feat=216
+00D8
+2C86
+// node=41, disease=2, feat=266
+010A
+26F5
+// node=41, disease=2, feat=12
+000C
+2164
+// node=41, disease=2, feat=268
+010C
+2164
+// node=41, disease=2, feat=276
+0114
+2164
+// node=41, disease=2, feat=246
+00F6
+1BD3
+// node=41, disease=2, feat=249
+00F9
+1643
+// node=41, disease=2, feat=256
+0100
+1643
+// node=41, disease=2, feat=259
+0103
+1643
+// node=41, disease=2, feat=215
+00D7
+10B2
+// node=41, disease=2, feat=248
+00F8
+10B2
+// node=41, disease=2, feat=11
+000B
+0C31
+// node=41, disease=2, feat=14
+000E
+0B21
+// node=41, disease=2, feat=46
+002E
+0B21
+// node=41, disease=2, feat=159
+009F
+0B21
+// node=41, disease=2, feat=169
+00A9
+0B21
+// node=41, disease=2, feat=178
+00B2
+0B21
+// node=41, disease=2, feat=217
+00D9
+0B21
+// node=41, disease=2, feat=223
+00DF
+0B21
+// node=41, disease=2, feat=225
+00E1
+0B21
+// node=41, disease=2, feat=231
+00E7
+0B21
+// node=41, disease=2, feat=237
+00ED
+0B21
+// node=41, disease=2, feat=242
+00F2
+0B21
+// node=41, disease=2, feat=24
+0018
+0591
+// node=41, disease=2, feat=34
+0022
+0591
+// node=41, disease=2, feat=40
+0028
+0591
+// node=41, disease=2, feat=92
+005C
+0591
+// node=41, disease=3, feat=136
+0088
+1249
+// node=41, disease=5, feat=2
+0002
+199A
+// node=41, disease=9, feat=28
+001C
+6666
+// node=42, disease=2, feat=256
+0100
+31C7
+// node=42, disease=2, feat=10
+000A
+2D2D
+// node=42, disease=2, feat=249
+00F9
+2AAB
+// node=42, disease=2, feat=75
+004B
+238E
+// node=42, disease=2, feat=166
+00A6
+238E
+// node=42, disease=2, feat=189
+00BD
+238E
+// node=42, disease=2, feat=196
+00C4
+238E
+// node=42, disease=2, feat=246
+00F6
+238E
+// node=42, disease=2, feat=27
+001B
+1C72
+// node=42, disease=2, feat=159
+009F
+1C72
+// node=42, disease=2, feat=239
+00EF
+1C72
+// node=42, disease=2, feat=259
+0103
+1C72
+// node=42, disease=2, feat=13
+000D
+1746
+// node=42, disease=2, feat=6
+0006
+1555
+// node=42, disease=2, feat=179
+00B3
+1555
+// node=42, disease=2, feat=211
+00D3
+1555
+// node=42, disease=2, feat=219
+00DB
+1555
+// node=42, disease=2, feat=32
+0020
+0E39
+// node=42, disease=2, feat=64
+0040
+0E39
+// node=42, disease=2, feat=104
+0068
+0E39
+// node=42, disease=2, feat=205
+00CD
+0E39
+// node=42, disease=2, feat=206
+00CE
+0E39
+// node=42, disease=2, feat=232
+00E8
+0E39
+// node=42, disease=2, feat=235
+00EB
+0E39
+// node=42, disease=2, feat=7
+0007
+071C
+// node=42, disease=2, feat=8
+0008
+071C
+// node=42, disease=2, feat=44
+002C
+071C
+// node=42, disease=2, feat=65
+0041
+071C
+// node=42, disease=2, feat=102
+0066
+071C
+// node=42, disease=2, feat=193
+00C1
+071C
+// node=42, disease=2, feat=221
+00DD
+071C
+// node=42, disease=2, feat=227
+00E3
+071C
+// node=42, disease=2, feat=236
+00EC
+071C
+// node=42, disease=2, feat=242
+00F2
+071C
+// node=42, disease=3, feat=99
+0063
+7FFF
+// node=42, disease=3, feat=230
+00E6
+6AAB
+// node=42, disease=3, feat=14
+000E
+1555
+// node=42, disease=5, feat=2
+0002
+3000
+// node=43, disease=2, feat=249
+00F9
+2762
+// node=43, disease=2, feat=266
+010A
+2762
+// node=43, disease=2, feat=10
+000A
+1BD3
+// node=43, disease=2, feat=246
+00F6
+189E
+// node=43, disease=2, feat=256
+0100
+189E
+// node=43, disease=2, feat=259
+0103
+189E
+// node=43, disease=2, feat=276
+0114
+189E
+// node=43, disease=2, feat=100
+0064
+13B1
+// node=43, disease=2, feat=104
+0068
+13B1
+// node=43, disease=2, feat=232
+00E8
+13B1
+// node=43, disease=2, feat=101
+0065
+0EC5
+// node=43, disease=2, feat=12
+000C
+09D9
+// node=43, disease=2, feat=17
+0011
+09D9
+// node=43, disease=2, feat=52
+0034
+09D9
+// node=43, disease=2, feat=218
+00DA
+09D9
+// node=43, disease=2, feat=7
+0007
+04EC
+// node=43, disease=2, feat=9
+0009
+04EC
+// node=43, disease=2, feat=14
+000E
+04EC
+// node=43, disease=2, feat=24
+0018
+04EC
+// node=43, disease=2, feat=39
+0027
+04EC
+// node=43, disease=2, feat=60
+003C
+04EC
+// node=43, disease=2, feat=88
+0058
+04EC
+// node=43, disease=2, feat=172
+00AC
+04EC
+// node=43, disease=2, feat=191
+00BF
+04EC
+// node=43, disease=2, feat=221
+00DD
+04EC
+// node=43, disease=2, feat=228
+00E4
+04EC
+// node=43, disease=3, feat=111
+006F
+7FFF
+// node=43, disease=3, feat=235
+00EB
+4000
+// node=43, disease=5, feat=2
+0002
+1555
+// node=43, disease=9, feat=205
+00CD
+1555
+// node=44, disease=2, feat=10
+000A
+4925
+// node=44, disease=2, feat=196
+00C4
+3BBC
+// node=44, disease=2, feat=246
+00F6
+3BBC
+// node=44, disease=2, feat=159
+009F
+2AAB
+// node=44, disease=2, feat=166
+00A6
+2222
+// node=44, disease=2, feat=179
+00B3
+2222
+// node=44, disease=2, feat=189
+00BD
+2222
+// node=44, disease=2, feat=227
+00E3
+2222
+// node=44, disease=2, feat=231
+00E7
+2222
+// node=44, disease=2, feat=235
+00EB
+2222
+// node=44, disease=2, feat=241
+00F1
+2222
+// node=44, disease=2, feat=12
+000C
+199A
+// node=44, disease=2, feat=92
+005C
+199A
+// node=44, disease=2, feat=232
+00E8
+199A
+// node=44, disease=2, feat=236
+00EC
+199A
+// node=44, disease=2, feat=4
+0004
+1111
+// node=44, disease=2, feat=6
+0006
+1111
+// node=44, disease=2, feat=90
+005A
+1111
+// node=44, disease=2, feat=225
+00E1
+1111
+// node=44, disease=2, feat=180
+00B4
+0889
+// node=44, disease=2, feat=195
+00C3
+0889
+// node=44, disease=2, feat=251
+00FB
+0889
+// node=44, disease=3, feat=136
+0088
+2E8C
+// node=44, disease=3, feat=14
+000E
+0BA3
+// node=44, disease=5, feat=2
+0002
+4925
+// node=44, disease=5, feat=60
+003C
+1249
+// node=45, disease=2, feat=249
+00F9
+3333
+// node=45, disease=2, feat=266
+010A
+23D7
+// node=45, disease=2, feat=246
+00F6
+1EB8
+// node=45, disease=2, feat=276
+0114
+1EB8
+// node=45, disease=2, feat=256
+0100
+199A
+// node=45, disease=2, feat=239
+00EF
+147B
+// node=45, disease=2, feat=259
+0103
+147B
+// node=45, disease=2, feat=179
+00B3
+0F5C
+// node=45, disease=2, feat=189
+00BD
+0F5C
+// node=45, disease=2, feat=211
+00D3
+0F5C
+// node=45, disease=2, feat=228
+00E4
+0F5C
+// node=45, disease=2, feat=232
+00E8
+0F5C
+// node=45, disease=2, feat=248
+00F8
+0F5C
+// node=45, disease=2, feat=7
+0007
+0A3D
+// node=45, disease=2, feat=14
+000E
+0A3D
+// node=45, disease=2, feat=32
+0020
+0A3D
+// node=45, disease=2, feat=104
+0068
+0A3D
+// node=45, disease=2, feat=191
+00BF
+0A3D
+// node=45, disease=2, feat=226
+00E2
+0A3D
+// node=45, disease=2, feat=24
+0018
+051F
+// node=45, disease=2, feat=44
+002C
+051F
+// node=45, disease=2, feat=60
+003C
+051F
+// node=45, disease=2, feat=65
+0041
+051F
+// node=45, disease=2, feat=102
+0066
+051F
+// node=45, disease=2, feat=172
+00AC
+051F
+// node=45, disease=2, feat=192
+00C0
+051F
+// node=45, disease=2, feat=205
+00CD
+051F
+// node=45, disease=2, feat=221
+00DD
+051F
+// node=45, disease=2, feat=227
+00E3
+051F
+// node=45, disease=2, feat=230
+00E6
+051F
+// node=45, disease=2, feat=275
+0113
+051F
+// node=45, disease=3, feat=111
+006F
+7FFF
+// node=45, disease=10, feat=223
+00DF
+36DB
+// node=45, disease=16, feat=5
+0005
+0925
+// node=46, disease=2, feat=196
+00C4
+5000
+// node=46, disease=2, feat=10
+000A
+4000
+// node=46, disease=2, feat=176
+00B0
+3000
+// node=46, disease=2, feat=13
+000D
+2AAB
+// node=46, disease=2, feat=268
+010C
+2800
+// node=46, disease=2, feat=12
+000C
+2000
+// node=46, disease=2, feat=159
+009F
+2000
+// node=46, disease=2, feat=236
+00EC
+2000
+// node=46, disease=2, feat=246
+00F6
+2000
+// node=46, disease=2, feat=166
+00A6
+1800
+// node=46, disease=2, feat=198
+00C6
+1800
+// node=46, disease=2, feat=206
+00CE
+1800
+// node=46, disease=2, feat=225
+00E1
+1800
+// node=46, disease=2, feat=231
+00E7
+1800
+// node=46, disease=2, feat=239
+00EF
+1800
+// node=46, disease=2, feat=241
+00F1
+1800
+// node=46, disease=2, feat=261
+0105
+1800
+// node=46, disease=2, feat=90
+005A
+1000
+// node=46, disease=2, feat=215
+00D7
+1000
+// node=46, disease=2, feat=223
+00DF
+1000
+// node=46, disease=2, feat=235
+00EB
+1000
+// node=46, disease=2, feat=267
+010B
+1000
+// node=46, disease=2, feat=8
+0008
+0800
+// node=46, disease=2, feat=80
+0050
+0800
+// node=46, disease=2, feat=104
+0068
+0800
+// node=46, disease=2, feat=135
+0087
+0800
+// node=46, disease=2, feat=237
+00ED
+0800
+// node=46, disease=3, feat=14
+000E
+199A
+// node=46, disease=4, feat=53
+0035
+1249
+// node=46, disease=5, feat=2
+0002
+4000
+// node=47, disease=2, feat=249
+00F9
+3B14
+// node=47, disease=2, feat=10
+000A
+3555
+// node=47, disease=2, feat=166
+00A6
+313B
+// node=47, disease=2, feat=196
+00C4
+2762
+// node=47, disease=2, feat=6
+0006
+1D8A
+// node=47, disease=2, feat=104
+0068
+1D8A
+// node=47, disease=2, feat=232
+00E8
+1D8A
+// node=47, disease=2, feat=3
+0003
+13B1
+// node=47, disease=2, feat=14
+000E
+13B1
+// node=47, disease=2, feat=171
+00AB
+13B1
+// node=47, disease=2, feat=205
+00CD
+13B1
+// node=47, disease=2, feat=226
+00E2
+13B1
+// node=47, disease=2, feat=228
+00E4
+13B1
+// node=47, disease=2, feat=259
+0103
+13B1
+// node=47, disease=2, feat=278
+0116
+13B1
+// node=47, disease=2, feat=17
+0011
+09D9
+// node=47, disease=2, feat=24
+0018
+09D9
+// node=47, disease=2, feat=32
+0020
+09D9
+// node=47, disease=2, feat=65
+0041
+09D9
+// node=47, disease=2, feat=101
+0065
+09D9
+// node=47, disease=2, feat=102
+0066
+09D9
+// node=47, disease=2, feat=170
+00AA
+09D9
+// node=47, disease=2, feat=221
+00DD
+09D9
+// node=47, disease=2, feat=227
+00E3
+09D9
+// node=47, disease=2, feat=233
+00E9
+09D9
+// node=47, disease=2, feat=235
+00EB
+09D9
+// node=47, disease=2, feat=247
+00F7
+09D9
+// node=47, disease=3, feat=111
+006F
+7FFF
+// node=47, disease=3, feat=258
+0102
+4000
+// node=47, disease=3, feat=13
+000D
+1000
+// node=47, disease=4, feat=29
+001D
+2000
+// node=47, disease=9, feat=172
+00AC
+4000
+// node=47, disease=10, feat=223
+00DF
+31C7
+// node=47, disease=10, feat=197
+00C5
+0E39
+// node=48, disease=2, feat=266
+010A
+3249
+// node=48, disease=2, feat=256
+0100
+3249
+// node=48, disease=2, feat=246
+00F6
+2DB7
+// node=48, disease=2, feat=216
+00D8
+2000
+// node=48, disease=2, feat=249
+00F9
+2000
+// node=48, disease=2, feat=276
+0114
+1B6E
+// node=48, disease=2, feat=278
+0116
+1B6E
+// node=48, disease=2, feat=13
+000D
+1746
+// node=48, disease=2, feat=12
+000C
+16DB
+// node=48, disease=2, feat=267
+010B
+16DB
+// node=48, disease=2, feat=175
+00AF
+1249
+// node=48, disease=2, feat=11
+000B
+0EC5
+// node=48, disease=2, feat=7
+0007
+0DB7
+// node=48, disease=2, feat=178
+00B2
+0DB7
+// node=48, disease=2, feat=215
+00D7
+0DB7
+// node=48, disease=2, feat=217
+00D9
+0DB7
+// node=48, disease=2, feat=235
+00EB
+0DB7
+// node=48, disease=2, feat=239
+00EF
+0DB7
+// node=48, disease=2, feat=0
+0000
+0925
+// node=48, disease=2, feat=8
+0008
+0925
+// node=48, disease=2, feat=90
+005A
+0925
+// node=48, disease=2, feat=242
+00F2
+0925
+// node=48, disease=2, feat=252
+00FC
+0925
+// node=48, disease=2, feat=75
+004B
+0492
+// node=48, disease=2, feat=92
+005C
+0492
+// node=48, disease=2, feat=104
+0068
+0492
+// node=48, disease=2, feat=135
+0087
+0492
+// node=48, disease=2, feat=193
+00C1
+0492
+// node=48, disease=2, feat=195
+00C3
+0492
+// node=48, disease=2, feat=225
+00E1
+0492
+// node=48, disease=2, feat=229
+00E5
+0492
+// node=48, disease=2, feat=232
+00E8
+0492
+// node=48, disease=3, feat=14
+000E
+1746
+// node=49, disease=2, feat=10
+000A
+4AAB
+// node=49, disease=2, feat=166
+00A6
+4AAB
+// node=49, disease=2, feat=196
+00C4
+4AAB
+// node=49, disease=2, feat=256
+0100
+4AAB
+// node=49, disease=2, feat=7
+0007
+2AAB
+// node=49, disease=2, feat=189
+00BD
+2AAB
+// node=49, disease=2, feat=206
+00CE
+2AAB
+// node=49, disease=2, feat=266
+010A
+2AAB
+// node=49, disease=2, feat=276
+0114
+2AAB
+// node=49, disease=2, feat=219
+00DB
+2000
+// node=49, disease=2, feat=278
+0116
+2000
+// node=49, disease=2, feat=159
+009F
+1555
+// node=49, disease=2, feat=199
+00C7
+1555
+// node=49, disease=2, feat=211
+00D3
+1555
+// node=49, disease=2, feat=222
+00DE
+1555
+// node=49, disease=2, feat=251
+00FB
+1555
+// node=49, disease=2, feat=6
+0006
+0AAB
+// node=49, disease=2, feat=32
+0020
+0AAB
+// node=49, disease=2, feat=65
+0041
+0AAB
+// node=49, disease=2, feat=170
+00AA
+0AAB
+// node=49, disease=2, feat=177
+00B1
+0AAB
+// node=49, disease=2, feat=205
+00CD
+0AAB
+// node=49, disease=2, feat=207
+00CF
+0AAB
+// node=49, disease=2, feat=227
+00E3
+0AAB
+// node=49, disease=2, feat=230
+00E6
+0AAB
+// node=49, disease=2, feat=232
+00E8
+0AAB
+// node=49, disease=2, feat=235
+00EB
+0AAB
+// node=49, disease=3, feat=112
+0070
+7FFF
+// node=49, disease=3, feat=14
+000E
+199A
+// node=49, disease=4, feat=9
+0009
+4000
+// node=49, disease=5, feat=267
+010B
+1000
+// node=49, disease=6, feat=102
+0066
+0BA3
+// node=50, disease=2, feat=249
+00F9
+27B9
+// node=50, disease=2, feat=268
+010C
+234F
+// node=50, disease=2, feat=216
+00D8
+1EE6
+// node=50, disease=2, feat=246
+00F6
+1EE6
+// node=50, disease=2, feat=256
+0100
+1EE6
+// node=50, disease=2, feat=266
+010A
+1EE6
+// node=50, disease=2, feat=276
+0114
+1EE6
+// node=50, disease=2, feat=13
+000D
+1B6E
+// node=50, disease=2, feat=239
+00EF
+1A7C
+// node=50, disease=2, feat=12
+000C
+1612
+// node=50, disease=2, feat=259
+0103
+1612
+// node=50, disease=2, feat=217
+00D9
+11A8
+// node=50, disease=2, feat=14
+000E
+0D3E
+// node=50, disease=2, feat=104
+0068
+0D3E
+// node=50, disease=2, feat=169
+00A9
+0D3E
+// node=50, disease=2, feat=242
+00F2
+0D3E
+// node=50, disease=2, feat=247
+00F7
+0D3E
+// node=50, disease=2, feat=5
+0005
+08D4
+// node=50, disease=2, feat=65
+0041
+08D4
+// node=50, disease=2, feat=178
+00B2
+08D4
+// node=50, disease=2, feat=223
+00DF
+08D4
+// node=50, disease=2, feat=225
+00E1
+08D4
+// node=50, disease=2, feat=245
+00F5
+08D4
+// node=50, disease=2, feat=17
+0011
+046A
+// node=50, disease=2, feat=24
+0018
+046A
+// node=50, disease=2, feat=63
+003F
+046A
+// node=50, disease=2, feat=87
+0057
+046A
+// node=50, disease=2, feat=232
+00E8
+046A
+// node=50, disease=3, feat=136
+0088
+2000
+// node=51, disease=2, feat=256
+0100
+47AE
+// node=51, disease=2, feat=10
+000A
+3CF4
+// node=51, disease=2, feat=276
+0114
+2E14
+// node=51, disease=2, feat=13
+000D
+2AAB
+// node=51, disease=2, feat=249
+00F9
+28F6
+// node=51, disease=2, feat=189
+00BD
+23D7
+// node=51, disease=2, feat=259
+0103
+23D7
+// node=51, disease=2, feat=169
+00A9
+1EB8
+// node=51, disease=2, feat=278
+0116
+1EB8
+// node=51, disease=2, feat=166
+00A6
+199A
+// node=51, disease=2, feat=179
+00B3
+199A
+// node=51, disease=2, feat=206
+00CE
+199A
+// node=51, disease=2, feat=27
+001B
+147B
+// node=51, disease=2, feat=104
+0068
+0F5C
+// node=51, disease=2, feat=187
+00BB
+0F5C
+// node=51, disease=2, feat=199
+00C7
+0F5C
+// node=51, disease=2, feat=205
+00CD
+0F5C
+// node=51, disease=2, feat=211
+00D3
+0F5C
+// node=51, disease=2, feat=235
+00EB
+0F5C
+// node=51, disease=2, feat=237
+00ED
+0F5C
+// node=51, disease=2, feat=251
+00FB
+0F5C
+// node=51, disease=2, feat=6
+0006
+0A3D
+// node=51, disease=2, feat=8
+0008
+0A3D
+// node=51, disease=2, feat=18
+0012
+0A3D
+// node=51, disease=2, feat=170
+00AA
+0A3D
+// node=51, disease=2, feat=171
+00AB
+0A3D
+// node=51, disease=2, feat=227
+00E3
+0A3D
+// node=51, disease=2, feat=60
+003C
+051F
+// node=51, disease=2, feat=111
+006F
+051F
+// node=51, disease=4, feat=40
+0028
+0AAB
+// node=51, disease=5, feat=14
+000E
+71C7
+// node=52, disease=2, feat=246
+00F6
+3800
+// node=52, disease=2, feat=10
+000A
+2800
+// node=52, disease=2, feat=266
+010A
+2800
+// node=52, disease=2, feat=7
+0007
+2000
+// node=52, disease=2, feat=249
+00F9
+2000
+// node=52, disease=2, feat=268
+010C
+2000
+// node=52, disease=2, feat=216
+00D8
+1800
+// node=52, disease=2, feat=248
+00F8
+1800
+// node=52, disease=2, feat=12
+000C
+1000
+// node=52, disease=2, feat=220
+00DC
+1000
+// node=52, disease=2, feat=259
+0103
+1000
+// node=52, disease=2, feat=0
+0000
+0800
+// node=52, disease=2, feat=6
+0006
+0800
+// node=52, disease=2, feat=24
+0018
+0800
+// node=52, disease=2, feat=75
+004B
+0800
+// node=52, disease=2, feat=77
+004D
+0800
+// node=52, disease=2, feat=102
+0066
+0800
+// node=52, disease=2, feat=104
+0068
+0800
+// node=52, disease=2, feat=110
+006E
+0800
+// node=52, disease=2, feat=166
+00A6
+0800
+// node=52, disease=3, feat=14
+000E
+2666
+// node=52, disease=3, feat=136
+0088
+199A
+// node=52, disease=3, feat=140
+008C
+0CCD
+// node=52, disease=3, feat=162
+00A2
+0CCD
+// node=52, disease=4, feat=34
+0022
+4000
+// node=52, disease=5, feat=226
+00E2
+2000
+// node=52, disease=5, feat=227
+00E3
+2000
+// node=52, disease=8, feat=89
+0059
+7FFF
+// node=52, disease=10, feat=223
+00DF
+5555
+// node=53, disease=2, feat=10
+000A
+31C7
+// node=53, disease=2, feat=196
+00C4
+2F28
+// node=53, disease=2, feat=266
+010A
+286C
+// node=53, disease=2, feat=276
+0114
+286C
+// node=53, disease=2, feat=256
+0100
+21AF
+// node=53, disease=2, feat=12
+000C
+1AF3
+// node=53, disease=2, feat=166
+00A6
+1AF3
+// node=53, disease=2, feat=198
+00C6
+1AF3
+// node=53, disease=2, feat=220
+00DC
+1436
+// node=53, disease=2, feat=231
+00E7
+1436
+// node=53, disease=2, feat=236
+00EC
+1436
+// node=53, disease=2, feat=246
+00F6
+1436
+// node=53, disease=2, feat=249
+00F9
+1436
+// node=53, disease=2, feat=6
+0006
+0D79
+// node=53, disease=2, feat=110
+006E
+0D79
+// node=53, disease=2, feat=169
+00A9
+0D79
+// node=53, disease=2, feat=175
+00AF
+0D79
+// node=53, disease=2, feat=177
+00B1
+0D79
+// node=53, disease=2, feat=181
+00B5
+0D79
+// node=53, disease=2, feat=197
+00C5
+0D79
+// node=53, disease=2, feat=222
+00DE
+0D79
+// node=53, disease=2, feat=235
+00EB
+0D79
+// node=53, disease=2, feat=239
+00EF
+0D79
+// node=53, disease=2, feat=16
+0010
+06BD
+// node=53, disease=2, feat=32
+0020
+06BD
+// node=53, disease=2, feat=65
+0041
+06BD
+// node=53, disease=2, feat=102
+0066
+06BD
+// node=53, disease=2, feat=104
+0068
+06BD
+// node=53, disease=2, feat=128
+0080
+06BD
+// node=53, disease=2, feat=136
+0088
+06BD
+// node=53, disease=2, feat=205
+00CD
+06BD
+// node=53, disease=2, feat=255
+00FF
+06BD
+// node=53, disease=3, feat=250
+00FA
+6000
+// node=53, disease=3, feat=14
+000E
+2000
+// node=53, disease=3, feat=210
+00D2
+2000
+// node=53, disease=3, feat=225
+00E1
+2000
+// node=53, disease=3, feat=247
+00F7
+2000
+// node=53, disease=3, feat=252
+00FC
+2000
+// node=53, disease=4, feat=227
+00E3
+1746
+// node=53, disease=5, feat=0
+0000
+3333
+// node=53, disease=5, feat=2
+0002
+199A
+// node=53, disease=5, feat=60
+003C
+199A
+// node=53, disease=10, feat=223
+00DF
+22E9
+// node=54, disease=2, feat=249
+00F9
+28BA
+// node=54, disease=2, feat=246
+00F6
+22E9
+// node=54, disease=2, feat=259
+0103
+22E9
+// node=54, disease=2, feat=239
+00EF
+1D17
+// node=54, disease=2, feat=256
+0100
+1D17
+// node=54, disease=2, feat=216
+00D8
+1D17
+// node=54, disease=2, feat=10
+000A
+1AF3
+// node=54, disease=2, feat=268
+010C
+1746
+// node=54, disease=2, feat=12
+000C
+1174
+// node=54, disease=2, feat=92
+005C
+1174
+// node=54, disease=2, feat=121
+0079
+1174
+// node=54, disease=2, feat=125
+007D
+1174
+// node=54, disease=2, feat=229
+00E5
+1174
+// node=54, disease=2, feat=7
+0007
+0BA3
+// node=54, disease=2, feat=29
+001D
+0BA3
+// node=54, disease=2, feat=90
+005A
+0BA3
+// node=54, disease=2, feat=162
+00A2
+0BA3
+// node=54, disease=2, feat=178
+00B2
+0BA3
+// node=54, disease=2, feat=225
+00E1
+0BA3
+// node=54, disease=2, feat=237
+00ED
+0BA3
+// node=54, disease=2, feat=276
+0114
+0BA3
+// node=54, disease=2, feat=9
+0009
+05D1
+// node=54, disease=2, feat=17
+0011
+05D1
+// node=54, disease=2, feat=24
+0018
+05D1
+// node=54, disease=2, feat=39
+0027
+05D1
+// node=54, disease=2, feat=99
+0063
+05D1
+// node=54, disease=2, feat=111
+006F
+05D1
+// node=54, disease=2, feat=120
+0078
+05D1
+// node=54, disease=3, feat=230
+00E6
+471C
+// node=54, disease=3, feat=140
+008C
+1C72
+// node=54, disease=3, feat=14
+000E
+0E39
+// node=55, disease=2, feat=249
+00F9
+2D6B
+// node=55, disease=2, feat=266
+010A
+294A
+// node=55, disease=2, feat=10
+000A
+212F
+// node=55, disease=2, feat=276
+0114
+2108
+// node=55, disease=2, feat=13
+000D
+1D8A
+// node=55, disease=2, feat=216
+00D8
+1CE7
+// node=55, disease=2, feat=246
+00F6
+1CE7
+// node=55, disease=2, feat=256
+0100
+1CE7
+// node=55, disease=2, feat=239
+00EF
+18C6
+// node=55, disease=2, feat=268
+010C
+1084
+// node=55, disease=2, feat=278
+0116
+1084
+// node=55, disease=2, feat=12
+000C
+0C63
+// node=55, disease=2, feat=110
+006E
+0C63
+// node=55, disease=2, feat=189
+00BD
+0C63
+// node=55, disease=2, feat=220
+00DC
+0C63
+// node=55, disease=2, feat=228
+00E4
+0C63
+// node=55, disease=2, feat=245
+00F5
+0C63
+// node=55, disease=2, feat=6
+0006
+0842
+// node=55, disease=2, feat=8
+0008
+0842
+// node=55, disease=2, feat=39
+0027
+0842
+// node=55, disease=2, feat=104
+0068
+0842
+// node=55, disease=2, feat=165
+00A5
+0842
+// node=55, disease=2, feat=193
+00C1
+0842
+// node=55, disease=2, feat=198
+00C6
+0842
+// node=55, disease=2, feat=215
+00D7
+0842
+// node=55, disease=2, feat=235
+00EB
+0842
+// node=55, disease=2, feat=251
+00FB
+0842
+// node=55, disease=2, feat=17
+0011
+0421
+// node=55, disease=2, feat=24
+0018
+0421
+// node=55, disease=2, feat=32
+0020
+0421
+// node=55, disease=2, feat=75
+004B
+0421
+// node=55, disease=2, feat=99
+0063
+0421
+// node=55, disease=2, feat=102
+0066
+0421
+// node=55, disease=2, feat=223
+00DF
+0421
+// node=55, disease=2, feat=230
+00E6
+0421
+// node=55, disease=2, feat=271
+010F
+0421
+// node=55, disease=3, feat=140
+008C
+1555
+// node=55, disease=3, feat=14
+000E
+0AAB
+// node=55, disease=3, feat=186
+00BA
+0AAB
+// node=55, disease=6, feat=16
+0010
+0E39
+// node=56, disease=2, feat=196
+00C4
+2666
+// node=56, disease=2, feat=237
+00ED
+2666
+// node=56, disease=2, feat=3
+0003
+199A
+// node=56, disease=2, feat=7
+0007
+199A
+// node=56, disease=2, feat=53
+0035
+199A
+// node=56, disease=2, feat=166
+00A6
+199A
+// node=56, disease=2, feat=187
+00BB
+199A
+// node=56, disease=2, feat=198
+00C6
+199A
+// node=56, disease=2, feat=235
+00EB
+199A
+// node=56, disease=2, feat=249
+00F9
+199A
+// node=56, disease=2, feat=275
+0113
+199A
+// node=56, disease=2, feat=6
+0006
+0CCD
+// node=56, disease=2, feat=12
+000C
+0CCD
+// node=56, disease=2, feat=29
+001D
+0CCD
+// node=56, disease=2, feat=65
+0041
+0CCD
+// node=56, disease=2, feat=90
+005A
+0CCD
+// node=56, disease=2, feat=104
+0068
+0CCD
+// node=56, disease=2, feat=125
+007D
+0CCD
+// node=56, disease=2, feat=159
+009F
+0CCD
+// node=56, disease=2, feat=172
+00AC
+0CCD
+// node=56, disease=2, feat=180
+00B4
+0CCD
+// node=56, disease=2, feat=223
+00DF
+0CCD
+// node=56, disease=2, feat=242
+00F2
+0CCD
+// node=56, disease=3, feat=14
+000E
+7FFF
+// node=56, disease=5, feat=2
+0002
+1249
+// node=56, disease=5, feat=92
+005C
+1249
+// node=56, disease=6, feat=233
+00E9
+0925
+// node=57, disease=2, feat=256
+0100
+52D3
+// node=57, disease=2, feat=189
+00BD
+3C3C
+// node=57, disease=2, feat=196
+00C4
+3C3C
+// node=57, disease=2, feat=276
+0114
+2D2D
+// node=57, disease=2, feat=13
+000D
+2AAB
+// node=57, disease=2, feat=159
+009F
+25A6
+// node=57, disease=2, feat=206
+00CE
+25A6
+// node=57, disease=2, feat=27
+001B
+1E1E
+// node=57, disease=2, feat=75
+004B
+1E1E
+// node=57, disease=2, feat=239
+00EF
+1E1E
+// node=57, disease=2, feat=249
+00F9
+1E1E
+// node=57, disease=2, feat=278
+0116
+1E1E
+// node=57, disease=2, feat=179
+00B3
+1697
+// node=57, disease=2, feat=211
+00D3
+1697
+// node=57, disease=2, feat=219
+00DB
+1697
+// node=57, disease=2, feat=236
+00EC
+1697
+// node=57, disease=2, feat=32
+0020
+0F0F
+// node=57, disease=2, feat=199
+00C7
+0F0F
+// node=57, disease=2, feat=222
+00DE
+0F0F
+// node=57, disease=2, feat=235
+00EB
+0F0F
+// node=57, disease=2, feat=251
+00FB
+0F0F
+// node=57, disease=2, feat=6
+0006
+0788
+// node=57, disease=2, feat=8
+0008
+0788
+// node=57, disease=2, feat=65
+0041
+0788
+// node=57, disease=2, feat=177
+00B1
+0788
+// node=57, disease=2, feat=205
+00CD
+0788
+// node=57, disease=2, feat=227
+00E3
+0788
+// node=57, disease=2, feat=232
+00E8
+0788
+// node=57, disease=2, feat=241
+00F1
+0788
+// node=57, disease=2, feat=242
+00F2
+0788
+// node=57, disease=3, feat=99
+0063
+7FFF
+// node=57, disease=3, feat=230
+00E6
+6AAB
+// node=57, disease=3, feat=14
+000E
+1555
+// node=57, disease=5, feat=104
+0068
+0CCD
+// node=58, disease=2, feat=249
+00F9
+2AAB
+// node=58, disease=2, feat=216
+00D8
+2000
+// node=58, disease=2, feat=256
+0100
+2000
+// node=58, disease=2, feat=266
+010A
+2000
+// node=58, disease=2, feat=268
+010C
+2000
+// node=58, disease=2, feat=13
+000D
+1C72
+// node=58, disease=2, feat=246
+00F6
+1AAB
+// node=58, disease=2, feat=276
+0114
+1AAB
+// node=58, disease=2, feat=12
+000C
+1555
+// node=58, disease=2, feat=239
+00EF
+1555
+// node=58, disease=2, feat=248
+00F8
+1555
+// node=58, disease=2, feat=259
+0103
+1555
+// node=58, disease=2, feat=14
+000E
+1000
+// node=58, disease=2, feat=104
+0068
+1000
+// node=58, disease=2, feat=166
+00A6
+1000
+// node=58, disease=2, feat=187
+00BB
+1000
+// node=58, disease=2, feat=220
+00DC
+1000
+// node=58, disease=2, feat=7
+0007
+0AAB
+// node=58, disease=2, feat=9
+0009
+0AAB
+// node=58, disease=2, feat=65
+0041
+0AAB
+// node=58, disease=2, feat=223
+00DF
+0AAB
+// node=58, disease=2, feat=225
+00E1
+0AAB
+// node=58, disease=2, feat=227
+00E3
+0AAB
+// node=58, disease=2, feat=242
+00F2
+0AAB
+// node=58, disease=2, feat=275
+0113
+0AAB
+// node=58, disease=2, feat=24
+0018
+0555
+// node=58, disease=2, feat=34
+0022
+0555
+// node=58, disease=2, feat=63
+003F
+0555
+// node=58, disease=3, feat=87
+0057
+2492
+// node=58, disease=3, feat=136
+0088
+1249
+// node=58, disease=6, feat=76
+004C
+1555
+// node=59, disease=2, feat=256
+0100
+2F68
+// node=59, disease=2, feat=13
+000D
+2DB7
+// node=59, disease=2, feat=276
+0114
+2AAB
+// node=59, disease=2, feat=246
+00F6
+212F
+// node=59, disease=2, feat=249
+00F9
+212F
+// node=59, disease=2, feat=278
+0116
+1C72
+// node=59, disease=2, feat=75
+004B
+17B4
+// node=59, disease=2, feat=259
+0103
+17B4
+// node=59, disease=2, feat=268
+010C
+17B4
+// node=59, disease=2, feat=12
+000C
+12F7
+// node=59, disease=2, feat=167
+00A7
+12F7
+// node=59, disease=2, feat=211
+00D3
+12F7
+// node=59, disease=2, feat=236
+00EC
+12F7
+// node=59, disease=2, feat=239
+00EF
+12F7
+// node=59, disease=2, feat=6
+0006
+0E39
+// node=59, disease=2, feat=64
+0040
+0E39
+// node=59, disease=2, feat=199
+00C7
+0E39
+// node=59, disease=2, feat=235
+00EB
+0E39
+// node=59, disease=2, feat=8
+0008
+097B
+// node=59, disease=2, feat=32
+0020
+097B
+// node=59, disease=2, feat=104
+0068
+097B
+// node=59, disease=2, feat=187
+00BB
+097B
+// node=59, disease=2, feat=232
+00E8
+097B
+// node=59, disease=2, feat=251
+00FB
+097B
+// node=59, disease=2, feat=28
+001C
+04BE
+// node=59, disease=2, feat=102
+0066
+04BE
+// node=59, disease=2, feat=205
+00CD
+04BE
+// node=59, disease=2, feat=230
+00E6
+04BE
+// node=59, disease=3, feat=14
+000E
+1555
+// node=60, disease=2, feat=216
+00D8
+2DB7
+// node=60, disease=2, feat=12
+000C
+1B6E
+// node=60, disease=2, feat=218
+00DA
+1B6E
+// node=60, disease=2, feat=246
+00F6
+1B6E
+// node=60, disease=2, feat=249
+00F9
+1B6E
+// node=60, disease=2, feat=266
+010A
+1B6E
+// node=60, disease=2, feat=269
+010D
+1B6E
+// node=60, disease=2, feat=10
+000A
+13B1
+// node=60, disease=2, feat=14
+000E
+1249
+// node=60, disease=2, feat=159
+009F
+1249
+// node=60, disease=2, feat=169
+00A9
+1249
+// node=60, disease=2, feat=178
+00B2
+1249
+// node=60, disease=2, feat=198
+00C6
+1249
+// node=60, disease=2, feat=217
+00D9
+1249
+// node=60, disease=2, feat=225
+00E1
+1249
+// node=60, disease=2, feat=231
+00E7
+1249
+// node=60, disease=2, feat=237
+00ED
+1249
+// node=60, disease=2, feat=242
+00F2
+1249
+// node=60, disease=2, feat=259
+0103
+1249
+// node=60, disease=2, feat=275
+0113
+1249
+// node=60, disease=2, feat=24
+0018
+0925
+// node=60, disease=2, feat=75
+004B
+0925
+// node=60, disease=2, feat=90
+005A
+0925
+// node=60, disease=2, feat=99
+0063
+0925
+// node=60, disease=2, feat=172
+00AC
+0925
+// node=60, disease=3, feat=136
+0088
+1249
+// node=60, disease=4, feat=32
+0020
+2666
+// node=60, disease=6, feat=76
+004C
+1249
+// node=60, disease=7, feat=2
+0002
+4000
+// node=61, disease=2, feat=266
+010A
+30C3
+// node=61, disease=2, feat=13
+000D
+2AAB
+// node=61, disease=2, feat=256
+0100
+2AAB
+// node=61, disease=2, feat=276
+0114
+2AAB
+// node=61, disease=2, feat=12
+000C
+1E7A
+// node=61, disease=2, feat=246
+00F6
+1E7A
+// node=61, disease=2, feat=268
+010C
+1E7A
+// node=61, disease=2, feat=249
+00F9
+1862
+// node=61, disease=2, feat=251
+00FB
+1862
+// node=61, disease=2, feat=259
+0103
+1862
+// node=61, disease=2, feat=178
+00B2
+1249
+// node=61, disease=2, feat=218
+00DA
+1249
+// node=61, disease=2, feat=231
+00E7
+1249
+// node=61, disease=2, feat=11
+000B
+0C31
+// node=61, disease=2, feat=34
+0022
+0C31
+// node=61, disease=2, feat=90
+005A
+0C31
+// node=61, disease=2, feat=159
+009F
+0C31
+// node=61, disease=2, feat=215
+00D7
+0C31
+// node=61, disease=2, feat=217
+00D9
+0C31
+// node=61, disease=2, feat=229
+00E5
+0C31
+// node=61, disease=2, feat=17
+0011
+0618
+// node=61, disease=2, feat=24
+0018
+0618
+// node=61, disease=2, feat=75
+004B
+0618
+// node=61, disease=2, feat=92
+005C
+0618
+// node=61, disease=2, feat=99
+0063
+0618
+// node=61, disease=2, feat=104
+0068
+0618
+// node=61, disease=2, feat=111
+006F
+0618
+// node=61, disease=2, feat=135
+0087
+0618
+// node=61, disease=2, feat=162
+00A2
+0618
+// node=61, disease=2, feat=225
+00E1
+0618
+// node=61, disease=2, feat=242
+00F2
+0618
+// node=61, disease=3, feat=136
+0088
+2000
+// node=61, disease=3, feat=14
+000E
+1000
+// node=61, disease=5, feat=2
+0002
+4000
+// node=61, disease=5, feat=199
+00C7
+4000
+// node=61, disease=5, feat=60
+003C
+1555
+// node=62, disease=2, feat=196
+00C4
+2CCD
+// node=62, disease=2, feat=249
+00F9
+2666
+// node=62, disease=2, feat=75
+004B
+199A
+// node=62, disease=2, feat=239
+00EF
+199A
+// node=62, disease=2, feat=246
+00F6
+199A
+// node=62, disease=2, feat=276
+0114
+199A
+// node=62, disease=2, feat=211
+00D3
+1333
+// node=62, disease=2, feat=256
+0100
+1333
+// node=62, disease=2, feat=218
+00DA
+1333
+// node=62, disease=2, feat=3
+0003
+0CCD
+// node=62, disease=2, feat=7
+0007
+0CCD
+// node=62, disease=2, feat=12
+000C
+0CCD
+// node=62, disease=2, feat=14
+000E
+0CCD
+// node=62, disease=2, feat=104
+0068
+0CCD
+// node=62, disease=2, feat=170
+00AA
+0CCD
+// node=62, disease=2, feat=205
+00CD
+0CCD
+// node=62, disease=2, feat=235
+00EB
+0CCD
+// node=62, disease=2, feat=28
+001C
+0666
+// node=62, disease=2, feat=65
+0041
+0666
+// node=62, disease=2, feat=102
+0066
+0666
+// node=62, disease=2, feat=221
+00DD
+0666
+// node=62, disease=2, feat=242
+00F2
+0666
+// node=62, disease=3, feat=230
+00E6
+6666
+// node=62, disease=3, feat=271
+010F
+199A
+// node=62, disease=5, feat=0
+0000
+2492
+// node=62, disease=5, feat=2
+0002
+2492
+// node=63, disease=2, feat=266
+010A
+2C4F
+// node=63, disease=2, feat=246
+00F6
+2762
+// node=63, disease=2, feat=249
+00F9
+2762
+// node=63, disease=2, feat=276
+0114
+2762
+// node=63, disease=2, feat=13
+000D
+22E9
+// node=63, disease=2, feat=278
+0116
+1D8A
+// node=63, disease=2, feat=12
+000C
+189E
+// node=63, disease=2, feat=259
+0103
+189E
+// node=63, disease=2, feat=175
+00AF
+13B1
+// node=63, disease=2, feat=231
+00E7
+13B1
+// node=63, disease=2, feat=251
+00FB
+13B1
+// node=63, disease=2, feat=7
+0007
+0EC5
+// node=63, disease=2, feat=189
+00BD
+0EC5
+// node=63, disease=2, feat=215
+00D7
+0EC5
+// node=63, disease=2, feat=218
+00DA
+0EC5
+// node=63, disease=2, feat=237
+00ED
+0EC5
+// node=63, disease=2, feat=239
+00EF
+0EC5
+// node=63, disease=2, feat=241
+00F1
+0EC5
+// node=63, disease=2, feat=11
+000B
+0AAB
+// node=63, disease=2, feat=2
+0002
+09D9
+// node=63, disease=2, feat=8
+0008
+09D9
+// node=63, disease=2, feat=34
+0022
+09D9
+// node=63, disease=2, feat=90
+005A
+09D9
+// node=63, disease=2, feat=177
+00B1
+09D9
+// node=63, disease=2, feat=178
+00B2
+09D9
+// node=63, disease=2, feat=188
+00BC
+09D9
+// node=63, disease=2, feat=24
+0018
+04EC
+// node=63, disease=2, feat=60
+003C
+04EC
+// node=63, disease=2, feat=92
+005C
+04EC
+// node=63, disease=2, feat=104
+0068
+04EC
+// node=63, disease=2, feat=227
+00E3
+04EC
+// node=63, disease=3, feat=14
+000E
+1C72
+// node=63, disease=3, feat=136
+0088
+1C72
+// node=63, disease=4, feat=65
+0041
+13B1
+// node=64, disease=2, feat=176
+00B0
+4444
+// node=64, disease=2, feat=10
+000A
+3B14
+// node=64, disease=2, feat=196
+00C4
+2AAB
+// node=64, disease=2, feat=256
+0100
+2AAB
+// node=64, disease=2, feat=249
+00F9
+2222
+// node=64, disease=2, feat=6
+0006
+199A
+// node=64, disease=2, feat=75
+004B
+199A
+// node=64, disease=2, feat=189
+00BD
+199A
+// node=64, disease=2, feat=211
+00D3
+199A
+// node=64, disease=2, feat=104
+0068
+1111
+// node=64, disease=2, feat=170
+00AA
+1111
+// node=64, disease=2, feat=205
+00CD
+1111
+// node=64, disease=2, feat=216
+00D8
+1111
+// node=64, disease=2, feat=232
+00E8
+1111
+// node=64, disease=2, feat=235
+00EB
+1111
+// node=64, disease=2, feat=246
+00F6
+1111
+// node=64, disease=2, feat=12
+000C
+0889
+// node=64, disease=2, feat=14
+000E
+0889
+// node=64, disease=2, feat=65
+0041
+0889
+// node=64, disease=2, feat=102
+0066
+0889
+// node=64, disease=2, feat=221
+00DD
+0889
+// node=64, disease=2, feat=236
+00EC
+0889
+// node=64, disease=2, feat=242
+00F2
+0889
+// node=64, disease=3, feat=99
+0063
+7FFF
+// node=64, disease=3, feat=230
+00E6
+6000
+// node=64, disease=3, feat=13
+000D
+1AAB
+// node=64, disease=5, feat=2
+0002
+1C72
+// node=64, disease=5, feat=212
+00D4
+0E39
+// node=64, disease=5, feat=223
+00DF
+0E39
+// node=65, disease=2, feat=10
+000A
+4555
+// node=65, disease=2, feat=266
+010A
+2E14
+// node=65, disease=2, feat=249
+00F9
+28F6
+// node=65, disease=2, feat=276
+0114
+23D7
+// node=65, disease=2, feat=256
+0100
+23D7
+// node=65, disease=2, feat=13
+000D
+2000
+// node=65, disease=2, feat=239
+00EF
+1EB8
+// node=65, disease=2, feat=246
+00F6
+1EB8
+// node=65, disease=2, feat=7
+0007
+147B
+// node=65, disease=2, feat=268
+010C
+147B
+// node=65, disease=2, feat=12
+000C
+0F5C
+// node=65, disease=2, feat=216
+00D8
+0F5C
+// node=65, disease=2, feat=229
+00E5
+0F5C
+// node=65, disease=2, feat=251
+00FB
+0F5C
+// node=65, disease=2, feat=6
+0006
+0A3D
+// node=65, disease=2, feat=8
+0008
+0A3D
+// node=65, disease=2, feat=80
+0050
+0A3D
+// node=65, disease=2, feat=104
+0068
+0A3D
+// node=65, disease=2, feat=166
+00A6
+0A3D
+// node=65, disease=2, feat=171
+00AB
+0A3D
+// node=65, disease=2, feat=218
+00DA
+0A3D
+// node=65, disease=2, feat=228
+00E4
+0A3D
+// node=65, disease=2, feat=235
+00EB
+0A3D
+// node=65, disease=2, feat=255
+00FF
+0A3D
+// node=65, disease=2, feat=24
+0018
+051F
+// node=65, disease=2, feat=75
+004B
+051F
+// node=65, disease=2, feat=102
+0066
+051F
+// node=65, disease=2, feat=205
+00CD
+051F
+// node=65, disease=2, feat=221
+00DD
+051F
+// node=65, disease=2, feat=227
+00E3
+051F
+// node=65, disease=2, feat=238
+00EE
+051F
+// node=65, disease=2, feat=253
+00FD
+051F
+// node=65, disease=2, feat=271
+010F
+051F
+// node=65, disease=3, feat=14
+000E
+3333
+// node=65, disease=3, feat=140
+008C
+199A
+// node=65, disease=5, feat=2
+0002
+4000
+// node=65, disease=5, feat=60
+003C
+1000
+// node=65, disease=9, feat=41
+0029
+2492
+// node=65, disease=9, feat=70
+0046
+2492
+// node=66, disease=2, feat=256
+0100
+2000
+// node=66, disease=2, feat=4
+0004
+1800
+// node=66, disease=2, feat=259
+0103
+1800
+// node=66, disease=2, feat=268
+010C
+1800
+// node=66, disease=2, feat=12
+000C
+1000
+// node=66, disease=2, feat=56
+0038
+1000
+// node=66, disease=2, feat=90
+005A
+1000
+// node=66, disease=2, feat=92
+005C
+1000
+// node=66, disease=2, feat=125
+007D
+1000
+// node=66, disease=2, feat=162
+00A2
+1000
+// node=66, disease=2, feat=181
+00B5
+1000
+// node=66, disease=2, feat=220
+00DC
+1000
+// node=66, disease=2, feat=225
+00E1
+1000
+// node=66, disease=2, feat=246
+00F6
+1000
+// node=66, disease=2, feat=269
+010D
+1000
+// node=66, disease=2, feat=14
+000E
+0800
+// node=66, disease=2, feat=60
+003C
+0800
+// node=66, disease=2, feat=111
+006F
+0800
+// node=66, disease=3, feat=239
+00EF
+1000
+// node=66, disease=10, feat=40
+0028
+071C
+// node=67, disease=2, feat=256
+0100
+3B14
+// node=67, disease=2, feat=246
+00F6
+2762
+// node=67, disease=2, feat=249
+00F9
+2762
+// node=67, disease=2, feat=259
+0103
+2276
+// node=67, disease=2, feat=10
+000A
+2000
+// node=67, disease=2, feat=266
+010A
+1D8A
+// node=67, disease=2, feat=276
+0114
+1D8A
+// node=67, disease=2, feat=12
+000C
+0EC5
+// node=67, disease=2, feat=189
+00BD
+0EC5
+// node=67, disease=2, feat=239
+00EF
+0EC5
+// node=67, disease=2, feat=258
+0102
+0EC5
+// node=67, disease=2, feat=14
+000E
+09D9
+// node=67, disease=2, feat=104
+0068
+09D9
+// node=67, disease=2, feat=179
+00B3
+09D9
+// node=67, disease=2, feat=217
+00D9
+09D9
+// node=67, disease=2, feat=226
+00E2
+09D9
+// node=67, disease=2, feat=228
+00E4
+09D9
+// node=67, disease=2, feat=7
+0007
+04EC
+// node=67, disease=2, feat=24
+0018
+04EC
+// node=67, disease=2, feat=32
+0020
+04EC
+// node=67, disease=2, feat=34
+0022
+04EC
+// node=67, disease=2, feat=42
+002A
+04EC
+// node=67, disease=2, feat=60
+003C
+04EC
+// node=67, disease=2, feat=92
+005C
+04EC
+// node=67, disease=2, feat=99
+0063
+04EC
+// node=67, disease=2, feat=192
+00C0
+04EC
+// node=67, disease=2, feat=225
+00E1
+04EC
+// node=67, disease=2, feat=275
+0113
+04EC
+// node=67, disease=5, feat=5
+0005
+4000
+// node=67, disease=6, feat=64
+0040
+09D9
+// node=67, disease=7, feat=2
+0002
+2AAB
+// node=68, disease=2, feat=27
+001B
+2222
+// node=68, disease=2, feat=196
+00C4
+2222
+// node=68, disease=2, feat=216
+00D8
+2222
+// node=68, disease=2, feat=246
+00F6
+2222
+// node=68, disease=2, feat=256
+0100
+2222
+// node=68, disease=2, feat=266
+010A
+2222
+// node=68, disease=2, feat=276
+0114
+2222
+// node=68, disease=2, feat=278
+0116
+2222
+// node=68, disease=2, feat=215
+00D7
+199A
+// node=68, disease=2, feat=235
+00EB
+199A
+// node=68, disease=2, feat=239
+00EF
+199A
+// node=68, disease=2, feat=241
+00F1
+199A
+// node=68, disease=2, feat=10
+000A
+13B1
+// node=68, disease=2, feat=7
+0007
+1111
+// node=68, disease=2, feat=125
+007D
+1111
+// node=68, disease=2, feat=159
+009F
+1111
+// node=68, disease=2, feat=179
+00B3
+1111
+// node=68, disease=2, feat=210
+00D2
+1111
+// node=68, disease=2, feat=226
+00E2
+1111
+// node=68, disease=2, feat=242
+00F2
+1111
+// node=68, disease=2, feat=252
+00FC
+1111
+// node=68, disease=2, feat=261
+0105
+1111
+// node=68, disease=2, feat=8
+0008
+0889
+// node=68, disease=2, feat=9
+0009
+0889
+// node=68, disease=2, feat=20
+0014
+0889
+// node=68, disease=2, feat=61
+003D
+0889
+// node=68, disease=2, feat=90
+005A
+0889
+// node=68, disease=2, feat=92
+005C
+0889
+// node=68, disease=2, feat=104
+0068
+0889
+// node=68, disease=2, feat=187
+00BB
+0889
+// node=68, disease=2, feat=205
+00CD
+0889
+// node=68, disease=2, feat=223
+00DF
+0889
+// node=68, disease=2, feat=253
+00FD
+0889
+// node=68, disease=3, feat=14
+000E
+7FFF
+// node=68, disease=4, feat=140
+008C
+2492
+// node=68, disease=5, feat=60
+003C
+0BA3
+// node=68, disease=6, feat=102
+0066
+0CCD
+// node=69, disease=2, feat=256
+0100
+2000
+// node=69, disease=2, feat=246
+00F6
+1800
+// node=69, disease=2, feat=249
+00F9
+1800
+// node=69, disease=2, feat=104
+0068
+1000
+// node=69, disease=2, feat=168
+00A8
+1000
+// node=69, disease=2, feat=181
+00B5
+1000
+// node=69, disease=2, feat=205
+00CD
+1000
+// node=69, disease=2, feat=259
+0103
+1000
+// node=69, disease=2, feat=14
+000E
+0800
+// node=69, disease=2, feat=15
+000F
+0800
+// node=69, disease=2, feat=32
+0020
+0800
+// node=69, disease=2, feat=60
+003C
+0800
+// node=69, disease=2, feat=102
+0066
+0800
+// node=69, disease=2, feat=111
+006F
+0800
+// node=69, disease=2, feat=136
+0088
+0800
+// node=69, disease=2, feat=189
+00BD
+0800
+// node=69, disease=2, feat=227
+00E3
+0800
+// node=69, disease=2, feat=230
+00E6
+0800
+// node=69, disease=2, feat=231
+00E7
+0800
+// node=69, disease=2, feat=248
+00F8
+0800
+// node=69, disease=3, feat=29
+001D
+4000
+// node=69, disease=3, feat=172
+00AC
+1000
+// node=69, disease=4, feat=44
+002C
+4000
+// node=69, disease=7, feat=2
+0002
+4000
+// node=70, disease=2, feat=266
+010A
+3852
+// node=70, disease=2, feat=276
+0114
+3852
+// node=70, disease=2, feat=216
+00D8
+2E14
+// node=70, disease=2, feat=256
+0100
+28F6
+// node=70, disease=2, feat=10
+000A
+2555
+// node=70, disease=2, feat=246
+00F6
+23D7
+// node=70, disease=2, feat=268
+010C
+23D7
+// node=70, disease=2, feat=278
+0116
+23D7
+// node=70, disease=2, feat=249
+00F9
+23D7
+// node=70, disease=2, feat=12
+000C
+199A
+// node=70, disease=2, feat=261
+0105
+199A
+// node=70, disease=2, feat=170
+00AA
+147B
+// node=70, disease=2, feat=235
+00EB
+147B
+// node=70, disease=2, feat=239
+00EF
+147B
+// node=70, disease=2, feat=269
+010D
+147B
+// node=70, disease=2, feat=7
+0007
+0F5C
+// node=70, disease=2, feat=8
+0008
+0F5C
+// node=70, disease=2, feat=179
+00B3
+0F5C
+// node=70, disease=2, feat=199
+00C7
+0F5C
+// node=70, disease=2, feat=215
+00D7
+0F5C
+// node=70, disease=2, feat=226
+00E2
+0F5C
+// node=70, disease=2, feat=227
+00E3
+0F5C
+// node=70, disease=2, feat=251
+00FB
+0F5C
+// node=70, disease=2, feat=140
+008C
+0A3D
+// node=70, disease=2, feat=166
+00A6
+0A3D
+// node=70, disease=2, feat=217
+00D9
+0A3D
+// node=70, disease=2, feat=219
+00DB
+0A3D
+// node=70, disease=2, feat=223
+00DF
+0A3D
+// node=70, disease=2, feat=242
+00F2
+0A3D
+// node=70, disease=2, feat=252
+00FC
+0A3D
+// node=70, disease=2, feat=24
+0018
+051F
+// node=70, disease=3, feat=14
+000E
+199A
+// node=70, disease=5, feat=60
+003C
+0CCD
+// node=70, disease=10, feat=40
+0028
+03E1
+// node=71, disease=2, feat=256
+0100
+313B
+// node=71, disease=2, feat=246
+00F6
+2762
+// node=71, disease=2, feat=249
+00F9
+2276
+// node=71, disease=2, feat=10
+000A
+2164
+// node=71, disease=2, feat=75
+004B
+1D8A
+// node=71, disease=2, feat=266
+010A
+1D8A
+// node=71, disease=2, feat=276
+0114
+1D8A
+// node=71, disease=2, feat=13
+000D
+199A
+// node=71, disease=2, feat=268
+010C
+189E
+// node=71, disease=2, feat=12
+000C
+13B1
+// node=71, disease=2, feat=259
+0103
+13B1
+// node=71, disease=2, feat=211
+00D3
+0EC5
+// node=71, disease=2, feat=218
+00DA
+0EC5
+// node=71, disease=2, feat=228
+00E4
+0EC5
+// node=71, disease=2, feat=232
+00E8
+0EC5
+// node=71, disease=2, feat=255
+00FF
+0EC5
+// node=71, disease=2, feat=6
+0006
+09D9
+// node=71, disease=2, feat=92
+005C
+09D9
+// node=71, disease=2, feat=104
+0068
+09D9
+// node=71, disease=2, feat=187
+00BB
+09D9
+// node=71, disease=2, feat=229
+00E5
+09D9
+// node=71, disease=2, feat=65
+0041
+04EC
+// node=71, disease=2, feat=90
+005A
+04EC
+// node=71, disease=2, feat=111
+006F
+04EC
+// node=71, disease=2, feat=221
+00DD
+04EC
+// node=71, disease=2, feat=242
+00F2
+04EC
+// node=71, disease=2, feat=251
+00FB
+04EC
+// node=71, disease=5, feat=14
+000E
+6666
+// node=71, disease=16, feat=5
+0005
+0889
+// node=72, disease=2, feat=10
+000A
+36DB
+// node=72, disease=2, feat=266
+010A
+2AAB
+// node=72, disease=2, feat=216
+00D8
+2AAB
+// node=72, disease=2, feat=196
+00C4
+199A
+// node=72, disease=2, feat=215
+00D7
+199A
+// node=72, disease=2, feat=237
+00ED
+199A
+// node=72, disease=2, feat=249
+00F9
+199A
+// node=72, disease=2, feat=276
+0114
+199A
+// node=72, disease=2, feat=198
+00C6
+1111
+// node=72, disease=2, feat=218
+00DA
+1111
+// node=72, disease=2, feat=225
+00E1
+1111
+// node=72, disease=2, feat=229
+00E5
+1111
+// node=72, disease=2, feat=246
+00F6
+1111
+// node=72, disease=2, feat=267
+010B
+1111
+// node=72, disease=2, feat=268
+010C
+1111
+// node=72, disease=2, feat=4
+0004
+0889
+// node=72, disease=2, feat=9
+0009
+0889
+// node=72, disease=2, feat=14
+000E
+0889
+// node=72, disease=2, feat=24
+0018
+0889
+// node=72, disease=2, feat=40
+0028
+0889
+// node=72, disease=2, feat=90
+005A
+0889
+// node=72, disease=2, feat=99
+0063
+0889
+// node=72, disease=2, feat=178
+00B2
+0889
+// node=72, disease=2, feat=223
+00DF
+0889
+// node=72, disease=2, feat=252
+00FC
+0889
+// node=72, disease=3, feat=128
+0080
+44EC
+// node=72, disease=4, feat=80
+0050
+5000
+// node=72, disease=6, feat=75
+004B
+0889
+// node=72, disease=6, feat=102
+0066
+0889
+// node=72, disease=6, feat=233
+00E9
+0889
+// node=73, disease=2, feat=239
+00EF
+27B9
+// node=73, disease=2, feat=246
+00F6
+234F
+// node=73, disease=2, feat=266
+010A
+234F
+// node=73, disease=2, feat=196
+00C4
+1EE6
+// node=73, disease=2, feat=249
+00F9
+1EE6
+// node=73, disease=2, feat=256
+0100
+1EE6
+// node=73, disease=2, feat=166
+00A6
+1A7C
+// node=73, disease=2, feat=241
+00F1
+1A7C
+// node=73, disease=2, feat=176
+00B0
+1612
+// node=73, disease=2, feat=216
+00D8
+1612
+// node=73, disease=2, feat=229
+00E5
+1612
+// node=73, disease=2, feat=189
+00BD
+11A8
+// node=73, disease=2, feat=278
+0116
+11A8
+// node=73, disease=2, feat=10
+000A
+0EC5
+// node=73, disease=2, feat=11
+000B
+0DB7
+// node=73, disease=2, feat=12
+000C
+0D3E
+// node=73, disease=2, feat=121
+0079
+0D3E
+// node=73, disease=2, feat=125
+007D
+0D3E
+// node=73, disease=2, feat=4
+0004
+08D4
+// node=73, disease=2, feat=29
+001D
+08D4
+// node=73, disease=2, feat=104
+0068
+08D4
+// node=73, disease=2, feat=215
+00D7
+08D4
+// node=73, disease=2, feat=227
+00E3
+08D4
+// node=73, disease=2, feat=237
+00ED
+08D4
+// node=73, disease=2, feat=0
+0000
+046A
+// node=73, disease=2, feat=8
+0008
+046A
+// node=73, disease=2, feat=20
+0014
+046A
+// node=73, disease=2, feat=24
+0018
+046A
+// node=73, disease=2, feat=75
+004B
+046A
+// node=73, disease=2, feat=80
+0050
+046A
+// node=73, disease=2, feat=90
+005A
+046A
+// node=73, disease=2, feat=99
+0063
+046A
+// node=73, disease=2, feat=162
+00A2
+046A
+// node=73, disease=2, feat=219
+00DB
+046A
+// node=73, disease=2, feat=223
+00DF
+046A
+// node=73, disease=3, feat=14
+000E
+0CCD
+// node=73, disease=6, feat=233
+00E9
+0CCD
+// node=74, disease=2, feat=276
+0114
+4000
+// node=74, disease=2, feat=259
+0103
+3555
+// node=74, disease=2, feat=249
+00F9
+2AAB
+// node=74, disease=2, feat=169
+00A9
+2000
+// node=74, disease=2, feat=179
+00B3
+2000
+// node=74, disease=2, feat=228
+00E4
+2000
+// node=74, disease=2, feat=251
+00FB
+2000
+// node=74, disease=2, feat=268
+010C
+2000
+// node=74, disease=2, feat=12
+000C
+1555
+// node=74, disease=2, feat=32
+0020
+1555
+// node=74, disease=2, feat=166
+00A6
+1555
+// node=74, disease=2, feat=170
+00AA
+1555
+// node=74, disease=2, feat=226
+00E2
+1555
+// node=74, disease=2, feat=232
+00E8
+1555
+// node=74, disease=2, feat=235
+00EB
+1555
+// node=74, disease=2, feat=257
+0101
+1555
+// node=74, disease=2, feat=14
+000E
+0AAB
+// node=74, disease=2, feat=42
+002A
+0AAB
+// node=74, disease=2, feat=65
+0041
+0AAB
+// node=74, disease=2, feat=92
+005C
+0AAB
+// node=74, disease=2, feat=102
+0066
+0AAB
+// node=74, disease=2, feat=192
+00C0
+0AAB
+// node=74, disease=2, feat=205
+00CD
+0AAB
+// node=74, disease=2, feat=223
+00DF
+0AAB
+// node=74, disease=2, feat=242
+00F2
+0AAB
+// node=74, disease=3, feat=87
+0057
+5555
+// node=75, disease=2, feat=10
+000A
+2000
+// node=75, disease=2, feat=249
+00F9
+1D8A
+// node=75, disease=2, feat=189
+00BD
+189E
+// node=75, disease=2, feat=239
+00EF
+189E
+// node=75, disease=2, feat=246
+00F6
+189E
+// node=75, disease=2, feat=256
+0100
+189E
+// node=75, disease=2, feat=266
+010A
+189E
+// node=75, disease=2, feat=12
+000C
+13B1
+// node=75, disease=2, feat=276
+0114
+13B1
+// node=75, disease=2, feat=13
+000D
+1249
+// node=75, disease=2, feat=104
+0068
+0EC5
+// node=75, disease=2, feat=226
+00E2
+0EC5
+// node=75, disease=2, feat=228
+00E4
+0EC5
+// node=75, disease=2, feat=231
+00E7
+0EC5
+// node=75, disease=2, feat=236
+00EC
+0EC5
+// node=75, disease=2, feat=259
+0103
+0EC5
+// node=75, disease=2, feat=7
+0007
+09D9
+// node=75, disease=2, feat=38
+0026
+09D9
+// node=75, disease=2, feat=100
+0064
+09D9
+// node=75, disease=2, feat=117
+0075
+09D9
+// node=75, disease=2, feat=187
+00BB
+09D9
+// node=75, disease=2, feat=232
+00E8
+09D9
+// node=75, disease=2, feat=3
+0003
+04EC
+// node=75, disease=2, feat=32
+0020
+04EC
+// node=75, disease=2, feat=60
+003C
+04EC
+// node=75, disease=2, feat=90
+005A
+04EC
+// node=75, disease=2, feat=99
+0063
+04EC
+// node=75, disease=2, feat=111
+006F
+04EC
+// node=75, disease=2, feat=210
+00D2
+04EC
+// node=75, disease=2, feat=267
+010B
+04EC
+// node=75, disease=3, feat=230
+00E6
+3333
+// node=75, disease=3, feat=14
+000E
+0CCD
+// node=75, disease=16, feat=5
+0005
+0925
+// node=76, disease=2, feat=249
+00F9
+3333
+// node=76, disease=2, feat=216
+00D8
+2AAB
+// node=76, disease=2, feat=258
+0102
+2AAB
+// node=76, disease=2, feat=246
+00F6
+2AAB
+// node=76, disease=2, feat=266
+010A
+2AAB
+// node=76, disease=2, feat=268
+010C
+2AAB
+// node=76, disease=2, feat=256
+0100
+2222
+// node=76, disease=2, feat=259
+0103
+2222
+// node=76, disease=2, feat=276
+0114
+2222
+// node=76, disease=2, feat=12
+000C
+199A
+// node=76, disease=2, feat=168
+00A8
+199A
+// node=76, disease=2, feat=198
+00C6
+199A
+// node=76, disease=2, feat=4
+0004
+1111
+// node=76, disease=2, feat=9
+0009
+1111
+// node=76, disease=2, feat=237
+00ED
+1111
+// node=76, disease=2, feat=252
+00FC
+1111
+// node=76, disease=2, feat=257
+0101
+1111
+// node=76, disease=2, feat=6
+0006
+0889
+// node=76, disease=2, feat=7
+0007
+0889
+// node=76, disease=2, feat=8
+0008
+0889
+// node=76, disease=2, feat=24
+0018
+0889
+// node=76, disease=2, feat=39
+0027
+0889
+// node=76, disease=2, feat=90
+005A
+0889
+// node=76, disease=2, feat=178
+00B2
+0889
+// node=76, disease=2, feat=223
+00DF
+0889
+// node=76, disease=3, feat=14
+000E
+2AAB
+// node=76, disease=3, feat=87
+0057
+2AAB
+// node=76, disease=3, feat=271
+010F
+2AAB
+// node=76, disease=4, feat=140
+008C
+1C72
+// node=76, disease=6, feat=102
+0066
+0CCD
+// node=77, disease=2, feat=246
+00F6
+2000
+// node=77, disease=2, feat=266
+010A
+2000
+// node=77, disease=2, feat=10
+000A
+1EB8
+// node=77, disease=2, feat=239
+00EF
+1B6E
+// node=77, disease=2, feat=268
+010C
+1B6E
+// node=77, disease=2, feat=249
+00F9
+16DB
+// node=77, disease=2, feat=189
+00BD
+1249
+// node=77, disease=2, feat=241
+00F1
+1249
+// node=77, disease=2, feat=12
+000C
+0DB7
+// node=77, disease=2, feat=88
+0058
+0DB7
+// node=77, disease=2, feat=125
+007D
+0925
+// node=77, disease=2, feat=228
+00E4
+0925
+// node=77, disease=2, feat=236
+00EC
+0925
+// node=77, disease=2, feat=4
+0004
+0492
+// node=77, disease=2, feat=6
+0006
+0492
+// node=77, disease=2, feat=24
+0018
+0492
+// node=77, disease=2, feat=60
+003C
+0492
+// node=77, disease=2, feat=75
+004B
+0492
+// node=77, disease=2, feat=77
+004D
+0492
+// node=77, disease=2, feat=99
+0063
+0492
+// node=77, disease=2, feat=104
+0068
+0492
+// node=77, disease=2, feat=227
+00E3
+0492
+// node=77, disease=2, feat=232
+00E8
+0492
+// node=77, disease=3, feat=136
+0088
+2AAB
+// node=77, disease=3, feat=230
+00E6
+2AAB
+// node=77, disease=3, feat=235
+00EB
+2000
+// node=77, disease=3, feat=14
+000E
+1555
+// node=77, disease=5, feat=2
+0002
+4925
+// node=77, disease=5, feat=162
+00A2
+36DB
+// node=77, disease=6, feat=64
+0040
+0BA3
+// node=77, disease=6, feat=102
+0066
+0BA3
+// node=78, disease=2, feat=276
+0114
+3B14
+// node=78, disease=2, feat=216
+00D8
+313B
+// node=78, disease=2, feat=249
+00F9
+313B
+// node=78, disease=2, feat=259
+0103
+313B
+// node=78, disease=2, feat=171
+00AB
+2762
+// node=78, disease=2, feat=256
+0100
+2762
+// node=78, disease=2, feat=179
+00B3
+1D8A
+// node=78, disease=2, feat=185
+00B9
+1D8A
+// node=78, disease=2, feat=235
+00EB
+1D8A
+// node=78, disease=2, feat=237
+00ED
+1D8A
+// node=78, disease=2, feat=247
+00F7
+1D8A
+// node=78, disease=2, feat=251
+00FB
+1D8A
+// node=78, disease=2, feat=257
+0101
+1D8A
+// node=78, disease=2, feat=8
+0008
+13B1
+// node=78, disease=2, feat=12
+000C
+13B1
+// node=78, disease=2, feat=32
+0020
+13B1
+// node=78, disease=2, feat=104
+0068
+13B1
+// node=78, disease=2, feat=170
+00AA
+13B1
+// node=78, disease=2, feat=205
+00CD
+13B1
+// node=78, disease=2, feat=217
+00D9
+13B1
+// node=78, disease=2, feat=223
+00DF
+13B1
+// node=78, disease=2, feat=242
+00F2
+13B1
+// node=78, disease=2, feat=14
+000E
+09D9
+// node=78, disease=2, feat=42
+002A
+09D9
+// node=78, disease=2, feat=80
+0050
+09D9
+// node=78, disease=2, feat=102
+0066
+09D9
+// node=78, disease=4, feat=87
+0057
+0CCD
+// node=78, disease=4, feat=140
+008C
+0CCD
+// node=78, disease=6, feat=76
+004C
+1555
+// node=78, disease=9, feat=199
+00C7
+3333
+// node=79, disease=2, feat=13
+000D
+4000
+// node=79, disease=2, feat=10
+000A
+2222
+// node=79, disease=2, feat=256
+0100
+2222
+// node=79, disease=2, feat=0
+0000
+1111
+// node=79, disease=2, feat=7
+0007
+1111
+// node=79, disease=2, feat=12
+000C
+1111
+// node=79, disease=2, feat=217
+00D9
+1111
+// node=79, disease=2, feat=218
+00DA
+1111
+// node=79, disease=2, feat=227
+00E3
+1111
+// node=79, disease=2, feat=268
+010C
+1111
+// node=79, disease=2, feat=11
+000B
+0925
+// node=79, disease=2, feat=20
+0014
+0889
+// node=79, disease=2, feat=24
+0018
+0889
+// node=79, disease=2, feat=29
+001D
+0889
+// node=79, disease=2, feat=60
+003C
+0889
+// node=79, disease=2, feat=62
+003E
+0889
+// node=79, disease=2, feat=75
+004B
+0889
+// node=79, disease=2, feat=99
+0063
+0889
+// node=79, disease=2, feat=102
+0066
+0889
+// node=79, disease=2, feat=104
+0068
+0889
+// node=79, disease=2, feat=178
+00B2
+0889
+// node=79, disease=2, feat=205
+00CD
+0889
+// node=79, disease=2, feat=225
+00E1
+0889
+// node=79, disease=2, feat=226
+00E2
+0889
+// node=79, disease=2, feat=232
+00E8
+0889
+// node=79, disease=2, feat=233
+00E9
+0889
+// node=79, disease=2, feat=235
+00EB
+0889
+// node=79, disease=3, feat=111
+006F
+7FFF
+// node=79, disease=3, feat=238
+00EE
+3B14
+// node=79, disease=3, feat=14
+000E
+13B1
+// node=79, disease=4, feat=80
+0050
+4000
+// node=79, disease=5, feat=183
+00B7
+2AAB
+// node=80, disease=2, feat=249
+00F9
+3627
+// node=80, disease=2, feat=246
+00F6
+313B
+// node=80, disease=2, feat=256
+0100
+2762
+// node=80, disease=2, feat=266
+010A
+2762
+// node=80, disease=2, feat=216
+00D8
+2276
+// node=80, disease=2, feat=268
+010C
+2276
+// node=80, disease=2, feat=276
+0114
+1D8A
+// node=80, disease=2, feat=13
+000D
+1B6E
+// node=80, disease=2, feat=12
+000C
+189E
+// node=80, disease=2, feat=198
+00C6
+189E
+// node=80, disease=2, feat=239
+00EF
+189E
+// node=80, disease=2, feat=248
+00F8
+189E
+// node=80, disease=2, feat=259
+0103
+189E
+// node=80, disease=2, feat=27
+001B
+13B1
+// node=80, disease=2, feat=169
+00A9
+13B1
+// node=80, disease=2, feat=6
+0006
+0EC5
+// node=80, disease=2, feat=171
+00AB
+0EC5
+// node=80, disease=2, feat=229
+00E5
+0EC5
+// node=80, disease=2, feat=236
+00EC
+0EC5
+// node=80, disease=2, feat=247
+00F7
+0EC5
+// node=80, disease=2, feat=7
+0007
+09D9
+// node=80, disease=2, feat=8
+0008
+09D9
+// node=80, disease=2, feat=185
+00B9
+09D9
+// node=80, disease=2, feat=205
+00CD
+09D9
+// node=80, disease=2, feat=223
+00DF
+09D9
+// node=80, disease=2, feat=251
+00FB
+09D9
+// node=80, disease=2, feat=14
+000E
+04EC
+// node=80, disease=2, feat=87
+0057
+04EC
+// node=80, disease=2, feat=170
+00AA
+04EC
+// node=80, disease=2, feat=172
+00AC
+04EC
+// node=80, disease=2, feat=193
+00C1
+04EC
+// node=80, disease=4, feat=140
+008C
+199A
+// node=80, disease=4, feat=40
+0028
+0CCD
+// node=80, disease=5, feat=20
+0014
+3333
+// node=80, disease=5, feat=77
+004D
+0CCD
+// node=80, disease=6, feat=39
+0027
+0CCD
+// node=81, disease=2, feat=266
+010A
+2AAB
+// node=81, disease=2, feat=249
+00F9
+25ED
+// node=81, disease=2, feat=256
+0100
+25ED
+// node=81, disease=2, feat=246
+00F6
+212F
+// node=81, disease=2, feat=276
+0114
+212F
+// node=81, disease=2, feat=10
+000A
+199A
+// node=81, disease=2, feat=13
+000D
+1800
+// node=81, disease=2, feat=169
+00A9
+17B4
+// node=81, disease=2, feat=192
+00C0
+17B4
+// node=81, disease=2, feat=12
+000C
+12F7
+// node=81, disease=2, feat=27
+001B
+12F7
+// node=81, disease=2, feat=236
+00EC
+12F7
+// node=81, disease=2, feat=259
+0103
+12F7
+// node=81, disease=2, feat=268
+010C
+12F7
+// node=81, disease=2, feat=104
+0068
+0E39
+// node=81, disease=2, feat=179
+00B3
+0E39
+// node=81, disease=2, feat=205
+00CD
+0E39
+// node=81, disease=2, feat=228
+00E4
+0E39
+// node=81, disease=2, feat=235
+00EB
+0E39
+// node=81, disease=2, feat=239
+00EF
+0E39
+// node=81, disease=2, feat=90
+005A
+097B
+// node=81, disease=2, feat=159
+009F
+097B
+// node=81, disease=2, feat=210
+00D2
+097B
+// node=81, disease=2, feat=219
+00DB
+097B
+// node=81, disease=2, feat=227
+00E3
+097B
+// node=81, disease=2, feat=229
+00E5
+097B
+// node=81, disease=2, feat=237
+00ED
+097B
+// node=81, disease=2, feat=242
+00F2
+097B
+// node=81, disease=2, feat=3
+0003
+04BE
+// node=81, disease=2, feat=8
+0008
+04BE
+// node=81, disease=2, feat=221
+00DD
+04BE
+// node=81, disease=2, feat=225
+00E1
+04BE
+// node=81, disease=2, feat=251
+00FB
+04BE
+// node=81, disease=5, feat=14
+000E
+5555
+// node=81, disease=5, feat=60
+003C
+0E39
+// node=82, disease=2, feat=13
+000D
+4000
+// node=82, disease=2, feat=249
+00F9
+2492
+// node=82, disease=2, feat=216
+00D8
+1B6E
+// node=82, disease=2, feat=239
+00EF
+1B6E
+// node=82, disease=2, feat=7
+0007
+1249
+// node=82, disease=2, feat=258
+0102
+1249
+// node=82, disease=2, feat=259
+0103
+1249
+// node=82, disease=2, feat=6
+0006
+0925
+// node=82, disease=2, feat=12
+000C
+0925
+// node=82, disease=2, feat=14
+000E
+0925
+// node=82, disease=2, feat=24
+0018
+0925
+// node=82, disease=2, feat=29
+001D
+0925
+// node=82, disease=2, feat=75
+004B
+0925
+// node=82, disease=2, feat=87
+0057
+0925
+// node=82, disease=2, feat=178
+00B2
+0925
+// node=82, disease=2, feat=220
+00DC
+0925
+// node=82, disease=2, feat=246
+00F6
+0925
+// node=82, disease=3, feat=111
+006F
+7FFF
+// node=82, disease=3, feat=136
+0088
+2762
+// node=82, disease=3, feat=4
+0004
+13B1
+// node=82, disease=3, feat=140
+008C
+13B1
+// node=82, disease=3, feat=167
+00A7
+13B1
+// node=82, disease=4, feat=80
+0050
+4925
+// node=82, disease=6, feat=183
+00B7
+1000
+// node=82, disease=6, feat=64
+0040
+0800
+// node=82, disease=6, feat=102
+0066
+0800
+// node=82, disease=10, feat=90
+005A
+2E8C
+// node=83, disease=2, feat=266
+010A
+283B
+// node=83, disease=2, feat=256
+0100
+283B
+// node=83, disease=2, feat=249
+00F9
+20EA
+// node=83, disease=2, feat=246
+00F6
+1D42
+// node=83, disease=2, feat=13
+000D
+1B6E
+// node=83, disease=2, feat=10
+000A
+1400
+// node=83, disease=2, feat=12
+000C
+1249
+// node=83, disease=2, feat=239
+00EF
+1249
+// node=83, disease=2, feat=259
+0103
+1249
+// node=83, disease=2, feat=236
+00EC
+0EA1
+// node=83, disease=2, feat=11
+000B
+0B4B
+// node=83, disease=2, feat=100
+0064
+0AF9
+// node=83, disease=2, feat=104
+0068
+0AF9
+// node=83, disease=2, feat=125
+007D
+0AF9
+// node=83, disease=2, feat=176
+00B0
+0AF9
+// node=83, disease=2, feat=216
+00D8
+0AF9
+// node=83, disease=2, feat=229
+00E5
+0AF9
+// node=83, disease=2, feat=261
+0105
+0AF9
+// node=83, disease=2, feat=4
+0004
+0750
+// node=83, disease=2, feat=29
+001D
+0750
+// node=83, disease=2, feat=116
+0074
+0750
+// node=83, disease=2, feat=186
+00BA
+0750
+// node=83, disease=2, feat=215
+00D7
+0750
+// node=83, disease=2, feat=227
+00E3
+0750
+// node=83, disease=2, feat=255
+00FF
+0750
+// node=83, disease=2, feat=8
+0008
+03A8
+// node=83, disease=2, feat=24
+0018
+03A8
+// node=83, disease=2, feat=75
+004B
+03A8
+// node=83, disease=2, feat=90
+005A
+03A8
+// node=83, disease=2, feat=230
+00E6
+03A8
+// node=83, disease=3, feat=136
+0088
+2AAB
+// node=83, disease=3, feat=14
+000E
+1C72
+// node=83, disease=4, feat=32
+0020
+2492
+// node=83, disease=6, feat=64
+0040
+199A
+// node=84, disease=2, feat=276
+0114
+4000
+// node=84, disease=2, feat=10
+000A
+3333
+// node=84, disease=2, feat=32
+0020
+2AAB
+// node=84, disease=2, feat=169
+00A9
+2AAB
+// node=84, disease=2, feat=179
+00B3
+2AAB
+// node=84, disease=2, feat=196
+00C4
+2AAB
+// node=84, disease=2, feat=211
+00D3
+2AAB
+// node=84, disease=2, feat=226
+00E2
+2AAB
+// node=84, disease=2, feat=228
+00E4
+2AAB
+// node=84, disease=2, feat=235
+00EB
+2AAB
+// node=84, disease=2, feat=249
+00F9
+2AAB
+// node=84, disease=2, feat=259
+0103
+2AAB
+// node=84, disease=2, feat=3
+0003
+1555
+// node=84, disease=2, feat=6
+0006
+1555
+// node=84, disease=2, feat=14
+000E
+1555
+// node=84, disease=2, feat=65
+0041
+1555
+// node=84, disease=2, feat=92
+005C
+1555
+// node=84, disease=2, feat=109
+006D
+1555
+// node=84, disease=2, feat=168
+00A8
+1555
+// node=84, disease=2, feat=198
+00C6
+1555
+// node=84, disease=2, feat=217
+00D9
+1555
+// node=84, disease=2, feat=236
+00EC
+1555
+// node=84, disease=2, feat=237
+00ED
+1555
+// node=84, disease=2, feat=255
+00FF
+1555
+// node=84, disease=3, feat=87
+0057
+4000
+// node=84, disease=3, feat=248
+00F8
+4000
+// node=84, disease=3, feat=52
+0034
+2000
+// node=84, disease=3, feat=140
+008C
+2000
+// node=84, disease=4, feat=270
+010E
+4925
+// node=84, disease=4, feat=227
+00E3
+1249
+// node=84, disease=5, feat=2
+0002
+2000
+// node=84, disease=9, feat=199
+00C7
+4000
+// node=84, disease=10, feat=102
+0066
+1746
+// node=85, disease=2, feat=266
+010A
+2164
+// node=85, disease=2, feat=10
+000A
+1D17
+// node=85, disease=2, feat=12
+000C
+1BD3
+// node=85, disease=2, feat=239
+00EF
+1BD3
+// node=85, disease=2, feat=246
+00F6
+1BD3
+// node=85, disease=2, feat=276
+0114
+1BD3
+// node=85, disease=2, feat=13
+000D
+199A
+// node=85, disease=2, feat=259
+0103
+1643
+// node=85, disease=2, feat=268
+010C
+1643
+// node=85, disease=2, feat=104
+0068
+10B2
+// node=85, disease=2, feat=198
+00C6
+10B2
+// node=85, disease=2, feat=217
+00D9
+10B2
+// node=85, disease=2, feat=7
+0007
+0B21
+// node=85, disease=2, feat=18
+0012
+0B21
+// node=85, disease=2, feat=32
+0020
+0B21
+// node=85, disease=2, feat=90
+005A
+0B21
+// node=85, disease=2, feat=177
+00B1
+0B21
+// node=85, disease=2, feat=181
+00B5
+0B21
+// node=85, disease=2, feat=182
+00B6
+0B21
+// node=85, disease=2, feat=186
+00BA
+0B21
+// node=85, disease=2, feat=235
+00EB
+0B21
+// node=85, disease=2, feat=242
+00F2
+0B21
+// node=85, disease=2, feat=11
+000B
+0618
+// node=85, disease=2, feat=3
+0003
+0591
+// node=85, disease=2, feat=24
+0018
+0591
+// node=85, disease=3, feat=99
+0063
+7627
+// node=85, disease=3, feat=14
+000E
+13B1
+// node=86, disease=2, feat=259
+0103
+31C7
+// node=86, disease=2, feat=249
+00F9
+31C7
+// node=86, disease=2, feat=248
+00F8
+2AAB
+// node=86, disease=2, feat=266
+010A
+238E
+// node=86, disease=2, feat=166
+00A6
+1C72
+// node=86, disease=2, feat=258
+0102
+1C72
+// node=86, disease=2, feat=276
+0114
+1C72
+// node=86, disease=2, feat=232
+00E8
+1555
+// node=86, disease=2, feat=237
+00ED
+1555
+// node=86, disease=2, feat=239
+00EF
+1555
+// node=86, disease=2, feat=246
+00F6
+1555
+// node=86, disease=2, feat=256
+0100
+1555
+// node=86, disease=2, feat=8
+0008
+0E39
+// node=86, disease=2, feat=14
+000E
+0E39
+// node=86, disease=2, feat=169
+00A9
+0E39
+// node=86, disease=2, feat=251
+00FB
+0E39
+// node=86, disease=2, feat=4
+0004
+071C
+// node=86, disease=2, feat=7
+0007
+071C
+// node=86, disease=2, feat=16
+0010
+071C
+// node=86, disease=2, feat=27
+001B
+071C
+// node=86, disease=2, feat=87
+0057
+071C
+// node=86, disease=2, feat=170
+00AA
+071C
+// node=86, disease=2, feat=206
+00CE
+071C
+// node=86, disease=2, feat=227
+00E3
+071C
+// node=86, disease=4, feat=140
+008C
+1C72
+// node=86, disease=5, feat=183
+00B7
+0E39
+// node=86, disease=5, feat=223
+00DF
+0E39
+// node=86, disease=6, feat=39
+0027
+13B1
+// node=86, disease=10, feat=102
+0066
+2E8C
+// node=87, disease=2, feat=266
+010A
+2800
+// node=87, disease=2, feat=246
+00F6
+2000
+// node=87, disease=2, feat=276
+0114
+2000
+// node=87, disease=2, feat=13
+000D
+1D8A
+// node=87, disease=2, feat=256
+0100
+1C00
+// node=87, disease=2, feat=10
+000A
+199A
+// node=87, disease=2, feat=12
+000C
+1400
+// node=87, disease=2, feat=239
+00EF
+1400
+// node=87, disease=2, feat=241
+00F1
+1400
+// node=87, disease=2, feat=176
+00B0
+1000
+// node=87, disease=2, feat=216
+00D8
+1000
+// node=87, disease=2, feat=236
+00EC
+1000
+// node=87, disease=2, feat=11
+000B
+0C63
+// node=87, disease=2, feat=104
+0068
+0C00
+// node=87, disease=2, feat=125
+007D
+0C00
+// node=87, disease=2, feat=137
+0089
+0C00
+// node=87, disease=2, feat=225
+00E1
+0C00
+// node=87, disease=2, feat=251
+00FB
+0C00
+// node=87, disease=2, feat=277
+0115
+0C00
+// node=87, disease=2, feat=4
+0004
+0800
+// node=87, disease=2, feat=29
+001D
+0800
+// node=87, disease=2, feat=34
+0022
+0800
+// node=87, disease=2, feat=215
+00D7
+0800
+// node=87, disease=2, feat=227
+00E3
+0800
+// node=87, disease=2, feat=3
+0003
+0400
+// node=87, disease=2, feat=8
+0008
+0400
+// node=87, disease=2, feat=24
+0018
+0400
+// node=87, disease=2, feat=75
+004B
+0400
+// node=87, disease=2, feat=90
+005A
+0400
+// node=87, disease=2, feat=99
+0063
+0400
+// node=87, disease=2, feat=102
+0066
+0400
+// node=87, disease=2, feat=123
+007B
+0400
+// node=87, disease=3, feat=136
+0088
+2AAB
+// node=87, disease=3, feat=14
+000E
+1555
+// node=88, disease=2, feat=249
+00F9
+5555
+// node=88, disease=2, feat=259
+0103
+38E4
+// node=88, disease=2, feat=276
+0114
+38E4
+// node=88, disease=2, feat=196
+00C4
+2AAB
+// node=88, disease=2, feat=239
+00EF
+2AAB
+// node=88, disease=2, feat=6
+0006
+1C72
+// node=88, disease=2, feat=170
+00AA
+1C72
+// node=88, disease=2, feat=228
+00E4
+1C72
+// node=88, disease=2, feat=235
+00EB
+1C72
+// node=88, disease=2, feat=14
+000E
+0E39
+// node=88, disease=2, feat=27
+001B
+0E39
+// node=88, disease=2, feat=92
+005C
+0E39
+// node=88, disease=2, feat=109
+006D
+0E39
+// node=88, disease=2, feat=168
+00A8
+0E39
+// node=88, disease=2, feat=180
+00B4
+0E39
+// node=88, disease=2, feat=185
+00B9
+0E39
+// node=88, disease=2, feat=192
+00C0
+0E39
+// node=88, disease=2, feat=225
+00E1
+0E39
+// node=88, disease=2, feat=236
+00EC
+0E39
+// node=88, disease=2, feat=255
+00FF
+0E39
+// node=88, disease=3, feat=52
+0034
+7FFF
+// node=88, disease=3, feat=111
+006F
+7FFF
+// node=88, disease=3, feat=217
+00D9
+7FFF
+// node=88, disease=4, feat=270
+010E
+3000
+// node=88, disease=4, feat=54
+0036
+1000
+// node=88, disease=4, feat=140
+008C
+1000
+// node=88, disease=5, feat=0
+0000
+4000
+// node=88, disease=5, feat=2
+0002
+2000
+// node=88, disease=5, feat=90
+005A
+2000
+// node=88, disease=5, feat=223
+00DF
+2000
+// node=88, disease=6, feat=42
+002A
+0BA3
+// node=88, disease=9, feat=77
+004D
+6000
+// node=88, disease=9, feat=199
+00C7
+4000
+// node=88, disease=10, feat=102
+0066
+22E9
+// node=89, disease=2, feat=256
+0100
+2AAB
+// node=89, disease=2, feat=13
+000D
+2AAB
+// node=89, disease=2, feat=10
+000A
+2000
+// node=89, disease=2, feat=7
+0007
+1555
+// node=89, disease=2, feat=12
+000C
+1555
+// node=89, disease=2, feat=266
+010A
+1555
+// node=89, disease=2, feat=268
+010C
+1555
+// node=89, disease=2, feat=198
+00C6
+0E39
+// node=89, disease=2, feat=246
+00F6
+0E39
+// node=89, disease=2, feat=11
+000B
+0788
+// node=89, disease=2, feat=18
+0012
+071C
+// node=89, disease=2, feat=24
+0018
+071C
+// node=89, disease=2, feat=60
+003C
+071C
+// node=89, disease=2, feat=75
+004B
+071C
+// node=89, disease=2, feat=90
+005A
+071C
+// node=89, disease=2, feat=92
+005C
+071C
+// node=89, disease=2, feat=99
+0063
+071C
+// node=89, disease=2, feat=102
+0066
+071C
+// node=89, disease=2, feat=104
+0068
+071C
+// node=89, disease=2, feat=125
+007D
+071C
+// node=89, disease=2, feat=192
+00C0
+071C
+// node=89, disease=2, feat=215
+00D7
+071C
+// node=89, disease=2, feat=216
+00D8
+071C
+// node=89, disease=2, feat=239
+00EF
+071C
+// node=89, disease=3, feat=111
+006F
+7FFF
+// node=89, disease=3, feat=242
+00F2
+7FFF
+// node=89, disease=3, feat=237
+00ED
+3B14
+// node=89, disease=3, feat=136
+0088
+2762
+// node=89, disease=3, feat=14
+000E
+13B1
+// node=89, disease=4, feat=34
+0022
+199A
+// node=90, disease=2, feat=249
+00F9
+3D38
+// node=90, disease=2, feat=256
+0100
+2C86
+// node=90, disease=2, feat=266
+010A
+2C86
+// node=90, disease=2, feat=276
+0114
+26F5
+// node=90, disease=2, feat=166
+00A6
+2164
+// node=90, disease=2, feat=246
+00F6
+2164
+// node=90, disease=2, feat=159
+009F
+1BD3
+// node=90, disease=2, feat=239
+00EF
+1BD3
+// node=90, disease=2, feat=248
+00F8
+1BD3
+// node=90, disease=2, feat=7
+0007
+1643
+// node=90, disease=2, feat=12
+000C
+1643
+// node=90, disease=2, feat=27
+001B
+1643
+// node=90, disease=2, feat=169
+00A9
+1643
+// node=90, disease=2, feat=259
+0103
+1643
+// node=90, disease=2, feat=6
+0006
+10B2
+// node=90, disease=2, feat=32
+0020
+10B2
+// node=90, disease=2, feat=171
+00AB
+10B2
+// node=90, disease=2, feat=205
+00CD
+10B2
+// node=90, disease=2, feat=237
+00ED
+10B2
+// node=90, disease=2, feat=104
+0068
+0B21
+// node=90, disease=2, feat=170
+00AA
+0B21
+// node=90, disease=2, feat=225
+00E1
+0B21
+// node=90, disease=2, feat=227
+00E3
+0B21
+// node=90, disease=2, feat=33
+0021
+0591
+// node=90, disease=2, feat=65
+0041
+0591
+// node=90, disease=2, feat=77
+004D
+0591
+// node=90, disease=2, feat=192
+00C0
+0591
+// node=90, disease=2, feat=193
+00C1
+0591
+// node=90, disease=2, feat=199
+00C7
+0591
+// node=90, disease=2, feat=223
+00DF
+0591
+// node=90, disease=2, feat=251
+00FB
+0591
+// node=90, disease=2, feat=261
+0105
+0591
+// node=90, disease=4, feat=140
+008C
+0E39
+// node=90, disease=5, feat=14
+000E
+6666
+// node=90, disease=6, feat=92
+005C
+0AAB
+// node=90, disease=16, feat=40
+0028
+13B1
+// node=91, disease=2, feat=249
+00F9
+2C4F
+// node=91, disease=2, feat=266
+010A
+2C4F
+// node=91, disease=2, feat=169
+00A9
+2762
+// node=91, disease=2, feat=10
+000A
+1EB8
+// node=91, disease=2, feat=246
+00F6
+1D8A
+// node=91, disease=2, feat=276
+0114
+1D8A
+// node=91, disease=2, feat=13
+000D
+1B6E
+// node=91, disease=2, feat=12
+000C
+189E
+// node=91, disease=2, feat=216
+00D8
+189E
+// node=91, disease=2, feat=268
+010C
+189E
+// node=91, disease=2, feat=179
+00B3
+13B1
+// node=91, disease=2, feat=211
+00D3
+13B1
+// node=91, disease=2, feat=239
+00EF
+13B1
+// node=91, disease=2, feat=259
+0103
+13B1
+// node=91, disease=2, feat=267
+010B
+13B1
+// node=91, disease=2, feat=171
+00AB
+0EC5
+// node=91, disease=2, feat=217
+00D9
+0EC5
+// node=91, disease=2, feat=226
+00E2
+0EC5
+// node=91, disease=2, feat=228
+00E4
+0EC5
+// node=91, disease=2, feat=235
+00EB
+0EC5
+// node=91, disease=2, feat=237
+00ED
+0EC5
+// node=91, disease=2, feat=251
+00FB
+0EC5
+// node=91, disease=2, feat=32
+0020
+09D9
+// node=91, disease=2, feat=90
+005A
+09D9
+// node=91, disease=2, feat=104
+0068
+09D9
+// node=91, disease=2, feat=219
+00DB
+09D9
+// node=91, disease=2, feat=231
+00E7
+09D9
+// node=91, disease=2, feat=236
+00EC
+09D9
+// node=91, disease=2, feat=242
+00F2
+09D9
+// node=91, disease=2, feat=3
+0003
+04EC
+// node=91, disease=2, feat=5
+0005
+04EC
+// node=91, disease=2, feat=9
+0009
+04EC
+// node=91, disease=2, feat=65
+0041
+04EC
+// node=91, disease=2, feat=227
+00E3
+04EC
+// node=91, disease=2, feat=271
+010F
+04EC
+// node=91, disease=3, feat=14
+000E
+199A
+// node=91, disease=5, feat=2
+0002
+471C
+// node=91, disease=5, feat=60
+003C
+0E39
+// node=91, disease=6, feat=16
+0010
+0E39
+// node=92, disease=2, feat=6
+0006
+2AAB
+// node=92, disease=2, feat=249
+00F9
+199A
+// node=92, disease=2, feat=259
+0103
+199A
+// node=92, disease=2, feat=14
+000E
+1111
+// node=92, disease=2, feat=189
+00BD
+1111
+// node=92, disease=2, feat=215
+00D7
+1111
+// node=92, disease=2, feat=239
+00EF
+1111
+// node=92, disease=2, feat=246
+00F6
+1111
+// node=92, disease=2, feat=266
+010A
+1111
+// node=92, disease=2, feat=0
+0000
+0889
+// node=92, disease=2, feat=4
+0004
+0889
+// node=92, disease=2, feat=50
+0032
+0889
+// node=92, disease=2, feat=60
+003C
+0889
+// node=92, disease=2, feat=104
+0068
+0889
+// node=92, disease=2, feat=180
+00B4
+0889
+// node=92, disease=2, feat=227
+00E3
+0889
+// node=92, disease=2, feat=248
+00F8
+0889
+// node=92, disease=3, feat=99
+0063
+7FFF
+// node=92, disease=3, feat=111
+006F
+7FFF
+// node=92, disease=3, feat=230
+00E6
+4000
+// node=92, disease=3, feat=68
+0044
+3000
+// node=92, disease=3, feat=140
+008C
+2000
+// node=92, disease=3, feat=217
+00D9
+2000
+// node=92, disease=4, feat=80
+0050
+4925
+// node=92, disease=6, feat=42
+002A
+0925
+// node=92, disease=9, feat=64
+0040
+7FFF
+// node=92, disease=9, feat=2
+0002
+2AAB
+// node=92, disease=10, feat=90
+005A
+286C
+// node=93, disease=2, feat=246
+00F6
+2000
+// node=93, disease=2, feat=266
+010A
+2000
+// node=93, disease=2, feat=10
+000A
+1D17
+// node=93, disease=2, feat=12
+000C
+1AAB
+// node=93, disease=2, feat=268
+010C
+1AAB
+// node=93, disease=2, feat=13
+000D
+199A
+// node=93, disease=2, feat=217
+00D9
+1555
+// node=93, disease=2, feat=236
+00EC
+1555
+// node=93, disease=2, feat=198
+00C6
+1000
+// node=93, disease=2, feat=239
+00EF
+1000
+// node=93, disease=2, feat=32
+0020
+0AAB
+// node=93, disease=2, feat=90
+005A
+0AAB
+// node=93, disease=2, feat=104
+0068
+0AAB
+// node=93, disease=2, feat=177
+00B1
+0AAB
+// node=93, disease=2, feat=179
+00B3
+0AAB
+// node=93, disease=2, feat=216
+00D8
+0AAB
+// node=93, disease=2, feat=235
+00EB
+0AAB
+// node=93, disease=2, feat=237
+00ED
+0AAB
+// node=93, disease=2, feat=242
+00F2
+0AAB
+// node=93, disease=2, feat=3
+0003
+0555
+// node=93, disease=2, feat=24
+0018
+0555
+// node=93, disease=2, feat=56
+0038
+0555
+// node=93, disease=2, feat=227
+00E3
+0555
+// node=93, disease=3, feat=136
+0088
+2762
+// node=93, disease=3, feat=14
+000E
+13B1
+// node=93, disease=3, feat=257
+0101
+09D9
+// node=93, disease=5, feat=60
+003C
+0E39
+// node=94, disease=2, feat=249
+00F9
+3C3C
+// node=94, disease=2, feat=196
+00C4
+2D2D
+// node=94, disease=2, feat=268
+010C
+2D2D
+// node=94, disease=2, feat=166
+00A6
+25A6
+// node=94, disease=2, feat=258
+0102
+25A6
+// node=94, disease=2, feat=259
+0103
+25A6
+// node=94, disease=2, feat=276
+0114
+1E1E
+// node=94, disease=2, feat=239
+00EF
+1697
+// node=94, disease=2, feat=246
+00F6
+1697
+// node=94, disease=2, feat=3
+0003
+0F0F
+// node=94, disease=2, feat=6
+0006
+0F0F
+// node=94, disease=2, feat=14
+000E
+0F0F
+// node=94, disease=2, feat=125
+007D
+0F0F
+// node=94, disease=2, feat=168
+00A8
+0F0F
+// node=94, disease=2, feat=171
+00AB
+0F0F
+// node=94, disease=2, feat=180
+00B4
+0F0F
+// node=94, disease=2, feat=226
+00E2
+0F0F
+// node=94, disease=2, feat=7
+0007
+0788
+// node=94, disease=2, feat=42
+002A
+0788
+// node=94, disease=2, feat=104
+0068
+0788
+// node=94, disease=2, feat=172
+00AC
+0788
+// node=94, disease=2, feat=192
+00C0
+0788
+// node=94, disease=2, feat=221
+00DD
+0788
+// node=94, disease=2, feat=227
+00E3
+0788
+// node=94, disease=2, feat=230
+00E6
+0788
+// node=94, disease=2, feat=248
+00F8
+0788
+// node=94, disease=4, feat=27
+001B
+7000
+// node=94, disease=4, feat=28
+001C
+2000
+// node=94, disease=4, feat=197
+00C5
+2000
+// node=94, disease=4, feat=140
+008C
+1000
+// node=94, disease=5, feat=0
+0000
+2000
+// node=94, disease=5, feat=2
+0002
+2000
+// node=94, disease=6, feat=116
+0074
+0889
+// node=95, disease=2, feat=266
+010A
+2969
+// node=95, disease=2, feat=276
+0114
+25A6
+// node=95, disease=2, feat=246
+00F6
+21E2
+// node=95, disease=2, feat=256
+0100
+1E1E
+// node=95, disease=2, feat=10
+000A
+1DDE
+// node=95, disease=2, feat=13
+000D
+1D8A
+// node=95, disease=2, feat=239
+00EF
+1A5A
+// node=95, disease=2, feat=241
+00F1
+1A5A
+// node=95, disease=2, feat=251
+00FB
+12D3
+// node=95, disease=2, feat=12
+000C
+12D3
+// node=95, disease=2, feat=189
+00BD
+0B4B
+// node=95, disease=2, feat=216
+00D8
+0B4B
+// node=95, disease=2, feat=104
+0068
+0B4B
+// node=95, disease=2, feat=220
+00DC
+0B4B
+// node=95, disease=2, feat=232
+00E8
+0B4B
+// node=95, disease=2, feat=34
+0022
+0788
+// node=95, disease=2, feat=90
+005A
+0788
+// node=95, disease=2, feat=140
+008C
+0788
+// node=95, disease=2, feat=235
+00EB
+0788
+// node=95, disease=2, feat=0
+0000
+03C4
+// node=95, disease=2, feat=8
+0008
+03C4
+// node=95, disease=2, feat=24
+0018
+03C4
+// node=95, disease=2, feat=60
+003C
+03C4
+// node=95, disease=2, feat=225
+00E1
+03C4
+// node=95, disease=3, feat=14
+000E
+1746
+// node=96, disease=2, feat=249
+00F9
+4925
+// node=96, disease=2, feat=256
+0100
+36DB
+// node=96, disease=2, feat=3
+0003
+2492
+// node=96, disease=2, feat=10
+000A
+2492
+// node=96, disease=2, feat=32
+0020
+2492
+// node=96, disease=2, feat=169
+00A9
+2492
+// node=96, disease=2, feat=170
+00AA
+2492
+// node=96, disease=2, feat=196
+00C4
+2492
+// node=96, disease=2, feat=228
+00E4
+2492
+// node=96, disease=2, feat=235
+00EB
+2492
+// node=96, disease=2, feat=237
+00ED
+2492
+// node=96, disease=2, feat=247
+00F7
+2492
+// node=96, disease=2, feat=259
+0103
+2492
+// node=96, disease=2, feat=6
+0006
+1249
+// node=96, disease=2, feat=12
+000C
+1249
+// node=96, disease=2, feat=14
+000E
+1249
+// node=96, disease=2, feat=17
+0011
+1249
+// node=96, disease=2, feat=33
+0021
+1249
+// node=96, disease=2, feat=65
+0041
+1249
+// node=96, disease=2, feat=75
+004B
+1249
+// node=96, disease=2, feat=98
+0062
+1249
+// node=96, disease=2, feat=199
+00C7
+1249
+// node=96, disease=2, feat=255
+00FF
+1249
+// node=96, disease=3, feat=29
+001D
+7FFF
+// node=96, disease=3, feat=111
+006F
+7FFF
+// node=96, disease=3, feat=172
+00AC
+7FFF
+// node=96, disease=3, feat=212
+00D4
+7FFF
+// node=96, disease=3, feat=104
+0068
+4000
+// node=96, disease=4, feat=68
+0044
+1000
+// node=96, disease=4, feat=140
+008C
+1000
+// node=96, disease=5, feat=2
+0002
+2000
+// node=96, disease=5, feat=183
+00B7
+2000
+// node=96, disease=6, feat=39
+0027
+0800
+// node=96, disease=6, feat=92
+005C
+0800
+// node=96, disease=6, feat=102
+0066
+0800
+// node=96, disease=6, feat=230
+00E6
+0800
+// node=96, disease=6, feat=233
+00E9
+0800
+// node=97, disease=2, feat=256
+0100
+34B5
+// node=97, disease=2, feat=276
+0114
+2D2D
+// node=97, disease=2, feat=10
+000A
+2AAB
+// node=97, disease=2, feat=12
+000C
+1E1E
+// node=97, disease=2, feat=268
+010C
+1E1E
+// node=97, disease=2, feat=137
+0089
+1697
+// node=97, disease=2, feat=269
+010D
+1697
+// node=97, disease=2, feat=7
+0007
+1697
+// node=97, disease=2, feat=239
+00EF
+1697
+// node=97, disease=2, feat=246
+00F6
+1697
+// node=97, disease=2, feat=249
+00F9
+1697
+// node=97, disease=2, feat=4
+0004
+0F0F
+// node=97, disease=2, feat=6
+0006
+0F0F
+// node=97, disease=2, feat=110
+006E
+0F0F
+// node=97, disease=2, feat=125
+007D
+0F0F
+// node=97, disease=2, feat=228
+00E4
+0F0F
+// node=97, disease=2, feat=232
+00E8
+0F0F
+// node=97, disease=2, feat=238
+00EE
+0F0F
+// node=97, disease=2, feat=241
+00F1
+0F0F
+// node=97, disease=2, feat=8
+0008
+0788
+// node=97, disease=2, feat=11
+000B
+0788
+// node=97, disease=2, feat=14
+000E
+0788
+// node=97, disease=2, feat=15
+000F
+0788
+// node=97, disease=2, feat=24
+0018
+0788
+// node=97, disease=2, feat=34
+0022
+0788
+// node=97, disease=2, feat=75
+004B
+0788
+// node=97, disease=2, feat=92
+005C
+0788
+// node=97, disease=2, feat=104
+0068
+0788
+// node=97, disease=2, feat=210
+00D2
+0788
+// node=97, disease=2, feat=215
+00D7
+0788
+// node=97, disease=2, feat=223
+00DF
+0788
+// node=97, disease=3, feat=245
+00F5
+0AAB
+// node=97, disease=10, feat=102
+0066
+286C
+// node=98, disease=2, feat=266
+010A
+3555
+// node=98, disease=2, feat=276
+0114
+2AAB
+// node=98, disease=2, feat=196
+00C4
+2555
+// node=98, disease=2, feat=249
+00F9
+2555
+// node=98, disease=2, feat=256
+0100
+2555
+// node=98, disease=2, feat=259
+0103
+2555
+// node=98, disease=2, feat=246
+00F6
+2000
+// node=98, disease=2, feat=166
+00A6
+1555
+// node=98, disease=2, feat=169
+00A9
+1555
+// node=98, disease=2, feat=6
+0006
+1000
+// node=98, disease=2, feat=211
+00D3
+1000
+// node=98, disease=2, feat=235
+00EB
+1000
+// node=98, disease=2, feat=239
+00EF
+1000
+// node=98, disease=2, feat=12
+000C
+0AAB
+// node=98, disease=2, feat=32
+0020
+0AAB
+// node=98, disease=2, feat=104
+0068
+0AAB
+// node=98, disease=2, feat=185
+00B9
+0AAB
+// node=98, disease=2, feat=205
+00CD
+0AAB
+// node=98, disease=2, feat=237
+00ED
+0AAB
+// node=98, disease=2, feat=242
+00F2
+0AAB
+// node=98, disease=2, feat=9
+0009
+0555
+// node=98, disease=2, feat=49
+0031
+0555
+// node=98, disease=2, feat=65
+0041
+0555
+// node=98, disease=2, feat=90
+005A
+0555
+// node=98, disease=2, feat=102
+0066
+0555
+// node=98, disease=2, feat=192
+00C0
+0555
+// node=98, disease=2, feat=221
+00DD
+0555
+// node=98, disease=2, feat=223
+00DF
+0555
+// node=98, disease=3, feat=87
+0057
+7FFF
+// node=98, disease=3, feat=99
+0063
+7FFF
+// node=98, disease=5, feat=14
+000E
+2AAB
+// node=98, disease=6, feat=230
+00E6
+1555
+// node=98, disease=6, feat=140
+008C
+0AAB
+// node=98, disease=10, feat=41
+0029
+0555
+// node=99, disease=2, feat=266
+010A
+238E
+// node=99, disease=2, feat=268
+010C
+238E
+// node=99, disease=2, feat=10
+000A
+2000
+// node=99, disease=2, feat=12
+000C
+1C72
+// node=99, disease=2, feat=246
+00F6
+1C72
+// node=99, disease=2, feat=7
+0007
+1555
+// node=99, disease=2, feat=121
+0079
+1555
+// node=99, disease=2, feat=178
+00B2
+1555
+// node=99, disease=2, feat=198
+00C6
+1555
+// node=99, disease=2, feat=218
+00DA
+1555
+// node=99, disease=2, feat=4
+0004
+0E39
+// node=99, disease=2, feat=159
+009F
+0E39
+// node=99, disease=2, feat=215
+00D7
+0E39
+// node=99, disease=2, feat=216
+00D8
+0E39
+// node=99, disease=2, feat=217
+00D9
+0E39
+// node=99, disease=2, feat=223
+00DF
+0E39
+// node=99, disease=2, feat=231
+00E7
+0E39
+// node=99, disease=2, feat=251
+00FB
+0E39
+// node=99, disease=2, feat=6
+0006
+071C
+// node=99, disease=2, feat=24
+0018
+071C
+// node=99, disease=2, feat=92
+005C
+071C
+// node=99, disease=2, feat=99
+0063
+071C
+// node=99, disease=2, feat=100
+0064
+071C
+// node=99, disease=2, feat=104
+0068
+071C
+// node=99, disease=2, feat=179
+00B3
+071C
+// node=99, disease=2, feat=193
+00C1
+071C
+// node=99, disease=2, feat=208
+00D0
+071C
+// node=99, disease=2, feat=210
+00D2
+071C
+// node=99, disease=2, feat=227
+00E3
+071C
+// node=99, disease=2, feat=237
+00ED
+071C
+// node=99, disease=3, feat=14
+000E
+13B1
+// node=99, disease=5, feat=60
+003C
+0BA3
+// node=100, disease=2, feat=249
+00F9
+2C86
+// node=100, disease=2, feat=259
+0103
+2C86
+// node=100, disease=2, feat=278
+0116
+2C86
+// node=100, disease=2, feat=166
+00A6
+2164
+// node=100, disease=2, feat=196
+00C4
+2164
+// node=100, disease=2, feat=266
+010A
+2164
+// node=100, disease=2, feat=256
+0100
+1BD3
+// node=100, disease=2, feat=168
+00A8
+1643
+// node=100, disease=2, feat=246
+00F6
+1643
+// node=100, disease=2, feat=12
+000C
+10B2
+// node=100, disease=2, feat=169
+00A9
+10B2
+// node=100, disease=2, feat=211
+00D3
+10B2
+// node=100, disease=2, feat=228
+00E4
+10B2
+// node=100, disease=2, feat=6
+0006
+0B21
+// node=100, disease=2, feat=14
+000E
+0B21
+// node=100, disease=2, feat=32
+0020
+0B21
+// node=100, disease=2, feat=104
+0068
+0B21
+// node=100, disease=2, feat=205
+00CD
+0B21
+// node=100, disease=2, feat=235
+00EB
+0B21
+// node=100, disease=2, feat=17
+0011
+0591
+// node=100, disease=2, feat=42
+002A
+0591
+// node=100, disease=2, feat=49
+0031
+0591
+// node=100, disease=2, feat=65
+0041
+0591
+// node=100, disease=2, feat=102
+0066
+0591
+// node=100, disease=2, feat=221
+00DD
+0591
+// node=100, disease=2, feat=225
+00E1
+0591
+// node=100, disease=2, feat=230
+00E6
+0591
+// node=100, disease=4, feat=29
+001D
+2000
+// node=100, disease=4, feat=87
+0057
+2000
+// node=100, disease=4, feat=140
+008C
+2000
+// node=100, disease=6, feat=212
+00D4
+1697
+// node=100, disease=6, feat=277
+0115
+0F0F
+// node=100, disease=6, feat=111
+006F
+0788
+// node=100, disease=7, feat=2
+0002
+4000
+// node=101, disease=2, feat=266
+010A
+2969
+// node=101, disease=2, feat=246
+00F6
+25A6
+// node=101, disease=2, feat=276
+0114
+25A6
+// node=101, disease=2, feat=256
+0100
+21E2
+// node=101, disease=2, feat=249
+00F9
+1E1E
+// node=101, disease=2, feat=10
+000A
+1DDE
+// node=101, disease=2, feat=13
+000D
+1B6E
+// node=101, disease=2, feat=241
+00F1
+1A5A
+// node=101, disease=2, feat=278
+0116
+1697
+// node=101, disease=2, feat=268
+010C
+12D3
+// node=101, disease=2, feat=12
+000C
+12D3
+// node=101, disease=2, feat=231
+00E7
+12D3
+// node=101, disease=2, feat=228
+00E4
+0F0F
+// node=101, disease=2, feat=239
+00EF
+0F0F
+// node=101, disease=2, feat=11
+000B
+0BA3
+// node=101, disease=2, feat=189
+00BD
+0B4B
+// node=101, disease=2, feat=261
+0105
+0B4B
+// node=101, disease=2, feat=128
+0080
+0B4B
+// node=101, disease=2, feat=175
+00AF
+0B4B
+// node=101, disease=2, feat=232
+00E8
+0B4B
+// node=101, disease=2, feat=235
+00EB
+0B4B
+// node=101, disease=2, feat=90
+005A
+0788
+// node=101, disease=2, feat=215
+00D7
+0788
+// node=101, disease=2, feat=227
+00E3
+0788
+// node=101, disease=2, feat=237
+00ED
+0788
+// node=101, disease=2, feat=0
+0000
+03C4
+// node=101, disease=2, feat=4
+0004
+03C4
+// node=101, disease=2, feat=24
+0018
+03C4
+// node=101, disease=2, feat=60
+003C
+03C4
+// node=101, disease=2, feat=136
+0088
+03C4
+// node=101, disease=2, feat=225
+00E1
+03C4
+// node=101, disease=3, feat=14
+000E
+13B1
+// node=101, disease=3, feat=216
+00D8
+13B1
+// node=101, disease=4, feat=32
+0020
+2762
+// node=102, disease=2, feat=249
+00F9
+36DB
+// node=102, disease=2, feat=3
+0003
+2492
+// node=102, disease=2, feat=10
+000A
+2492
+// node=102, disease=2, feat=12
+000C
+2492
+// node=102, disease=2, feat=32
+0020
+2492
+// node=102, disease=2, feat=169
+00A9
+2492
+// node=102, disease=2, feat=189
+00BD
+2492
+// node=102, disease=2, feat=196
+00C4
+2492
+// node=102, disease=2, feat=237
+00ED
+2492
+// node=102, disease=2, feat=247
+00F7
+2492
+// node=102, disease=2, feat=259
+0103
+2492
+// node=102, disease=2, feat=6
+0006
+1249
+// node=102, disease=2, feat=14
+000E
+1249
+// node=102, disease=2, feat=65
+0041
+1249
+// node=102, disease=2, feat=75
+004B
+1249
+// node=102, disease=2, feat=98
+0062
+1249
+// node=102, disease=2, feat=102
+0066
+1249
+// node=102, disease=2, feat=104
+0068
+1249
+// node=102, disease=2, feat=168
+00A8
+1249
+// node=102, disease=2, feat=199
+00C7
+1249
+// node=102, disease=2, feat=205
+00CD
+1249
+// node=102, disease=2, feat=233
+00E9
+1249
+// node=102, disease=5, feat=140
+008C
+2AAB
+// node=102, disease=6, feat=212
+00D4
+1697
+// node=102, disease=6, feat=28
+001C
+0F0F
+// node=102, disease=6, feat=29
+001D
+0F0F
+// node=102, disease=6, feat=42
+002A
+0788
+// node=102, disease=6, feat=82
+0052
+0788
+// node=102, disease=6, feat=92
+005C
+0788
+// node=102, disease=6, feat=116
+0074
+0788
+// node=102, disease=6, feat=230
+00E6
+0788
+// node=102, disease=7, feat=2
+0002
+4000
+// node=103, disease=2, feat=266
+010A
+3BBC
+// node=103, disease=2, feat=10
+000A
+2762
+// node=103, disease=2, feat=256
+0100
+2222
+// node=103, disease=2, feat=268
+010C
+2222
+// node=103, disease=2, feat=276
+0114
+2222
+// node=103, disease=2, feat=6
+0006
+1111
+// node=103, disease=2, feat=7
+0007
+1111
+// node=103, disease=2, feat=12
+000C
+1111
+// node=103, disease=2, feat=218
+00DA
+1111
+// node=103, disease=2, feat=232
+00E8
+1111
+// node=103, disease=2, feat=239
+00EF
+1111
+// node=103, disease=2, feat=249
+00F9
+1111
+// node=103, disease=2, feat=259
+0103
+1111
+// node=103, disease=2, feat=4
+0004
+0889
+// node=103, disease=2, feat=8
+0008
+0889
+// node=103, disease=2, feat=11
+000B
+0889
+// node=103, disease=2, feat=14
+000E
+0889
+// node=103, disease=2, feat=15
+000F
+0889
+// node=103, disease=2, feat=24
+0018
+0889
+// node=103, disease=2, feat=75
+004B
+0889
+// node=103, disease=2, feat=90
+005A
+0889
+// node=103, disease=2, feat=92
+005C
+0889
+// node=103, disease=2, feat=99
+0063
+0889
+// node=103, disease=2, feat=111
+006F
+0889
+// node=103, disease=2, feat=210
+00D2
+0889
+// node=103, disease=2, feat=215
+00D7
+0889
+// node=103, disease=2, feat=246
+00F6
+0889
+// node=104, disease=2, feat=266
+010A
+313B
+// node=104, disease=2, feat=246
+00F6
+2762
+// node=104, disease=2, feat=249
+00F9
+2762
+// node=104, disease=2, feat=256
+0100
+2762
+// node=104, disease=2, feat=276
+0114
+2762
+// node=104, disease=2, feat=196
+00C4
+1D8A
+// node=104, disease=2, feat=259
+0103
+189E
+// node=104, disease=2, feat=169
+00A9
+13B1
+// node=104, disease=2, feat=236
+00EC
+13B1
+// node=104, disease=2, feat=239
+00EF
+13B1
+// node=104, disease=2, feat=6
+0006
+0EC5
+// node=104, disease=2, feat=211
+00D3
+0EC5
+// node=104, disease=2, feat=235
+00EB
+0EC5
+// node=104, disease=2, feat=12
+000C
+09D9
+// node=104, disease=2, feat=32
+0020
+09D9
+// node=104, disease=2, feat=77
+004D
+09D9
+// node=104, disease=2, feat=104
+0068
+09D9
+// node=104, disease=2, feat=185
+00B9
+09D9
+// node=104, disease=2, feat=205
+00CD
+09D9
+// node=104, disease=2, feat=237
+00ED
+09D9
+// node=104, disease=2, feat=49
+0031
+04EC
+// node=104, disease=2, feat=65
+0041
+04EC
+// node=104, disease=2, feat=90
+005A
+04EC
+// node=104, disease=2, feat=102
+0066
+04EC
+// node=104, disease=2, feat=191
+00BF
+04EC
+// node=104, disease=2, feat=192
+00C0
+04EC
+// node=104, disease=2, feat=221
+00DD
+04EC
+// node=104, disease=2, feat=223
+00DF
+04EC
+// node=104, disease=3, feat=230
+00E6
+7FFF
+// node=104, disease=3, feat=14
+000E
+4000
+// node=104, disease=3, feat=87
+0057
+4000
+// node=104, disease=5, feat=140
+008C
+2000
+// node=105, disease=2, feat=13
+000D
+3000
+// node=105, disease=2, feat=256
+0100
+2AAB
+// node=105, disease=2, feat=266
+010A
+2AAB
+// node=105, disease=2, feat=246
+00F6
+1E7A
+// node=105, disease=2, feat=268
+010C
+1E7A
+// node=105, disease=2, feat=12
+000C
+1862
+// node=105, disease=2, feat=249
+00F9
+1862
+// node=105, disease=2, feat=189
+00BD
+1249
+// node=105, disease=2, feat=198
+00C6
+1249
+// node=105, disease=2, feat=217
+00D9
+1249
+// node=105, disease=2, feat=235
+00EB
+1249
+// node=105, disease=2, feat=236
+00EC
+1249
+// node=105, disease=2, feat=259
+0103
+1249
+// node=105, disease=2, feat=267
+010B
+1249
+// node=105, disease=2, feat=104
+0068
+0C31
+// node=105, disease=2, feat=177
+00B1
+0C31
+// node=105, disease=2, feat=215
+00D7
+0C31
+// node=105, disease=2, feat=218
+00DA
+0C31
+// node=105, disease=2, feat=219
+00DB
+0C31
+// node=105, disease=2, feat=228
+00E4
+0C31
+// node=105, disease=2, feat=231
+00E7
+0C31
+// node=105, disease=2, feat=8
+0008
+0618
+// node=105, disease=2, feat=9
+0009
+0618
+// node=105, disease=2, feat=11
+000B
+0618
+// node=105, disease=2, feat=75
+004B
+0618
+// node=105, disease=2, feat=90
+005A
+0618
+// node=105, disease=2, feat=92
+005C
+0618
+// node=105, disease=2, feat=102
+0066
+0618
+// node=105, disease=2, feat=111
+006F
+0618
+// node=105, disease=2, feat=123
+007B
+0618
+// node=105, disease=2, feat=140
+008C
+0618
+// node=105, disease=2, feat=171
+00AB
+0618
+// node=105, disease=2, feat=175
+00AF
+0618
+// node=105, disease=2, feat=179
+00B3
+0618
+// node=105, disease=2, feat=191
+00BF
+0618
+// node=105, disease=2, feat=223
+00DF
+0618
+// node=105, disease=2, feat=262
+0106
+0618
+// node=105, disease=3, feat=14
+000E
+2492
+// node=105, disease=4, feat=17
+0011
+4000
+// node=106, disease=2, feat=216
+00D8
+2CCD
+// node=106, disease=2, feat=246
+00F6
+2666
+// node=106, disease=2, feat=239
+00EF
+2000
+// node=106, disease=2, feat=249
+00F9
+2000
+// node=106, disease=2, feat=276
+0114
+2000
+// node=106, disease=2, feat=12
+000C
+199A
+// node=106, disease=2, feat=258
+0102
+199A
+// node=106, disease=2, feat=0
+0000
+0CCD
+// node=106, disease=2, feat=3
+0003
+0CCD
+// node=106, disease=2, feat=6
+0006
+0CCD
+// node=106, disease=2, feat=7
+0007
+0CCD
+// node=106, disease=2, feat=14
+000E
+0CCD
+// node=106, disease=2, feat=27
+001B
+0CCD
+// node=106, disease=2, feat=80
+0050
+0CCD
+// node=106, disease=2, feat=170
+00AA
+0CCD
+// node=106, disease=2, feat=217
+00D9
+0CCD
+// node=106, disease=2, feat=2
+0002
+0666
+// node=106, disease=2, feat=24
+0018
+0666
+// node=106, disease=2, feat=192
+00C0
+0666
+// node=106, disease=2, feat=199
+00C7
+0666
+// node=106, disease=2, feat=226
+00E2
+0666
+// node=106, disease=3, feat=112
+0070
+7FFF
+// node=106, disease=5, feat=82
+0052
+2AAB
+// node=107, disease=2, feat=246
+00F6
+241A
+// node=107, disease=2, feat=249
+00F9
+241A
+// node=107, disease=2, feat=266
+010A
+241A
+// node=107, disease=2, feat=276
+0114
+1A42
+// node=107, disease=2, feat=256
+0100
+1A42
+// node=107, disease=2, feat=10
+000A
+199A
+// node=107, disease=2, feat=13
+000D
+1800
+// node=107, disease=2, feat=268
+010C
+16F9
+// node=107, disease=2, feat=278
+0116
+13B1
+// node=107, disease=2, feat=239
+00EF
+13B1
+// node=107, disease=2, feat=175
+00AF
+1069
+// node=107, disease=2, feat=236
+00EC
+1069
+// node=107, disease=2, feat=12
+000C
+0D21
+// node=107, disease=2, feat=215
+00D7
+0D21
+// node=107, disease=2, feat=228
+00E4
+0D21
+// node=107, disease=2, feat=235
+00EB
+0D21
+// node=107, disease=2, feat=8
+0008
+09D9
+// node=107, disease=2, feat=104
+0068
+09D9
+// node=107, disease=2, feat=110
+006E
+09D9
+// node=107, disease=2, feat=226
+00E2
+09D9
+// node=107, disease=2, feat=229
+00E5
+09D9
+// node=107, disease=2, feat=232
+00E8
+09D9
+// node=107, disease=2, feat=237
+00ED
+09D9
+// node=107, disease=2, feat=251
+00FB
+09D9
+// node=107, disease=2, feat=261
+0105
+09D9
+// node=107, disease=2, feat=0
+0000
+0690
+// node=107, disease=2, feat=90
+005A
+0690
+// node=107, disease=2, feat=116
+0074
+0690
+// node=107, disease=2, feat=219
+00DB
+0690
+// node=107, disease=2, feat=24
+0018
+0348
+// node=107, disease=2, feat=32
+0020
+0348
+// node=107, disease=2, feat=60
+003C
+0348
+// node=107, disease=2, feat=206
+00CE
+0348
+// node=107, disease=3, feat=14
+000E
+1C72
+// node=108, disease=2, feat=3
+0003
+4000
+// node=108, disease=2, feat=10
+000A
+4000
+// node=108, disease=2, feat=32
+0020
+4000
+// node=108, disease=2, feat=65
+0041
+4000
+// node=108, disease=2, feat=176
+00B0
+4000
+// node=108, disease=2, feat=187
+00BB
+4000
+// node=108, disease=2, feat=192
+00C0
+4000
+// node=108, disease=2, feat=205
+00CD
+4000
+// node=108, disease=2, feat=211
+00D3
+4000
+// node=108, disease=2, feat=216
+00D8
+4000
+// node=108, disease=2, feat=217
+00D9
+4000
+// node=108, disease=2, feat=237
+00ED
+4000
+// node=108, disease=3, feat=99
+0063
+7FFF
+// node=108, disease=3, feat=113
+0071
+7FFF
+// node=108, disease=3, feat=116
+0074
+7FFF
+// node=108, disease=3, feat=178
+00B2
+6000
+// node=108, disease=3, feat=52
+0034
+4000
+// node=108, disease=3, feat=124
+007C
+4000
+// node=108, disease=3, feat=248
+00F8
+4000
+// node=108, disease=3, feat=7
+0007
+2000
+// node=108, disease=3, feat=68
+0044
+2000
+// node=108, disease=3, feat=87
+0057
+2000
+// node=108, disease=3, feat=104
+0068
+2000
+// node=108, disease=3, feat=135
+0087
+2000
+// node=108, disease=3, feat=199
+00C7
+2000
+// node=108, disease=3, feat=247
+00F7
+2000
+// node=108, disease=4, feat=140
+008C
+7FFF
+// node=108, disease=5, feat=6
+0006
+4CCD
+// node=108, disease=5, feat=14
+000E
+4CCD
+// node=108, disease=5, feat=16
+0010
+3333
+// node=108, disease=5, feat=162
+00A2
+3333
+// node=108, disease=5, feat=227
+00E3
+3333
+// node=108, disease=5, feat=235
+00EB
+3333
+// node=108, disease=5, feat=259
+0103
+3333
+// node=108, disease=5, feat=92
+005C
+199A
+// node=108, disease=5, feat=265
+0109
+199A
+// node=108, disease=6, feat=39
+0027
+0889
+// node=108, disease=6, feat=233
+00E9
+0889
+// node=108, disease=10, feat=223
+00DF
+3333
+// node=109, disease=2, feat=256
+0100
+4000
+// node=109, disease=2, feat=266
+010A
+31C7
+// node=109, disease=2, feat=278
+0116
+2AAB
+// node=109, disease=2, feat=268
+010C
+238E
+// node=109, disease=2, feat=12
+000C
+1C72
+// node=109, disease=2, feat=246
+00F6
+1C72
+// node=109, disease=2, feat=249
+00F9
+1C72
+// node=109, disease=2, feat=259
+0103
+1C72
+// node=109, disease=2, feat=7
+0007
+1555
+// node=109, disease=2, feat=121
+0079
+1555
+// node=109, disease=2, feat=178
+00B2
+1555
+// node=109, disease=2, feat=198
+00C6
+1555
+// node=109, disease=2, feat=216
+00D8
+1555
+// node=109, disease=2, feat=90
+005A
+0E39
+// node=109, disease=2, feat=187
+00BB
+0E39
+// node=109, disease=2, feat=215
+00D7
+0E39
+// node=109, disease=2, feat=225
+00E1
+0E39
+// node=109, disease=2, feat=229
+00E5
+0E39
+// node=109, disease=2, feat=231
+00E7
+0E39
+// node=109, disease=2, feat=6
+0006
+071C
+// node=109, disease=2, feat=24
+0018
+071C
+// node=109, disease=2, feat=92
+005C
+071C
+// node=109, disease=2, feat=99
+0063
+071C
+// node=109, disease=2, feat=100
+0064
+071C
+// node=109, disease=2, feat=104
+0068
+071C
+// node=109, disease=2, feat=135
+0087
+071C
+// node=109, disease=2, feat=175
+00AF
+071C
+// node=109, disease=2, feat=180
+00B4
+071C
+// node=109, disease=2, feat=193
+00C1
+071C
+// node=109, disease=2, feat=210
+00D2
+071C
+// node=109, disease=2, feat=227
+00E3
+071C
+// node=109, disease=2, feat=237
+00ED
+071C
+// node=109, disease=3, feat=14
+000E
+1746
+// node=109, disease=5, feat=60
+003C
+0BA3
+// node=110, disease=2, feat=196
+00C4
+2164
+// node=110, disease=2, feat=249
+00F9
+2164
+// node=110, disease=2, feat=266
+010A
+2164
+// node=110, disease=2, feat=278
+0116
+2164
+// node=110, disease=2, feat=256
+0100
+1BD3
+// node=110, disease=2, feat=259
+0103
+1BD3
+// node=110, disease=2, feat=246
+00F6
+1643
+// node=110, disease=2, feat=3
+0003
+10B2
+// node=110, disease=2, feat=166
+00A6
+10B2
+// node=110, disease=2, feat=198
+00C6
+10B2
+// node=110, disease=2, feat=232
+00E8
+10B2
+// node=110, disease=2, feat=6
+0006
+0B21
+// node=110, disease=2, feat=14
+000E
+0B21
+// node=110, disease=2, feat=32
+0020
+0B21
+// node=110, disease=2, feat=104
+0068
+0B21
+// node=110, disease=2, feat=162
+00A2
+0B21
+// node=110, disease=2, feat=226
+00E2
+0B21
+// node=110, disease=2, feat=228
+00E4
+0B21
+// node=110, disease=2, feat=235
+00EB
+0B21
+// node=110, disease=2, feat=247
+00F7
+0B21
+// node=110, disease=2, feat=34
+0022
+0591
+// node=110, disease=2, feat=102
+0066
+0591
+// node=110, disease=2, feat=192
+00C0
+0591
+// node=110, disease=2, feat=227
+00E3
+0591
+// node=110, disease=2, feat=230
+00E6
+0591
+// node=110, disease=3, feat=87
+0057
+7FFF
+// node=110, disease=3, feat=111
+006F
+7FFF
+// node=110, disease=3, feat=140
+008C
+4000
+// node=110, disease=7, feat=2
+0002
+4000
+// node=110, disease=7, feat=172
+00AC
+4000
+// node=111, disease=2, feat=276
+0114
+2AAB
+// node=111, disease=2, feat=268
+010C
+2AAB
+// node=111, disease=2, feat=266
+010A
+26CA
+// node=111, disease=2, feat=249
+00F9
+1F08
+// node=111, disease=2, feat=256
+0100
+1F08
+// node=111, disease=2, feat=13
+000D
+1B6E
+// node=111, disease=2, feat=241
+00F1
+1B27
+// node=111, disease=2, feat=246
+00F6
+1B27
+// node=111, disease=2, feat=278
+0116
+1746
+// node=111, disease=2, feat=12
+000C
+1365
+// node=111, disease=2, feat=231
+00E7
+1365
+// node=111, disease=2, feat=236
+00EC
+1365
+// node=111, disease=2, feat=261
+0105
+1365
+// node=111, disease=2, feat=32
+0020
+0F84
+// node=111, disease=2, feat=175
+00AF
+0F84
+// node=111, disease=2, feat=216
+00D8
+0F84
+// node=111, disease=2, feat=228
+00E4
+0F84
+// node=111, disease=2, feat=235
+00EB
+0F84
+// node=111, disease=2, feat=239
+00EF
+0F84
+// node=111, disease=2, feat=7
+0007
+0BA3
+// node=111, disease=2, feat=169
+00A9
+0BA3
+// node=111, disease=2, feat=215
+00D7
+0BA3
+// node=111, disease=2, feat=232
+00E8
+0BA3
+// node=111, disease=2, feat=251
+00FB
+0BA3
+// node=111, disease=2, feat=0
+0000
+07C2
+// node=111, disease=2, feat=8
+0008
+07C2
+// node=111, disease=2, feat=90
+005A
+07C2
+// node=111, disease=2, feat=104
+0068
+07C2
+// node=111, disease=2, feat=177
+00B1
+07C2
+// node=111, disease=2, feat=24
+0018
+03E1
+// node=111, disease=2, feat=60
+003C
+03E1
+// node=111, disease=2, feat=136
+0088
+03E1
+// node=111, disease=2, feat=225
+00E1
+03E1
+// node=111, disease=3, feat=14
+000E
+1746
+// node=112, disease=2, feat=256
+0100
+4000
+// node=112, disease=2, feat=266
+010A
+3000
+// node=112, disease=2, feat=276
+0114
+3000
+// node=112, disease=2, feat=3
+0003
+2000
+// node=112, disease=2, feat=6
+0006
+2000
+// node=112, disease=2, feat=237
+00ED
+2000
+// node=112, disease=2, feat=246
+00F6
+2000
+// node=112, disease=2, feat=259
+0103
+2000
+// node=112, disease=2, feat=14
+000E
+1000
+// node=112, disease=2, feat=32
+0020
+1000
+// node=112, disease=2, feat=65
+0041
+1000
+// node=112, disease=2, feat=102
+0066
+1000
+// node=112, disease=2, feat=104
+0068
+1000
+// node=112, disease=2, feat=166
+00A6
+1000
+// node=112, disease=2, feat=192
+00C0
+1000
+// node=112, disease=2, feat=205
+00CD
+1000
+// node=112, disease=2, feat=233
+00E9
+1000
+// node=112, disease=2, feat=247
+00F7
+1000
+// node=112, disease=3, feat=87
+0057
+7FFF
+// node=112, disease=3, feat=111
+006F
+7FFF
+// node=112, disease=3, feat=230
+00E6
+7FFF
+// node=112, disease=3, feat=250
+00FA
+7FFF
+// node=112, disease=3, feat=140
+008C
+4000
+// node=112, disease=3, feat=200
+00C8
+4000
+// node=112, disease=3, feat=13
+000D
+1000
+// node=112, disease=6, feat=29
+001D
+0800
+// node=112, disease=6, feat=42
+002A
+0800
+// node=112, disease=6, feat=92
+005C
+0800
+// node=112, disease=9, feat=227
+00E3
+7FFF
+// node=112, disease=9, feat=172
+00AC
+4000
+// node=112, disease=10, feat=235
+00EB
+051F

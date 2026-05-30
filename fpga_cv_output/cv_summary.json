@@ -1,0 +1,83 @@
+{
+  "rng_seed": 42,
+  "n_total": 452,
+  "n_folds": 10,
+  "aggregate": {
+    "accuracy": 0.7168141592920354,
+    "sensitivity": 0.821256038647343,
+    "specificity": 0.6285714285714286,
+    "false_alarm_rate": 0.37142857142857144
+  },
+  "per_fold": [
+    {
+      "fold": 0,
+      "n_test": 46,
+      "accuracy": 0.6086956521739131,
+      "sensitivity": 0.7272727272727273,
+      "specificity": 0.5
+    },
+    {
+      "fold": 1,
+      "n_test": 46,
+      "accuracy": 0.717391304347826,
+      "sensitivity": 0.7916666666666666,
+      "specificity": 0.6363636363636364
+    },
+    {
+      "fold": 2,
+      "n_test": 46,
+      "accuracy": 0.717391304347826,
+      "sensitivity": 0.9473684210526315,
+      "specificity": 0.5555555555555556
+    },
+    {
+      "fold": 3,
+      "n_test": 46,
+      "accuracy": 0.8043478260869565,
+      "sensitivity": 0.9523809523809523,
+      "specificity": 0.68
+    },
+    {
+      "fold": 4,
+      "n_test": 46,
+      "accuracy": 0.7608695652173914,
+      "sensitivity": 0.9,
+      "specificity": 0.6538461538461539
+    },
+    {
+      "fold": 5,
+      "n_test": 46,
+      "accuracy": 0.6739130434782609,
+      "sensitivity": 0.875,
+      "specificity": 0.45454545454545453
+    },
+    {
+      "fold": 6,
+      "n_test": 46,
+      "accuracy": 0.6956521739130435,
+      "sensitivity": 0.75,
+      "specificity": 0.6363636363636364
+    },
+    {
+      "fold": 7,
+      "n_test": 46,
+      "accuracy": 0.6304347826086957,
+      "sensitivity": 0.5882352941176471,
+      "specificity": 0.6551724137931034
+    },
+    {
+      "fold": 8,
+      "n_test": 46,
+      "accuracy": 0.8043478260869565,
+      "sensitivity": 0.8235294117647058,
+      "specificity": 0.7931034482758621
+    },
+    {
+      "fold": 9,
+      "n_test": 38,
+      "accuracy": 0.7631578947368421,
+      "sensitivity": 0.8421052631578947,
+      "specificity": 0.6842105263157895
+    }
+  ]
+}

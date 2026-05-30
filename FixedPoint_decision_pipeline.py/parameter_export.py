@@ -603,7 +603,7 @@ def export_test_vectors(
 
             for feat_j in range(N_FEATURES):
                 val = float(data[user_idx, feat_j])
-                fixed_val = to_fixed(val, 11, 4)
+                fixed_val = 0 if np.isnan(val) else to_fixed(val, 11, 4)
                 f.write(f"{to_hex_16(fixed_val)}\n")
 
             f.write(f"{to_hex_16(label)}\n")
