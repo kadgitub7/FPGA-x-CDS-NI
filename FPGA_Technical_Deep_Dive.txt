@@ -191,7 +191,7 @@ Example — what happens at a clock edge:
     end
 
 This swaps a and b! Both assignments read the old values and write the new
-values simultaneously. If you used blocking (=), it would NOT swap:
+values simultaneously. If you used blocking(sequential assignment) (=), it would NOT swap:
 
     always @(posedge clk) begin
         a = b;      // a gets b's value immediately
