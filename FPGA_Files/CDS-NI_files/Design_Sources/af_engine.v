@@ -390,6 +390,7 @@ module af_engine(
 
                 S_DONE: begin
                     done <= 1'b1;
+                    state <= S_IDLE;
                 end
 
                 default: state <= S_IDLE;
