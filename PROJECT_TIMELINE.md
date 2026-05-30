@@ -160,6 +160,25 @@ The tree traversal module is made to go through all the possible nodes mentioned
 
 The sensor_interface module was made to be a transition point where the value of the user can be accurately read by the tree traversal as well as the af engine module. It helps to take the users data from the uart stream and organize it to be used in later sections.
 
+Created model_rom module which acts as a way to invoke parameterized modules which can create the BRAM memory elements from the .mem files. This allows us to take in the inputs that were generated from alg 1-3 without the use of libraries and inputs like in python.
+
+decision logic was another module created which is an add on to the tree traversal module. It simple consolidates the final decision by receiving it from the tree traversal module and sends the final complete signal. Once this is done result sender module can go through the process of sending only the bits that are needed in the python validation step: the final decision, the af, and the class that the person belonged to.
+
+The UART protocol modules where imported from NANDLAND source. This is because it is a standardized module which is not specific to the project. An understanding of what the module does it shown below:
+
+- This is the input and output connecting the FPGA to the computer. This is how we send over the users sensor data from the computer to the FPGA as well as send the final decision results to the computer. We use multiple states as well as different port settings which are set beforehand so that the computer and FPGA know how fast the bits will come. The set time is then used to determine after the high signal is set low when to capture bits and store them on their respective devices.
+
+When idle (no data), the wire sits at logic 1 (high). A byte is sent as a frame of 10 bits:
+
+IDLE ─────┐   ┌─┐ ┌─┐ ┌─┐ ┌─┐ ┌─┐ ┌─┐ ┌─┐ ┌─┐ ┌───── IDLE
+          │   │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │
+          └───┘ └─┘ └─┘ └─┘ └─┘ └─┘ └─┘ └─┘ └─┘
+          START  D0  D1  D2  D3  D4  D5  D6  D7  STOP
+Start bit (always 0): Signals "a byte is coming." The falling edge from idle (1) to start (0) is how the receiver detects a new byte.
+8 data bits (D0-D7): LSB first. To send 0x41 ('A' = 01000001), the wire carries: 1,0,0,0,0,0,1,0 (bit 0 first).
+Stop bit (always 1): Signals "byte is done." Returns the line to idle state.
+Each bit is held on the wire for exactly 1/baud_rate seconds. At 115200 baud, each bit lasts ~8.68 microseconds.
+
 
 
 
