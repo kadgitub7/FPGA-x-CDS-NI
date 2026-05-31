@@ -21,7 +21,7 @@ module af_engine(
     output reg [13:0] action_data_addr,
     output reg [11:0] prob_phf_addr,
     output reg [7:0]  prob_pgt1_addr,
-    output reg [16:0] hr_read_addr,
+    output reg [15:0] hr_read_addr,    // compact: node_idx*279 + feat_idx
     output reg [8:0]  feature_read_addr,
 
     output reg [1:0]  decision,
@@ -54,20 +54,21 @@ module af_engine(
         S_CAPTURE_PROBS  = 5'd9,   // capture P(h,f) and recip(P(h>1,f))
         S_LOAD_SENSOR    = 5'd10,  // issue feature_read_addr
         S_CAPTURE_SENSOR = 5'd11,  // capture user_feature_value
-        S_LOAD_RANGE     = 5'd12,  // issue hr_read_addr
-        S_CAPTURE_RANGE  = 5'd13,  // capture hr_bmin / hr_bmax
-        S_COMPUTE_MUL    = 5'd14,  // drive fixedMultiply inputs
-        S_WAIT_MUL       = 5'd15,  // wait 1 cycle for multiply result
-        S_COMPUTE_DIV    = 5'd16,  // drive fixedDivide inputs
-        S_WAIT_DIV       = 5'd17,  // wait 2 cycles (pipelined divider)
-        S_ACCUMULATE     = 5'd18,  // pulse af_accumulator
-        S_CHECK_RANGE    = 5'd19,  // drive rangeComparator inputs
-        S_EVAL_RANGE     = 5'd20,  // read rangeComparator outputs
-        S_NEXT_ACTION    = 5'd21,  // increment action pointer
-        S_NEXT_DISEASE   = 5'd22,  // increment disease_offset
-        S_THRESHOLD      = 5'd23,  // compare rw_real vs THRESHOLD_FP
-        S_ALARM          = 5'd24,  // latch UNHEALTHY result
-        S_DONE           = 5'd25;  // assert done
+        S_LOAD_RANGE     = 5'd12,  // issue compact addr to hr_index BRAM (level 1)
+        S_WAIT_RANGE     = 5'd13,  // wait for hr_index → pair_id (level 1 latency)
+        S_CAPTURE_RANGE  = 5'd14,  // capture hr_bmin / hr_bmax from hr_pairs (level 2)
+        S_COMPUTE_MUL    = 5'd15,  // drive fixedMultiply inputs
+        S_WAIT_MUL       = 5'd16,  // wait 1 cycle for multiply result
+        S_COMPUTE_DIV    = 5'd17,  // drive fixedDivide inputs
+        S_WAIT_DIV       = 5'd18,  // wait 2 cycles (pipelined divider)
+        S_ACCUMULATE     = 5'd19,  // pulse af_accumulator
+        S_CHECK_RANGE    = 5'd20,  // drive rangeComparator inputs
+        S_EVAL_RANGE     = 5'd21,  // read rangeComparator outputs
+        S_NEXT_ACTION    = 5'd22,  // increment action pointer
+        S_NEXT_DISEASE   = 5'd23,  // increment disease_offset
+        S_THRESHOLD      = 5'd24,  // compare rw_real vs THRESHOLD_FP
+        S_ALARM          = 5'd25,  // latch UNHEALTHY result
+        S_DONE           = 5'd26;  // assert done
 
     reg [4:0] state;
 
@@ -94,6 +95,15 @@ module af_engine(
 
 
     wire [11:0] node_times_12 = {1'b0, node_idx, 3'b0} + {2'b0, node_idx, 2'b0};
+
+    // Compact healthy-range address: node_idx * 279 + feature_idx
+    // 279 = 256 + 16 + 4 + 2 + 1 = (node_idx << 8) + (node_idx << 4) +
+    //       (node_idx << 2) + (node_idx << 1) + node_idx
+    wire [15:0] node_times_279 = {node_idx, 8'd0}       // node_idx * 256
+                                + {4'd0, node_idx, 4'd0} // node_idx * 16
+                                + {6'd0, node_idx, 2'd0} // node_idx * 4
+                                + {7'd0, node_idx, 1'd0} // node_idx * 2
+                                + {8'd0, node_idx};       // node_idx * 1
 
     // fixedMultiply
     reg  signed [15:0] mul_a, mul_b;
@@ -180,7 +190,7 @@ module af_engine(
             action_data_addr  <= 14'd0;
             prob_phf_addr     <= 12'd0;
             prob_pgt1_addr    <= 8'd0;
-            hr_read_addr      <= 17'd0;
+            hr_read_addr      <= 16'd0;
             feature_read_addr <= 9'd0;
 
             mul_a             <= 16'sd0;
@@ -286,8 +296,19 @@ module af_engine(
                     state <= S_LOAD_RANGE;
                 end
 
+                // Two-level healthy range lookup:
+                //   S_LOAD_RANGE:    put compact address on hr_read_addr
+                //   S_WAIT_RANGE:    wait 1 cycle (index BRAM returns pair_id)
+                //   S_CAPTURE_RANGE: pair BRAM returns {bmin, bmax}
                 S_LOAD_RANGE: begin
-                    hr_read_addr <= {node_idx, latched_feature_idx};
+                    hr_read_addr <= node_times_279 + {7'd0, latched_feature_idx};
+                    state <= S_WAIT_RANGE;
+                end
+
+                S_WAIT_RANGE: begin
+                    // Level 1 (index BRAM) is returning pair_id this cycle.
+                    // pair_id feeds directly into level 2 (pair BRAM) address.
+                    // Wait one more cycle for level 2 to produce {bmin, bmax}.
                     state <= S_CAPTURE_RANGE;
                 end
 

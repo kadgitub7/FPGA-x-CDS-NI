@@ -1,0 +1,25 @@
+// 10-Fold Cross Validation Manifest
+// Generated with rng_seed=42, n_users=452
+// Each fold_k/ directory contains:
+//   tree_topology.mem   - 3 words/node (feat, low, high)
+//   hr_index.mem        - healthy range index table (node*279+feat -> pair_id)
+//   hr_pairs.mem        - healthy range pair table (pair_id -> {bmin,bmax})
+//   action_hdr.mem      - header: (count, start_addr) per slot
+//   action_data.mem     - data: (feature_idx, r_j_h) per action
+//   prob_phf.mem        - P(h,f) per (node, disease)
+//   prob_pgt1.mem       - 1/P(h>1,f) reciprocal per node
+//   cds_params.vh       - Verilog constants header
+//   test_vectors.mem    - test user stimulus (features + ground truth)
+//   expected_output.mem - golden model predictions (FPGA must match)
+//   af_trace.mem        - step-by-step AF trace (RTL debug)
+//
+fold_0: test_users=46
+fold_1: test_users=46
+fold_2: test_users=46
+fold_3: test_users=46
+fold_4: test_users=46
+fold_5: test_users=46
+fold_6: test_users=46
+fold_7: test_users=46
+fold_8: test_users=46
+fold_9: test_users=38

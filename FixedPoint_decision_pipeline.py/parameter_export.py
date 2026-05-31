@@ -9,7 +9,8 @@ split into 6 BRAM-aligned .mem files matching the Verilog module interfaces:
   3. action_data.mem    — data section: flat (feature_idx, r_j_h) pairs
   4. prob_phf.mem       — P(h,f) per (node, disease), Q s1.15
   5. prob_pgt1.mem      — 1/P(h>1,f) reciprocal per node, Q s3.13
-  6. healthy_ranges.mem — direct-addressed 32-bit: {b_min, b_max} at addr {node, feat}
+  6a. hr_index.mem      — index table: node*279+feat -> pair_id (16 bits)
+  6b. hr_pairs.mem      — pair table: pair_id -> {b_min, b_max} (32 bits)
 
 Output format: Verilog $readmemh compatible (.mem files with hex values).
 
@@ -176,12 +177,27 @@ def export_tree_topology(
 
 
 # =====================================================================
-# Export 2: Healthy Ranges (direct-addressed, 32-bit wide)
+# Export 2: Healthy Ranges (two-level lookup: index table + pair table)
 # =====================================================================
+#
+# BRAM OPTIMIZATION: The original direct-addressed scheme used
+#   addr = {node_idx[7:0], feature_idx[8:0]} → 131,072 × 32-bit = 228 RAMB18s
+# which exceeds the Basys 3's 100 RAMB18 budget.
+#
+# Two-level lookup:
+#   1. hr_index BRAM: 59,985 × 12-bit  (~39 RAMB18s)
+#      Addressed by: node_idx × 279 + feature_idx  (compact, no gaps)
+#      Returns: a 12-bit pair_id
+#
+#   2. hr_pairs BRAM: ≤4096 × 32-bit   (~5 RAMB18s)
+#      Addressed by: pair_id
+#      Returns: {b_min[15:0], b_max[15:0]}
+#
+#   Total: ~44 RAMB18s (fits comfortably)
+#
+# Trade-off: adds 1 extra clock cycle of BRAM latency (2 reads instead of 1).
 
-HR_NODE_BITS: int = 8
-HR_FEAT_BITS: int = 9
-HR_ADDR_DEPTH: int = (1 << (HR_NODE_BITS + HR_FEAT_BITS))  # 131072
+HR_N_FEATURES: int = 279   # N_FEATURES from the dataset
 
 HR_SENTINEL_BMIN: int = 0x7FFF
 HR_SENTINEL_BMAX: int = 0x8000
@@ -192,18 +208,31 @@ def export_healthy_ranges(
     node_index: Dict[str, int],
     output_path: str,
 ) -> None:
-    """Export healthy ranges as direct-addressed 32-bit BRAM.
+    """Export healthy ranges as two-level lookup: hr_index.mem + hr_pairs.mem.
 
-    Address = {node_idx[7:0], feature_idx[8:0]}  (17 bits, 131072 entries)
-    Data    = {b_min[15:0], b_max[15:0]}          (32 bits per entry)
+    Level 1 — Index table (hr_index.mem):
+        Address = node_idx × 279 + feature_idx  (16 bits, depth = n_nodes × 279)
+        Data    = pair_id (12 bits)
+        pair_id 0 is reserved as the sentinel (invalid range).
 
-    af_engine drives hr_read_addr = {node_idx, latched_feature_idx} and
-    model_rom splits the 32-bit output:
-        hr_bmin = data[31:16],  hr_bmax = data[15:0]
+    Level 2 — Pair table (hr_pairs.mem):
+        Address = pair_id  (12 bits)
+        Data    = {b_min[15:0], b_max[15:0]}  (32 bits)
+        Entry 0 = sentinel {0x7FFF, 0x8000} (b_min > b_max → never triggers).
 
-    Empty entries use sentinel {0x7FFF, 0x8000} (b_min > b_max) so
-    rangeComparator sets invalid_range=true -> triggered=false.
+    af_engine issues compact address on cycle 1, gets pair_id back on cycle 2,
+    then pair_id goes into the pair BRAM, and {bmin, bmax} comes back on cycle 3.
     """
+    n_nodes = len(node_index)
+    compact_depth = n_nodes * HR_N_FEATURES  # 215 × 279 = 59,985
+
+    # --- Step 1: collect all (bmin, bmax) pairs and build a unique-pair table ---
+    # pair_id 0 is the sentinel
+    sentinel_pair = (HR_SENTINEL_BMIN, HR_SENTINEL_BMAX)
+    pair_to_id: Dict[Tuple[int, int], int] = {sentinel_pair: 0}
+    next_id = 1
+
+    # populated[compact_addr] = (b_min_fixed, b_max_fixed)
     populated: Dict[int, Tuple[int, int]] = {}
 
     for (nid, feat_idx), model in alg2_output.perceptor_index.items():
@@ -212,28 +241,64 @@ def export_healthy_ranges(
         n_idx = node_index[nid]
         b_min = to_fixed(model.healthy_range.b_min_healthy, 9, 4)
         b_max = to_fixed(model.healthy_range.b_max_healthy, 9, 4)
-        addr = (n_idx << HR_FEAT_BITS) | (feat_idx & ((1 << HR_FEAT_BITS) - 1))
-        populated[addr] = (b_min, b_max)
+        compact_addr = n_idx * HR_N_FEATURES + feat_idx
+        populated[compact_addr] = (b_min, b_max)
+
+        pair_key = (b_min & 0xFFFF, b_max & 0xFFFF)
+        if pair_key not in pair_to_id:
+            pair_to_id[pair_key] = next_id
+            next_id += 1
 
     n_populated = len(populated)
-    sentinel_word = f"{HR_SENTINEL_BMIN:04X}{HR_SENTINEL_BMAX:04X}"
+    n_unique_pairs = next_id  # includes sentinel at index 0
 
-    with open(output_path, 'w', encoding='utf-8') as f:
-        f.write(f"// Healthy Ranges — direct-addressed, 32-bit wide BRAM\n")
-        f.write(f"// Addr = {{node_idx[7:0], feature_idx[8:0]}} (17 bits)\n")
-        f.write(f"// Data = {{b_min[15:0], b_max[15:0]}} (32 bits)\n")
-        f.write(f"// Depth: {HR_ADDR_DEPTH}, Populated: {n_populated}\n")
-        f.write(f"// Sentinel: {sentinel_word} (b_min > b_max -> invalid_range)\n")
+    # --- Step 2: write hr_index.mem ---
+    out_dir = os.path.dirname(output_path)
+    index_path = os.path.join(out_dir, "hr_index.mem")
+    pairs_path = os.path.join(out_dir, "hr_pairs.mem")
+
+    index_addr_bits = (compact_depth - 1).bit_length()  # 16 bits
+    pair_id_bits = (n_unique_pairs - 1).bit_length()     # 12 bits
+
+    with open(index_path, 'w', encoding='utf-8') as f:
+        f.write(f"// Healthy Ranges — Index Table (level 1 of two-level lookup)\n")
+        f.write(f"// Addr = node_idx * {HR_N_FEATURES} + feature_idx  "
+                f"({index_addr_bits} bits)\n")
+        f.write(f"// Data = pair_id ({pair_id_bits} bits, stored as 16-bit)\n")
+        f.write(f"// Depth: {compact_depth} ({n_nodes} nodes x {HR_N_FEATURES} features)\n")
+        f.write(f"// Populated: {n_populated}, Unique pairs: {n_unique_pairs} "
+                f"(incl. sentinel at id=0)\n")
         f.write(f"//\n")
 
-        for addr in range(HR_ADDR_DEPTH):
+        for addr in range(compact_depth):
             if addr in populated:
                 b_min, b_max = populated[addr]
-                f.write(f"{b_min & 0xFFFF:04X}{b_max & 0xFFFF:04X}\n")
+                pair_key = (b_min & 0xFFFF, b_max & 0xFFFF)
+                pair_id = pair_to_id[pair_key]
             else:
-                f.write(f"{sentinel_word}\n")
+                pair_id = 0  # sentinel
+            f.write(f"{pair_id:04X}\n")
 
-    print(f"  Healthy ranges: {HR_ADDR_DEPTH} entries ({n_populated} populated) -> {output_path}")
+    print(f"  HR index table: {compact_depth} entries, "
+          f"{n_populated} populated -> {index_path}")
+
+    # --- Step 3: write hr_pairs.mem ---
+    # Invert pair_to_id to get id_to_pair
+    id_to_pair: Dict[int, Tuple[int, int]] = {v: k for k, v in pair_to_id.items()}
+
+    with open(pairs_path, 'w', encoding='utf-8') as f:
+        f.write(f"// Healthy Ranges — Pair Table (level 2 of two-level lookup)\n")
+        f.write(f"// Addr = pair_id ({pair_id_bits} bits)\n")
+        f.write(f"// Data = {{b_min[15:0], b_max[15:0]}} (32 bits)\n")
+        f.write(f"// Depth: {n_unique_pairs}\n")
+        f.write(f"// Entry 0 = sentinel {{0x7FFF, 0x8000}} (b_min > b_max)\n")
+        f.write(f"//\n")
+
+        for pid in range(n_unique_pairs):
+            b_min_u, b_max_u = id_to_pair[pid]
+            f.write(f"{b_min_u:04X}{b_max_u:04X}\n")
+
+    print(f"  HR pair table:  {n_unique_pairs} unique pairs -> {pairs_path}")
 
 
 # =====================================================================
@@ -546,7 +611,7 @@ def export_model_parameters(
                          os.path.join(output_dir, "tree_topology.mem"))
 
     export_healthy_ranges(alg2_output, node_index,
-                          os.path.join(output_dir, "healthy_ranges.mem"))
+                          os.path.join(output_dir, "hr_index.mem"))
 
     export_action_hdr(alg3_output, node_index,
                       os.path.join(output_dir, "action_hdr.mem"))
@@ -886,7 +951,8 @@ def export_all_folds(
         f.write(f"// Generated with rng_seed={rng_seed}, n_users={n_total}\n")
         f.write(f"// Each fold_k/ directory contains:\n")
         f.write(f"//   tree_topology.mem   - 3 words/node (feat, low, high)\n")
-        f.write(f"//   healthy_ranges.mem  - direct-addressed 32-bit {{bmin,bmax}}\n")
+        f.write(f"//   hr_index.mem        - healthy range index table (node*279+feat -> pair_id)\n")
+        f.write(f"//   hr_pairs.mem        - healthy range pair table (pair_id -> {{bmin,bmax}})\n")
         f.write(f"//   action_hdr.mem      - header: (count, start_addr) per slot\n")
         f.write(f"//   action_data.mem     - data: (feature_idx, r_j_h) per action\n")
         f.write(f"//   prob_phf.mem        - P(h,f) per (node, disease)\n")

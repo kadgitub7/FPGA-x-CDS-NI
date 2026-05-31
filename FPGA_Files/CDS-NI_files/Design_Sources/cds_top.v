@@ -110,7 +110,7 @@ module cds_top(
     wire [13:0]  af_action_data_addr;   // address → model_rom action data BRAM
     wire [11:0]  af_prob_phf_addr;      // address → model_rom P(h,f) BRAM
     wire [7:0]   af_prob_pgt1_addr;     // address → model_rom P(h>1,f) BRAM
-    wire [16:0]  af_hr_read_addr;       // address → model_rom healthy range BRAM
+    wire [15:0]  af_hr_read_addr;       // address → model_rom healthy range (compact)
     wire [8:0]   af_feature_addr;       // address → sensor read port (through MUX)
     wire [1:0]   af_decision;           // result: HEALTHY/UNHEALTHY/SCREENING
     wire signed [31:0] af_AF_out;       // result: AF after processing this node
