@@ -34,6 +34,7 @@ import numpy as np
 
 # --- Import project modules ---
 sys.path.insert(0, str(Path(__file__).parent.parent))
+sys.path.insert(0, str(Path(__file__).parent))  # so sibling imports (decision_pipeline_fixedPoint) work
 from CDS_NI_Algorithms.build_decision_tree import (
     DecisionTree, TreeNode, HEALTHY_CLASS, N_FEATURES,
     load_dataset, build_decision_tree,
@@ -44,7 +45,7 @@ from CDS_NI_Algorithms.action_normalRange import (
 from CDS_NI_Algorithms.action_pruning import Algorithm3Output, run_algorithm3
 
 # --- Import fixed-point functions and Algorithm 4 from the golden model ---
-from .decision_pipeline_fixedPoint import (
+from decision_pipeline_fixedPoint import (
     to_fixed, fixed_divide,
     run_algorithm4, HealthDecision, PredictionRecord,
 )
@@ -239,8 +240,8 @@ def export_healthy_ranges(
         if nid not in node_index:
             continue
         n_idx = node_index[nid]
-        b_min = to_fixed(model.healthy_range.b_min_healthy, 9, 4)
-        b_max = to_fixed(model.healthy_range.b_max_healthy, 9, 4)
+        b_min = to_fixed(model.healthy_range.b_min_healthy, 11, 4)
+        b_max = to_fixed(model.healthy_range.b_max_healthy, 11, 4)
         compact_addr = n_idx * HR_N_FEATURES + feat_idx
         populated[compact_addr] = (b_min, b_max)
 

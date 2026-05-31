@@ -555,11 +555,17 @@ module cds_top(
                         master_alarm_class <= af_alarm_class;
                         state              <= S_OUTPUT;
                     end
+                    else if (af_decision == DEC_HEALTHY) begin
+                        // HEALTHY from this node → stop early (matches Python
+                        // golden model's `level_decided = True; break`)
+                        master_decision <= DEC_HEALTHY;
+                        state           <= S_OUTPUT;
+                    end
                     else begin
-                        // Not unhealthy — but maybe screening?
+                        // Not unhealthy, not healthy — must be screening
                         if (af_decision == DEC_SCREENING)
                             master_decision <= DEC_SCREENING;
-                        // Either way, check if there are more nodes to process
+                        // Check if there are more nodes to process
                         state <= S_NEXT_NODE;
                     end
                 end

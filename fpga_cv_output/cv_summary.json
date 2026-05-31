@@ -3,10 +3,10 @@
   "n_total": 452,
   "n_folds": 10,
   "aggregate": {
-    "accuracy": 0.7168141592920354,
+    "accuracy": 0.7146017699115044,
     "sensitivity": 0.821256038647343,
-    "specificity": 0.6285714285714286,
-    "false_alarm_rate": 0.37142857142857144
+    "specificity": 0.6244897959183674,
+    "false_alarm_rate": 0.37551020408163266
   },
   "per_fold": [
     {
@@ -68,9 +68,9 @@
     {
       "fold": 8,
       "n_test": 46,
-      "accuracy": 0.8043478260869565,
+      "accuracy": 0.782608695652174,
       "sensitivity": 0.8235294117647058,
-      "specificity": 0.7931034482758621
+      "specificity": 0.7586206896551724
     },
     {
       "fold": 9,

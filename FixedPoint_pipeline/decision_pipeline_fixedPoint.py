@@ -358,7 +358,7 @@ def _predict_at_node(
 
             if np.isnan(V_j_raw):
                 continue
-            V_j = to_fixed(V_j_raw, 9, 4)
+            V_j = to_fixed(V_j_raw, 11, 4)
 
             pac_counter[0] += 1
             record.total_actions_applied += 1
@@ -369,8 +369,8 @@ def _predict_at_node(
             if model is None:
                 continue
 
-            b_min = to_fixed(model.healthy_range.b_min_healthy, 9, 4)
-            b_max = to_fixed(model.healthy_range.b_max_healthy, 9, 4)
+            b_min = to_fixed(model.healthy_range.b_min_healthy, 11, 4)
+            b_max = to_fixed(model.healthy_range.b_max_healthy, 11, 4)
 
             exec_entry = alg2_output.get_action(nid, j, h)
             r_j_h = exec_entry.action_weight if exec_entry else selected.action_weight
@@ -451,13 +451,13 @@ def run_algorithm4(
         initial_action = random.choice(valid_candidates)
         j_init = initial_action.feature_idx
         h_init = initial_action.disease_class
-        V_init = to_fixed(float(data[user_idx, j_init]), 9, 4)
+        V_init = to_fixed(float(data[user_idx, j_init]), 11, 4)
         record.initial_action_feat = j_init
 
         model = alg2_output.get_model(root_node.node_id, j_init)
         if model is not None:
-            b_min = to_fixed(model.healthy_range.b_min_healthy, 9, 4)
-            b_max = to_fixed(model.healthy_range.b_max_healthy, 9, 4)
+            b_min = to_fixed(model.healthy_range.b_min_healthy, 11, 4)
+            b_max = to_fixed(model.healthy_range.b_max_healthy, 11, 4)
 
             p_h_f = _compute_p_h_f(root_node, h_init)
             p_h_gt1_f = _compute_p_h_gt1_f(root_node)

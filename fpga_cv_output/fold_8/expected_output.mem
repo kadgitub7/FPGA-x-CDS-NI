@@ -80,11 +80,11 @@ B5EE
 0004
 0BC9
 0E0E
-// User 98 (label=1): decision=Healthy, correct=True, actions=58, AF=0x3FCAB5EE
-20FF
-003A
-3FCA
-B5EE
+// User 98 (label=1): decision=Unhealthy, correct=False, actions=29, AF=0x27997469
+4002
+001D
+2799
+7469
 // User 295 (label=2): decision=Healthy, correct=False, actions=61, AF=0x40000000
 00FF
 003D
