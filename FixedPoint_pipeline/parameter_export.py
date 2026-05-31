@@ -44,7 +44,7 @@ from CDS_NI_Algorithms.action_normalRange import (
 from CDS_NI_Algorithms.action_pruning import Algorithm3Output, run_algorithm3
 
 # --- Import fixed-point functions and Algorithm 4 from the golden model ---
-from decision_pipeline_fixedPoint import (
+from .decision_pipeline_fixedPoint import (
     to_fixed, fixed_divide,
     run_algorithm4, HealthDecision, PredictionRecord,
 )

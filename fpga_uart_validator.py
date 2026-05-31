@@ -64,13 +64,13 @@ from CDS_NI_Algorithms.action_normalRange import (
     Algorithm2Output, run_algorithm2, DEFAULT_N_BINS,
 )
 from CDS_NI_Algorithms.action_pruning import Algorithm3Output, run_algorithm3
-from decision_pipeline_fixedPoint import (
+from FixedPoint_pipeline.decision_pipeline_fixedPoint import (
     to_fixed, run_algorithm4, HealthDecision, PredictionRecord,
     Algorithm4Output, print_results,
 )
 
 # Import the parameter export functions for .mem file generation
-from parameter_export import (
+from FixedPoint_pipeline.parameter_export import (
     export_model_parameters, export_test_vectors,
     export_golden_predictions, export_af_trace,
 )
