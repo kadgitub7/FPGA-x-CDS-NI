@@ -239,7 +239,7 @@ def features_to_uart_bytes(data: np.ndarray, user_idx: int) -> bytes:
     for feat_j in range(N_FEAT):
         val = float(data[user_idx, feat_j])
         if np.isnan(val):
-            fixed_val = 0
+            fixed_val = 0x7FFF  # NaN sentinel — FPGA skips actions for this feature
         else:
             fixed_val = to_fixed(val, 11, 4)
         if fixed_val < 0:
