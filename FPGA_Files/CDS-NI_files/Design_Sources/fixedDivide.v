@@ -18,21 +18,38 @@ module fixedDivide(
     // numerator is in Q2.30 format, reciprocal_denominator is in Q3.13 format, so the product is in Q5.43 format
     // we will then use a right shift to bring it back to Q2.30 format by 13 bits (since we have 13 fractional bits in the reciprocal)
 
+    // Shifted result (combinational, uses previous cycle's full_product due to NBA)
+    wire signed [47:0] shifted = full_product >>> 13;
+
+    // Overflow detection: the 48-bit shifted result doesn't fit in 32-bit signed
+    // if bits [47:31] are NOT all copies of the sign bit (bit 31).
+    wire fits_in_32 = (shifted[47:31] == {17{shifted[31]}});
+
     always @(posedge clk) begin
         if (reset) begin
             full_product <= 48'sd0;
             quotient <= 32'sd0;
             result_valid <= 1'b0;
             valid_stage1 <= 1'b0;
-        end 
+        end
         else begin
             // stage 1, capture multiplication result
-            full_product <= (numerator * reciprocal_denominator); // Multiply numerator by reciprocal of denominator without worrying about losing information
-            valid_stage1 <= valid; // Register the valid signal for the next stage
+            full_product <= (numerator * reciprocal_denominator);
+            valid_stage1 <= valid;
 
-            // stage 2, use previous cycle's multiplication result
-            quotient <= valid_stage1 ? (full_product >>> 13) : 32'sd0; // If valid is 0 then quotient is 0
-            result_valid <= valid_stage1; // Output valid is the same as input valid
+            // stage 2, with saturation to prevent 32-bit overflow
+            if (valid_stage1) begin
+                if (fits_in_32)
+                    quotient <= shifted[31:0];
+                else if (shifted[47])          // negative overflow
+                    quotient <= 32'sh80000000;  // saturate to min
+                else                           // positive overflow
+                    quotient <= 32'sh7FFFFFFF;  // saturate to max
+            end
+            else begin
+                quotient <= 32'sd0;
+            end
+            result_valid <= valid_stage1;
         end
     end
 

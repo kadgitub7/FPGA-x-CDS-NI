@@ -3,46 +3,46 @@
   "n_total": 452,
   "n_folds": 10,
   "aggregate": {
-    "accuracy": 0.7146017699115044,
-    "sensitivity": 0.821256038647343,
-    "specificity": 0.6244897959183674,
-    "false_alarm_rate": 0.37551020408163266
+    "accuracy": 0.6902654867256637,
+    "sensitivity": 0.8357487922705314,
+    "specificity": 0.5673469387755102,
+    "false_alarm_rate": 0.4326530612244898
   },
   "per_fold": [
     {
       "fold": 0,
       "n_test": 46,
-      "accuracy": 0.6086956521739131,
+      "accuracy": 0.5869565217391305,
       "sensitivity": 0.7272727272727273,
-      "specificity": 0.5
+      "specificity": 0.4583333333333333
     },
     {
       "fold": 1,
       "n_test": 46,
-      "accuracy": 0.717391304347826,
+      "accuracy": 0.6956521739130435,
       "sensitivity": 0.7916666666666666,
-      "specificity": 0.6363636363636364
+      "specificity": 0.5909090909090909
     },
     {
       "fold": 2,
       "n_test": 46,
-      "accuracy": 0.717391304347826,
-      "sensitivity": 0.9473684210526315,
+      "accuracy": 0.7391304347826086,
+      "sensitivity": 1.0,
       "specificity": 0.5555555555555556
     },
     {
       "fold": 3,
       "n_test": 46,
-      "accuracy": 0.8043478260869565,
+      "accuracy": 0.782608695652174,
       "sensitivity": 0.9523809523809523,
-      "specificity": 0.68
+      "specificity": 0.64
     },
     {
       "fold": 4,
       "n_test": 46,
-      "accuracy": 0.7608695652173914,
+      "accuracy": 0.6956521739130435,
       "sensitivity": 0.9,
-      "specificity": 0.6538461538461539
+      "specificity": 0.5384615384615384
     },
     {
       "fold": 5,
@@ -54,30 +54,30 @@
     {
       "fold": 6,
       "n_test": 46,
-      "accuracy": 0.6956521739130435,
+      "accuracy": 0.6521739130434783,
       "sensitivity": 0.75,
-      "specificity": 0.6363636363636364
+      "specificity": 0.5454545454545454
     },
     {
       "fold": 7,
       "n_test": 46,
-      "accuracy": 0.6304347826086957,
-      "sensitivity": 0.5882352941176471,
-      "specificity": 0.6551724137931034
+      "accuracy": 0.5869565217391305,
+      "sensitivity": 0.6470588235294118,
+      "specificity": 0.5517241379310345
     },
     {
       "fold": 8,
       "n_test": 46,
-      "accuracy": 0.782608695652174,
+      "accuracy": 0.7391304347826086,
       "sensitivity": 0.8235294117647058,
-      "specificity": 0.7586206896551724
+      "specificity": 0.6896551724137931
     },
     {
       "fold": 9,
       "n_test": 38,
       "accuracy": 0.7631578947368421,
-      "sensitivity": 0.8421052631578947,
-      "specificity": 0.6842105263157895
+      "sensitivity": 0.8947368421052632,
+      "specificity": 0.631578947368421
     }
   ]
 }

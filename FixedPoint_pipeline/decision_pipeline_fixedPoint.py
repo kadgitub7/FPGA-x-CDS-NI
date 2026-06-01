@@ -23,7 +23,7 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from enum import Enum, auto
 from pathlib import Path
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Dict, List, Optional, Tuple
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -203,26 +203,40 @@ def _compute_p_h_f(node: TreeNode, disease_h: int) -> int:
     return fixed_divide(node.health_dist.get(disease_h, 0), node.n_users, 15)
 
 
-def _compute_p_h_gt1_f(node: TreeNode) -> int:
-    """Returns P(h>1, node) as Q s1.15 fixed-point integer.
-    Returns 1 (one LSB = 1/32768) when zero to prevent divide-by-zero."""
-    if node.n_users == 0:
-        return 1
+def _compute_pgt1_recip(node: TreeNode) -> int:
+    """Returns 1/P(h>1, node) as Q s3.13, matching FPGA's prob_pgt1 BRAM.
+
+    The FPGA stores a pre-computed reciprocal in Q s3.13 format and uses
+    fixedDivide.v (multiply-by-reciprocal, >> 13) instead of true division.
+    The golden model must use the same reciprocal to match FPGA precision."""
+    n_users = node.n_users
     n_diseased = node.n_diseased
-    if n_diseased == 0:
-        return 1    # one LSB prevents divide-by-zero downstream
-    return fixed_divide(n_diseased, node.n_users, 15)
+    if n_users == 0 or n_diseased == 0:
+        p_gt1_float = 1.0
+    else:
+        p_gt1_float = n_diseased / n_users
+    return to_fixed(1.0 / p_gt1_float, 3, 13)
 
 
-def _compute_AF_increment(p_h_f: int, r_j_h: int, p_h_gt1_f: int) -> int:
-    """Compute delta_AF = (p_h_f * r_j_h) / p_h_gt1_f in fixed-point.
-    p_h_f, r_j_h: Q s1.15.  p_h_gt1_f: Q s1.15.
-    numerator = p_h_f * r_j_h -> Q s2.30 (no shift, 15+15=30 frac bits).
-    fixed_divide(Q s2.30, Q s1.15, 15) -> result has (30+15)-15 = 30 frac bits = Q s2.30."""
-    if p_h_gt1_f == 0:
+def _compute_AF_increment(p_h_f: int, r_j_h: int, pgt1_recip: int) -> int:
+    """Compute delta_AF using FPGA-matching reciprocal multiply.
+
+    Matches fixedDivide.v:
+      numerator = p_h_f * r_j_h           (Q s1.15 × Q s1.15 = Q s2.30)
+      full_product = numerator * pgt1_recip (Q s2.30 × Q s3.13 = Q s5.43)
+      delta_AF = full_product >> 13         (Q s5.43 >> 13 = Q s2.30)
+
+    Saturation: the shifted result is clamped to 32-bit signed range
+    to match the FPGA's fixedDivide.v output register width.
+    """
+    if pgt1_recip == 0:
         return 0
-    numerator = p_h_f * r_j_h   # Q s1.15 × Q s1.15 = Q s2.30
-    return max(0, fixed_divide(numerator, p_h_gt1_f, 15))
+    numerator = p_h_f * r_j_h        # Q s1.15 × Q s1.15 = Q s2.30
+    full_product = numerator * pgt1_recip  # Q s2.30 × Q s3.13 = Q s5.43
+    delta_AF = full_product >> 13     # >> 13 → Q s2.30 (may exceed 32 bits)
+    # Saturate to 32-bit signed range (matching FPGA fixedDivide.v)
+    delta_AF = max(-(1 << 31), min((1 << 31) - 1, delta_AF))
+    return max(0, delta_AF)
 
 
 def _update_AF(AF_real: int, delta_AF: int) -> int:
@@ -266,12 +280,9 @@ def _find_all_applicable_nodes(
 
 def _get_sorted_disease_actions(
     node_id: str, disease_h: int, alg3_output: Algorithm3Output,
-    consumed: Optional[Set[Tuple[int, int]]] = None,
 ) -> List[ExecutiveActionEntry]:
     acts = alg3_output.retained_for_node_disease(node_id, disease_h)
     out = [a for a in acts if a.action_weight > 0.0]
-    if consumed:
-        out = [a for a in out if (a.feature_idx, disease_h) not in consumed]
     return out
 
 
@@ -289,13 +300,13 @@ def _rl_select_best_action(
         return None
 
     p_h_f = _compute_p_h_f(node, disease_h)       # Q s1.15
-    p_h_gt1_f = _compute_p_h_gt1_f(node)           # Q s1.15
+    pgt1_recip = _compute_pgt1_recip(node)         # Q s3.13 (reciprocal)
     best_action, best_rw = None, MAX_INT_Q2_30     # "infinity" in Q s2.30
 
     for action in candidates:
         # Convert action weight from float to Q s1.15 each time it's accessed
         r_j_h_fixed = to_fixed(action.action_weight, 1, 15)
-        AF_sim = _compute_AF_increment(p_h_f, r_j_h_fixed, p_h_gt1_f)  # Q s2.30
+        AF_sim = _compute_AF_increment(p_h_f, r_j_h_fixed, pgt1_recip)  # Q s2.30
         rw_sim = ONE_Q2_30 - (AF_sim + AF_real)    # Q s2.30
         if rw_sim < best_rw:
             best_rw = rw_sim
@@ -303,7 +314,7 @@ def _rl_select_best_action(
 
         if record is not None:
             record.af_trace.append(FPGATraceStep(
-                p_h_f=p_h_f, p_h_gt1_f=p_h_gt1_f,
+                p_h_f=p_h_f, p_h_gt1_f=pgt1_recip,
                 r_j_h=r_j_h_fixed,
                 numerator=p_h_f * r_j_h_fixed,    # Q s2.30
                 AF_sim=AF_sim, rw_sim=rw_sim, best_rw=best_rw,
@@ -327,19 +338,13 @@ def _predict_at_node(
     AF_real: int,
     pac_counter: List[int],
     record: PredictionRecord,
-    consumed: Optional[Set[Tuple[int, int]]] = None,
-    init_action_h: Optional[int] = None,
 ) -> Tuple[HealthDecision, int, Optional[int]]:
     nid = node.node_id
-    p_h_gt1_f = _compute_p_h_gt1_f(node)
+    pgt1_recip = _compute_pgt1_recip(node)  # Q s3.13 reciprocal (matches FPGA BRAM)
 
     for h in disease_classes:
         p_h_f = _compute_p_h_f(node, h)
-        sorted_actions = _get_sorted_disease_actions(nid, h, alg3_output, consumed)
-
-        # Exclude init action from its disease class to prevent double-counting
-        if init_action_h is not None and h == init_action_h and record.initial_action_feat is not None:
-            sorted_actions = [a for a in sorted_actions if a.feature_idx != record.initial_action_feat]
+        sorted_actions = _get_sorted_disease_actions(nid, h, alg3_output)
 
         if not sorted_actions:
             continue
@@ -362,8 +367,6 @@ def _predict_at_node(
 
             pac_counter[0] += 1
             record.total_actions_applied += 1
-            if consumed is not None:
-                consumed.add((j, h))
 
             model = alg2_output.get_model(nid, j)
             if model is None:
@@ -377,13 +380,13 @@ def _predict_at_node(
             r_j_h = to_fixed(r_j_h, 1, 15)
 
             numer = p_h_f * r_j_h
-            delta_AF = _compute_AF_increment(p_h_f, r_j_h, p_h_gt1_f)
+            delta_AF = _compute_AF_increment(p_h_f, r_j_h, pgt1_recip)
             AF_real = _update_AF(AF_real, delta_AF)
             rw_real = ONE_Q2_30 - AF_real
 
             record.af_trace.append(FPGATraceStep(
                 raw_value=V_j, b_min=b_min, b_max=b_max,
-                r_j_h=r_j_h, p_h_f=p_h_f, p_h_gt1_f=p_h_gt1_f,
+                r_j_h=r_j_h, p_h_f=p_h_f, p_h_gt1_f=pgt1_recip,
                 numerator=numer, delta_AF=delta_AF,
                 AF_real=AF_real, rw_real=rw_real,
                 feature_idx=j, disease_class=h, node_id=nid,
@@ -427,66 +430,15 @@ def run_algorithm4(
     alg3_output: Algorithm3Output,
     rng_seed: Optional[int] = None,
 ) -> PredictionRecord:
-    if rng_seed is not None:
-        random.seed(rng_seed)
-        np.random.seed(rng_seed)
+    # Note: rng_seed accepted for API compatibility but no longer used
+    # (FPGA processes actions deterministically in BRAM order, no random
+    #  initial action or consumed-set tracking)
 
     true_label = int(labels[user_idx])
     record = PredictionRecord(user_global_idx=user_idx, true_label=true_label)
 
     root_node = tree.root
     AF_real = 0    # Q s2.30: zero
-    pac_counter = [0]
-    consumed = set()
-    h_init = -1
-
-    # Initialization: random action from root
-    root_actions = alg3_output.retained_for_node(root_node.node_id)
-    valid_candidates = [
-        a for a in root_actions
-        if not np.isnan(float(data[user_idx, a.feature_idx]))
-    ]
-
-    if valid_candidates:
-        initial_action = random.choice(valid_candidates)
-        j_init = initial_action.feature_idx
-        h_init = initial_action.disease_class
-        V_init = to_fixed(float(data[user_idx, j_init]), 11, 4)
-        record.initial_action_feat = j_init
-
-        model = alg2_output.get_model(root_node.node_id, j_init)
-        if model is not None:
-            b_min = to_fixed(model.healthy_range.b_min_healthy, 11, 4)
-            b_max = to_fixed(model.healthy_range.b_max_healthy, 11, 4)
-
-            p_h_f = _compute_p_h_f(root_node, h_init)
-            p_h_gt1_f = _compute_p_h_gt1_f(root_node)
-            r_j_h_init = to_fixed(initial_action.action_weight, 1, 15)
-            numer_init = p_h_f * r_j_h_init
-            delta_AF = _compute_AF_increment(p_h_f, r_j_h_init, p_h_gt1_f)
-            AF_real = _update_AF(AF_real, delta_AF)
-            rw_real = ONE_Q2_30 - AF_real
-
-            record.af_trace.append(FPGATraceStep(
-                raw_value=V_init, b_min=b_min, b_max=b_max,
-                r_j_h=r_j_h_init, p_h_f=p_h_f, p_h_gt1_f=p_h_gt1_f,
-                numerator=numer_init, delta_AF=delta_AF,
-                AF_real=AF_real, rw_real=rw_real,
-                feature_idx=j_init, disease_class=h_init,
-                node_id=root_node.node_id, step_type="pac",
-            ))
-
-            pac_counter[0] += 1
-            record.total_pac_count += 1
-            record.total_actions_applied += 1
-            consumed.add((j_init, h_init))
-
-            if _is_outside_healthy_range(V_init, b_min, b_max):
-                record.decision = HealthDecision.UNHEALTHY
-                record.is_correct = (true_label != HEALTHY_CLASS)
-                record.alarm_class = h_init
-                record.alarm_feature_idx = j_init
-                return record
 
     all_disease_classes = sorted(ALL_DISEASE_CLASSES)
     decision = HealthDecision.UNKNOWN
@@ -504,17 +456,15 @@ def run_algorithm4(
         level_decided = False
 
         for active_node in applicable_nodes:
-            node_diseases = sorted(
-                h for h in all_disease_classes if active_node.health_dist.get(h, 0) > 0
-            )
-            if not node_diseases:
-                continue
+            # Process ALL 12 disease classes, matching FPGA's af_engine
+            # which iterates disease_offset 0-11 unconditionally.
+            # (Diseases with no actions get action_count=0 → skipped in FPGA)
+            node_diseases = list(all_disease_classes)
 
             pac_counter = [0]
             decision, AF_real, alarm_class = _predict_at_node(
                 user_idx, active_node, node_diseases, data,
                 alg2_output, alg3_output, AF_real, pac_counter, record,
-                consumed, h_init,
             )
             record.total_pac_count += pac_counter[0]
 

@@ -10,233 +10,233 @@
 //
 // User count:
 002E
-// User 320 (label=5): decision=Unhealthy, correct=True, actions=17, AF=0x182007AA
+// User 320 (label=5): decision=Unhealthy, correct=True, actions=16, AF=0x17C65779
 6002
-0011
-1820
-07AA
-// User 141 (label=5): decision=Unhealthy, correct=True, actions=17, AF=0x182007AA
+0010
+17C6
+5779
+// User 141 (label=5): decision=Unhealthy, correct=True, actions=16, AF=0x17C65779
 6002
+0010
+17C6
+5779
+// User 293 (label=10): decision=Unhealthy, correct=True, actions=13, AF=0x1553DBCA
+6002
+000D
+1553
+DBCA
+// User 322 (label=2): decision=Unhealthy, correct=True, actions=1, AF=0x02CC100D
+6002
+0001
+02CC
+100D
+// User 86 (label=2): decision=Unhealthy, correct=True, actions=1, AF=0x02CC100D
+6002
+0001
+02CC
+100D
+// User 342 (label=1): decision=Healthy, correct=True, actions=79, AF=0x40000000
+20FF
+004F
+4000
+0000
+// User 277 (label=2): decision=Unhealthy, correct=True, actions=9, AF=0x10C82F5B
+6002
+0009
+10C8
+2F5B
+// User 391 (label=1): decision=Unhealthy, correct=False, actions=1, AF=0x02CC100D
+4002
+0001
+02CC
+100D
+// User 30 (label=6): decision=Unhealthy, correct=True, actions=16, AF=0x17C65779
+6002
+0010
+17C6
+5779
+// User 115 (label=1): decision=Healthy, correct=True, actions=77, AF=0x40000000
+20FF
+004D
+4000
+0000
+// User 132 (label=1): decision=Healthy, correct=True, actions=77, AF=0x40000000
+20FF
+004D
+4000
+0000
+// User 230 (label=1): decision=Healthy, correct=True, actions=79, AF=0x40000000
+20FF
+004F
+4000
+0000
+// User 317 (label=1): decision=Healthy, correct=True, actions=79, AF=0x40000000
+20FF
+004F
+4000
+0000
+// User 95 (label=1): decision=Unhealthy, correct=False, actions=40, AF=0x24024782
+4002
+0028
+2402
+4782
+// User 345 (label=1): decision=Healthy, correct=True, actions=77, AF=0x40000000
+20FF
+004D
+4000
+0000
+// User 171 (label=1): decision=Unhealthy, correct=False, actions=22, AF=0x1BF8261D
+4002
+0016
+1BF8
+261D
+// User 102 (label=1): decision=Unhealthy, correct=False, actions=2, AF=0x04E50FDA
+4002
+0002
+04E5
+0FDA
+// User 407 (label=1): decision=Unhealthy, correct=False, actions=12, AF=0x14474FA7
+4002
+000C
+1447
+4FA7
+// User 182 (label=1): decision=Unhealthy, correct=False, actions=17, AF=0x18794F3F
+4002
 0011
-1820
-07AA
-// User 293 (label=10): decision=Unhealthy, correct=True, actions=14, AF=0x15AD86AD
+1879
+4F3F
+// User 394 (label=1): decision=Unhealthy, correct=False, actions=15, AF=0x17135FB3
+4002
+000F
+1713
+5FB3
+// User 398 (label=3): decision=Unhealthy, correct=True, actions=7, AF=0x0DFC1F4F
+6002
+0007
+0DFC
+1F4F
+// User 368 (label=2): decision=Unhealthy, correct=True, actions=1, AF=0x02CC100D
+6002
+0001
+02CC
+100D
+// User 405 (label=1): decision=Healthy, correct=True, actions=77, AF=0x40000000
+20FF
+004D
+4000
+0000
+// User 381 (label=3): decision=Unhealthy, correct=True, actions=13, AF=0x1553DBCA
+6002
+000D
+1553
+DBCA
+// User 237 (label=2): decision=Unhealthy, correct=True, actions=4, AF=0x08BD9391
+6002
+0004
+08BD
+9391
+// User 334 (label=10): decision=Unhealthy, correct=True, actions=14, AF=0x17135FB4
 6002
 000E
-15AD
-86AD
-// User 322 (label=2): decision=Unhealthy, correct=True, actions=2, AF=0x032592C3
+1713
+5FB4
+// User 429 (label=16): decision=Unhealthy, correct=True, actions=7, AF=0x0DFC1F4F
 6002
-0002
-0325
-92C3
-// User 86 (label=2): decision=Unhealthy, correct=True, actions=2, AF=0x032592C3
+0007
+0DFC
+1F4F
+// User 328 (label=1): decision=Unhealthy, correct=False, actions=7, AF=0x0DFC1F4F
+4002
+0007
+0DFC
+1F4F
+// User 84 (label=6): decision=Unhealthy, correct=True, actions=16, AF=0x17C65779
 6002
-0002
-0325
-92C3
-// User 342 (label=1): decision=Healthy, correct=True, actions=66, AF=0x40000000
-20FF
-0042
-4000
-0000
-// User 277 (label=2): decision=Unhealthy, correct=True, actions=10, AF=0x1121D063
-6002
-000A
-1121
-D063
-// User 391 (label=1): decision=Unhealthy, correct=False, actions=2, AF=0x032592C3
-4002
-0002
-0325
-92C3
-// User 30 (label=6): decision=Unhealthy, correct=True, actions=17, AF=0x182007AA
-6002
-0011
-1820
-07AA
-// User 115 (label=1): decision=Healthy, correct=True, actions=63, AF=0x40000000
-20FF
-003F
-4000
-0000
-// User 132 (label=1): decision=Healthy, correct=True, actions=63, AF=0x40000000
-20FF
-003F
-4000
-0000
-// User 230 (label=1): decision=Healthy, correct=True, actions=67, AF=0x40000000
-20FF
-0043
-4000
-0000
-// User 317 (label=1): decision=Healthy, correct=True, actions=67, AF=0x40000000
-20FF
-0043
-4000
-0000
-// User 95 (label=1): decision=Unhealthy, correct=False, actions=41, AF=0x245C1239
-4002
-0029
-245C
-1239
-// User 345 (label=1): decision=Healthy, correct=True, actions=63, AF=0x40000000
-20FF
-003F
-4000
-0000
-// User 171 (label=1): decision=Unhealthy, correct=False, actions=23, AF=0x1C51DF66
-4002
-0017
-1C51
-DF66
-// User 102 (label=1): decision=Unhealthy, correct=False, actions=1, AF=0x00597CA5
-4002
-0001
-0059
-7CA5
-// User 407 (label=1): decision=Unhealthy, correct=False, actions=13, AF=0x14A0F844
-4002
-000D
-14A0
-F844
-// User 182 (label=1): decision=Unhealthy, correct=False, actions=18, AF=0x18D300F4
-4002
-0012
-18D3
-00F4
-// User 394 (label=1): decision=Unhealthy, correct=False, actions=16, AF=0x176D0E60
-4002
 0010
-176D
-0E60
-// User 398 (label=3): decision=Unhealthy, correct=True, actions=8, AF=0x0E55BA45
+17C6
+5779
+// User 243 (label=15): decision=Unhealthy, correct=True, actions=16, AF=0x17C65779
 6002
-0008
-0E55
-BA45
-// User 368 (label=2): decision=Unhealthy, correct=True, actions=2, AF=0x032592C3
-6002
-0002
-0325
-92C3
-// User 405 (label=1): decision=Healthy, correct=True, actions=63, AF=0x40000000
-20FF
-003F
-4000
-0000
-// User 381 (label=3): decision=Unhealthy, correct=True, actions=1, AF=0x00597CA5
-6002
-0001
-0059
-7CA5
-// User 237 (label=2): decision=Unhealthy, correct=True, actions=5, AF=0x09172329
-6002
-0005
-0917
-2329
-// User 334 (label=10): decision=Unhealthy, correct=True, actions=1, AF=0x00597CA5
-6002
-0001
-0059
-7CA5
-// User 429 (label=16): decision=Unhealthy, correct=True, actions=8, AF=0x0E55BA45
-6002
-0008
-0E55
-BA45
-// User 328 (label=1): decision=Unhealthy, correct=False, actions=8, AF=0x0E55BA45
-4002
-0008
-0E55
-BA45
-// User 84 (label=6): decision=Unhealthy, correct=True, actions=17, AF=0x182007AA
-6002
-0011
-1820
-07AA
-// User 243 (label=15): decision=Unhealthy, correct=True, actions=17, AF=0x182007AA
-6002
-0011
-1820
-07AA
-// User 65 (label=1): decision=Healthy, correct=True, actions=63, AF=0x40000000
-20FF
-003F
-4000
-0000
-// User 64 (label=1): decision=Unhealthy, correct=False, actions=21, AF=0x1AEBECD2
-4002
-0015
-1AEB
-ECD2
-// User 380 (label=16): decision=Unhealthy, correct=True, actions=3, AF=0x053E971C
-6002
-0003
-053E
-971C
-// User 248 (label=4): decision=Unhealthy, correct=True, actions=12, AF=0x139469DB
-6002
-000C
-1394
-69DB
-// User 43 (label=1): decision=Unhealthy, correct=False, actions=2, AF=0x032592C3
-4002
-0002
-0325
-92C3
-// User 375 (label=2): decision=Healthy, correct=False, actions=66, AF=0x40000000
-00FF
-0042
-4000
-0000
-// User 123 (label=1): decision=Unhealthy, correct=False, actions=63, AF=0x40000000
-4002
-003F
-4000
-0000
-// User 29 (label=2): decision=Unhealthy, correct=True, actions=3, AF=0x053E971C
-6002
-0003
-053E
-971C
-// User 122 (label=1): decision=Healthy, correct=True, actions=67, AF=0x40000000
-20FF
-0043
-4000
-0000
-// User 157 (label=2): decision=Unhealthy, correct=True, actions=57, AF=0x3EE84D33
-6002
-0039
-3EE8
-4D33
-// User 318 (label=1): decision=Healthy, correct=True, actions=67, AF=0x40000000
-20FF
-0043
-4000
-0000
-// User 294 (label=2): decision=Unhealthy, correct=True, actions=2, AF=0x032592C3
-6002
-0002
-0325
-92C3
-// User 9 (label=10): decision=Healthy, correct=False, actions=67, AF=0x40000000
-00FF
-0043
-4000
-0000
-// User 250 (label=10): decision=Healthy, correct=False, actions=63, AF=0x40000000
-00FF
-003F
-4000
-0000
-// User 165 (label=1): decision=Unhealthy, correct=False, actions=16, AF=0x176D0E60
-4002
 0010
-176D
-0E60
-// User 0 (label=8): decision=Unhealthy, correct=True, actions=46, AF=0x2A4D8553
+17C6
+5779
+// User 65 (label=1): decision=Healthy, correct=True, actions=77, AF=0x40000000
+20FF
+004D
+4000
+0000
+// User 64 (label=1): decision=Unhealthy, correct=False, actions=20, AF=0x1A923691
+4002
+0014
+1A92
+3691
+// User 380 (label=16): decision=Unhealthy, correct=True, actions=2, AF=0x04E50FDA
+6002
+0002
+04E5
+0FDA
+// User 248 (label=4): decision=Unhealthy, correct=True, actions=11, AF=0x133AC384
+6002
+000B
+133A
+C384
+// User 43 (label=1): decision=Unhealthy, correct=False, actions=1, AF=0x02CC100D
+4002
+0001
+02CC
+100D
+// User 375 (label=2): decision=Healthy, correct=False, actions=79, AF=0x40000000
+00FF
+004F
+4000
+0000
+// User 123 (label=1): decision=Unhealthy, correct=False, actions=47, AF=0x2F943B26
+4002
+002F
+2F94
+3B26
+// User 29 (label=2): decision=Unhealthy, correct=True, actions=2, AF=0x04E50FDA
+6002
+0002
+04E5
+0FDA
+// User 122 (label=1): decision=Healthy, correct=True, actions=79, AF=0x40000000
+20FF
+004F
+4000
+0000
+// User 157 (label=2): decision=Healthy, correct=False, actions=79, AF=0x40000000
+00FF
+004F
+4000
+0000
+// User 318 (label=1): decision=Healthy, correct=True, actions=79, AF=0x40000000
+20FF
+004F
+4000
+0000
+// User 294 (label=2): decision=Unhealthy, correct=True, actions=1, AF=0x02CC100D
+6002
+0001
+02CC
+100D
+// User 9 (label=10): decision=Unhealthy, correct=True, actions=74, AF=0x40000000
+6002
+004A
+4000
+0000
+// User 250 (label=10): decision=Healthy, correct=False, actions=77, AF=0x40000000
+00FF
+004D
+4000
+0000
+// User 165 (label=1): decision=Unhealthy, correct=False, actions=15, AF=0x17135FB3
+4002
+000F
+1713
+5FB3
+// User 0 (label=8): decision=Unhealthy, correct=True, actions=46, AF=0x2A4D299C
 6005
 002E
 2A4D
-8553
+299C

@@ -387,9 +387,9 @@ module cds_top(
     // They can't run simultaneously. So: traverse first (buffer matches),
     // then process each match through af_engine.
     // ========================================================================
-    reg [7:0] node_buffer [0:31];  // stores up to 32 matched node indices
-    reg [4:0] node_count;          // how many nodes matched
-    reg [4:0] node_process_idx;    // which buffered node we're processing now
+    reg [7:0] node_buffer [0:127]; // stores up to 128 matched node indices
+    reg [6:0] node_count;          // how many nodes matched (7-bit, max 127)
+    reg [6:0] node_process_idx;    // which buffered node we're processing now
 
     // ========================================================================
     // AF CARRY-FORWARD
@@ -412,8 +412,8 @@ module cds_top(
             af_start           <= 1'b0;
             trigger_decision   <= 1'b0;
             sensor_mux_sel     <= 1'b0;
-            node_count         <= 5'd0;
-            node_process_idx   <= 5'd0;
+            node_count         <= 7'd0;
+            node_process_idx   <= 7'd0;
             running_AF         <= 32'sd0;
             af_node_idx        <= 8'd0;
             af_init_value      <= 32'sd0;
@@ -444,7 +444,7 @@ module cds_top(
                 S_IDLE: begin
                     if (sensor_load_complete) begin
                         // Reset everything for a fresh prediction
-                        node_count         <= 5'd0;           // empty the buffer
+                        node_count         <= 7'd0;           // empty the buffer
                         master_decision    <= DEC_HEALTHY;     // innocent until proven guilty
                         master_alarm_class <= 4'd0;
                         running_AF         <= 32'sd0;          // AF starts at zero
@@ -480,7 +480,7 @@ module cds_top(
                 S_SCAN_TREE: begin
                     if (tree_node_valid) begin
                         node_buffer[node_count] <= tree_active_node;
-                        node_count              <= node_count + 5'd1;
+                        node_count              <= node_count + 7'd1;
                     end
                     if (tree_all_done) begin
                         state <= S_CHECK_NODES;
@@ -493,8 +493,8 @@ module cds_top(
                 // Switch sensor_mux_sel so af_engine can read features.
                 // ============================================================
                 S_CHECK_NODES: begin
-                    if (node_count > 5'd0) begin
-                        node_process_idx <= 5'd0;    // start with first match
+                    if (node_count > 7'd0) begin
+                        node_process_idx <= 7'd0;    // start with first match
                         sensor_mux_sel   <= 1'b1;    // af_engine controls sensor
                         state            <= S_START_AF;
                     end
@@ -579,8 +579,8 @@ module cds_top(
                 // this state if node_count >= 1 (checked in S_CHECK_NODES).
                 // ============================================================
                 S_NEXT_NODE: begin
-                    if (node_process_idx < node_count - 5'd1) begin
-                        node_process_idx <= node_process_idx + 5'd1;
+                    if (node_process_idx < node_count - 7'd1) begin
+                        node_process_idx <= node_process_idx + 7'd1;
                         state            <= S_START_AF;
                     end
                     else begin
