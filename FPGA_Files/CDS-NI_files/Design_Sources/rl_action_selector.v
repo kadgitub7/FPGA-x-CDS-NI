@@ -4,7 +4,7 @@ module rl_action_selector(
     input [13:0] action_data_start_addr,
     input signed [31:0] AF_real, // Q s2.30
     input signed [15:0] p_h_f,     // Q s1.15
-    input signed [15:0] pgt1_recip, // Q s3.13 — reciprocal from prob_pgt1 BRAM
+    input signed [15:0] pgt1_recip, // Q s3.13 - reciprocal from prob_pgt1 BRAM
     input wire [15:0] action_data_out,
     
     output reg [13:0] best_action_addr,

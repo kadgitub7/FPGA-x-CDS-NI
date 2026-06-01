@@ -26,7 +26,7 @@ module model_rom(
 );
 
     // ================================================================
-    // Healthy Ranges — two-level lookup
+    // Healthy Ranges - two-level lookup
     // ================================================================
     // Level 1: hr_index BRAM  (59985 x 16-bit -> pair_id)
     // Level 2: hr_pairs BRAM  (≤4096 x 32-bit -> {bmin, bmax})
@@ -43,13 +43,13 @@ module model_rom(
     assign hr_bmin = hr_data_wide[31:16];
     assign hr_bmax = hr_data_wide[15:0];
 
-    // Level 1: index table — maps compact address to pair_id
+    // Level 1: index table - maps compact address to pair_id
     bram_rom #(.ADDR_W(16), .DATA_W(16), .DEPTH(59985),
                .MEM_FILE("hr_index.mem"))
     u_hr_idx (.clk(clk), .addr(hr_read_addr), .re(1'b1),
               .data(hr_pair_id), .valid());
 
-    // Level 2: pair table — maps pair_id to {bmin, bmax}
+    // Level 2: pair table - maps pair_id to {bmin, bmax}
     // pair_id from level 1 feeds directly into level 2 address.
     // Since bram_rom registers its output, this creates a 2-cycle pipeline:
     //   cycle N:   hr_read_addr presented

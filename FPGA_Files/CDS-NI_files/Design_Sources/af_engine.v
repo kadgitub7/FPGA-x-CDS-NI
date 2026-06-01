@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 // ============================================================================
-// af_engine.v — Anomaly Factor computation for one tree node
+// af_engine.v - Anomaly Factor computation for one tree node
 // ============================================================================
 //
 // BRAM TIMING FIX:
@@ -9,7 +9,7 @@
 //   After presenting an address, data needs 1 extra clock cycle to appear:
 //     Cycle N:   FSM sets address (NBA)
 //     Cycle N+1: BRAM clocks in address, data appears via NBA (end of N+1)
-//     Cycle N+2: Data is stable — FSM can capture it
+//     Cycle N+2: Data is stable - FSM can capture it
 //
 //   A WAIT state is inserted after every address setup.
 //
@@ -388,7 +388,7 @@ module af_engine(
                 end
 
                 // ═══════════════════════════════════════════════════
-                // HEALTHY RANGE — Two-level BRAM lookup
+                // HEALTHY RANGE - Two-level BRAM lookup
                 //   Level 1: hr_index BRAM  (compact addr → pair_id)
                 //   Level 2: hr_pairs BRAM  (pair_id → {bmin, bmax})
                 //   Total latency: 2 BRAM reads = 2 wait cycles
@@ -410,7 +410,7 @@ module af_engine(
                     state <= S_CAPTURE_RANGE;
                 end
 
-                // Both levels done — capture healthy range bounds
+                // Both levels done - capture healthy range bounds
                 S_CAPTURE_RANGE: begin
                     latched_bmin <= hr_bmin;
                     latched_bmax <= hr_bmax;

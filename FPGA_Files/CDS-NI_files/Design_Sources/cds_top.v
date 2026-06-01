@@ -1,5 +1,5 @@
 // ============================================================================
-// cds_top.v — Top-level module for the CDS Algorithm 4 FPGA implementation
+// cds_top.v - Top-level module for the CDS Algorithm 4 FPGA implementation
 // ============================================================================
 //
 // DATA FLOW OVERVIEW:
@@ -11,12 +11,12 @@
 //   6. result_sender serializes the result into 5 UART bytes
 //   7. UART TX sends those bytes back to the PC
 //
-// IMPORTANT VERILOG CONCEPT — Wiring Modules Together:
+// IMPORTANT VERILOG CONCEPT - Wiring Modules Together:
 //   In Verilog, you do NOT use object.attribute syntax (that's Python/Java).
 //   Instead you:
 //     1. Declare a wire or reg with YOUR chosen name
 //     2. Connect it to module ports using .port_name(your_wire_name)
-//   Think of wires like copper traces on a PCB — you name the trace,
+//   Think of wires like copper traces on a PCB - you name the trace,
 //   then solder module pins to it.
 //
 //   Rule of thumb:
@@ -42,7 +42,7 @@ module cds_top(
     // Formula: clock_freq / baud_rate = 100,000,000 / 115,200 = 868
     localparam CLKS_PER_BIT = 868;
 
-    // Decision codes — must match the values inside af_engine
+    // Decision codes - must match the values inside af_engine
     localparam [1:0] DEC_HEALTHY   = 2'b00,
                      DEC_UNHEALTHY = 2'b01,
                      DEC_SCREENING = 2'b10;
@@ -52,7 +52,7 @@ module cds_top(
     // INTER-MODULE WIRES AND REGS
     // ------------------------------------------------------------------------
     // Every signal that travels between two modules needs a wire or reg
-    // declared here. The name is YOUR choice — pick something descriptive.
+    // declared here. The name is YOUR choice - pick something descriptive.
     //
     // KEY RULE:
     //   wire → for signals that are OUTPUTS of an instantiated module
@@ -90,7 +90,7 @@ module cds_top(
     wire        tree_node_done;        // (available but unused in master FSM)
     wire        tree_all_done;         // pulses when traversal is finished
 
-    // --- Model ROM data outputs (all wires — they are ROM outputs) ---
+    // --- Model ROM data outputs (all wires - they are ROM outputs) ---
     wire [15:0]        rom_tree_data;        // tree topology word
     wire               rom_tree_valid;       // tree BRAM valid (unused, always 1)
     wire [15:0]        rom_action_hdr_data;  // action header word
@@ -101,11 +101,11 @@ module cds_top(
     wire signed [15:0] rom_hr_bmax;          // healthy range upper bound
 
     // --- AF Engine ---
-    // af_start, af_node_idx, af_init_value are REGS — our FSM drives them
+    // af_start, af_node_idx, af_init_value are REGS - our FSM drives them
     reg          af_start;
     reg  [7:0]   af_node_idx;           // which tree node to process
     reg  signed [31:0] af_init_value;   // carry-forward AF from previous node
-    // These are WIRES — af_engine outputs them
+    // These are WIRES - af_engine outputs them
     wire [12:0]  af_action_hdr_addr;    // address → model_rom action header BRAM
     wire [13:0]  af_action_data_addr;   // address → model_rom action data BRAM
     wire [11:0]  af_prob_phf_addr;      // address → model_rom P(h,f) BRAM
@@ -118,23 +118,23 @@ module cds_top(
     wire         af_done;               // high when af_engine finishes
 
     // --- Decision Logic ---
-    // trigger_decision, master_decision, master_alarm_class are REGS — our FSM drives them
+    // trigger_decision, master_decision, master_alarm_class are REGS - our FSM drives them
     reg          trigger_decision;
     reg  [1:0]   master_decision;       // aggregated decision across ALL nodes
     reg  [3:0]   master_alarm_class;    // alarm class from the UNHEALTHY node
-    // These are WIRES — decision_logic outputs them
+    // These are WIRES - decision_logic outputs them
     wire [1:0]   dl_final_decision;
     wire [3:0]   dl_final_alarm_class;
     wire         dl_prediction_complete; // pulses 1 cycle after decision is latched
 
     // --- Result Sender ---
-    // All wires — result_sender outputs them
+    // All wires - result_sender outputs them
     wire [7:0]  sender_tx_data;
     wire        sender_tx_start;
     wire        sender_done;
 
     // --- UART TX ---
-    // All wires — uart_tx outputs them
+    // All wires - uart_tx outputs them
     wire        tx_active;   // high while transmitting (= "busy" for result_sender)
     wire        tx_serial;   // the serial bit stream to the pin
     wire        tx_done;     // pulses when one byte finishes (unused here)
@@ -150,7 +150,7 @@ module cds_top(
     //   sensor_mux_sel = 0 → tree_traversal controls the sensor read port
     //   sensor_mux_sel = 1 → af_engine controls the sensor read port
     //
-    // The data output (sensor_data_out) fans out to BOTH modules — they
+    // The data output (sensor_data_out) fans out to BOTH modules - they
     // only look at it when they're actually running.
     // ========================================================================
     reg sensor_mux_sel;
@@ -175,9 +175,9 @@ module cds_top(
 
     // --- 1. UART Receiver ------------------------------------------------
     // Converts serial bits on rx_pin into parallel bytes.
-    // NOTE: The parameter #(.CLKS_PER_BIT(868)) is REQUIRED — without it
+    // NOTE: The parameter #(.CLKS_PER_BIT(868)) is REQUIRED - without it
     //       the module doesn't know how fast our clock is relative to baud.
-    // NOTE: The port is called "i_Clock" (not "i_Clk") — always check the
+    // NOTE: The port is called "i_Clock" (not "i_Clk") - always check the
     //       module's actual port names, typos cause "unconnected port" errors.
     uart_rx #(.CLKS_PER_BIT(CLKS_PER_BIT)) u_uart_rx (
         .i_Clock    (clk),
@@ -204,7 +204,7 @@ module cds_top(
     // Provides a synchronous read port: put address on addrb, get data on
     // dataOutB one cycle later (standard BRAM read pattern).
     //
-    // enableB is tied to 1'b1 (always reading). This is fine — the data
+    // enableB is tied to 1'b1 (always reading). This is fine - the data
     // output just follows whatever address is on the bus. The modules
     // only look at the data when they need it.
     sensor_interface u_sensor (
@@ -224,12 +224,12 @@ module cds_top(
     // The other 5 BRAMs have re tied to 1'b1 internally in model_rom.v.
     model_rom u_model_rom (
         .clk             (clk),
-        // Tree BRAM — driven by tree_traversal
+        // Tree BRAM - driven by tree_traversal
         .tree_read_addr  (tree_rom_addr),         // ← from tree_traversal
         .tree_re         (1'b1),                   // always reading
         .tree_data       (rom_tree_data),           // → to tree_traversal
         .tree_valid      (rom_tree_valid),           // → unused
-        // AF-related BRAMs — driven by af_engine
+        // AF-related BRAMs - driven by af_engine
         .action_hdr_addr (af_action_hdr_addr),     // ← from af_engine
         .action_data_addr(af_action_data_addr),     // ← from af_engine
         .prob_phf_addr   (af_prob_phf_addr),        // ← from af_engine
@@ -359,7 +359,7 @@ module cds_top(
 
 
     // ========================================================================
-    // MASTER FSM — State Encoding
+    // MASTER FSM - State Encoding
     // ========================================================================
     localparam [3:0]
         S_IDLE        = 4'd0,    // wait for sensor data to arrive
@@ -403,7 +403,7 @@ module cds_top(
 
 
     // ========================================================================
-    // MASTER FSM — Sequential Logic
+    // MASTER FSM - Sequential Logic
     // ========================================================================
     always @(posedge clk) begin
         if (reset) begin
@@ -426,7 +426,7 @@ module cds_top(
             // ----------------------------------------------------------------
             // These one-shot pulses are cleared to 0 every cycle by default.
             // They only become 1 in the specific state that needs them.
-            // This is the "one-shot pulse pattern" — it guarantees the pulse
+            // This is the "one-shot pulse pattern" - it guarantees the pulse
             // is exactly 1 clock cycle wide without needing an explicit
             // "turn it off" state.
             // ================================================================
@@ -473,7 +473,7 @@ module cds_top(
                 //
                 // NOTE: tree_node_valid and tree_all_done can pulse on the
                 // SAME cycle (if the last node matches). Both if-blocks are
-                // checked independently — this is correct because Verilog
+                // checked independently - this is correct because Verilog
                 // evaluates both conditions, and non-blocking assignments
                 // don't conflict (they write different registers).
                 // ============================================================
@@ -499,7 +499,7 @@ module cds_top(
                         state            <= S_START_AF;
                     end
                     else begin
-                        // No matches (shouldn't happen — root always matches)
+                        // No matches (shouldn't happen - root always matches)
                         master_decision <= DEC_SCREENING;
                         state           <= S_OUTPUT;
                     end
@@ -550,7 +550,7 @@ module cds_top(
                     if (af_decision == DEC_UNHEALTHY) begin
                         // ALARM: this patient has an unhealthy condition.
                         // Capture which disease class triggered it.
-                        // Skip remaining nodes — go straight to output.
+                        // Skip remaining nodes - go straight to output.
                         master_decision    <= DEC_UNHEALTHY;
                         master_alarm_class <= af_alarm_class;
                         state              <= S_OUTPUT;
@@ -562,7 +562,7 @@ module cds_top(
                         state           <= S_OUTPUT;
                     end
                     else begin
-                        // Not unhealthy, not healthy — must be screening
+                        // Not unhealthy, not healthy - must be screening
                         if (af_decision == DEC_SCREENING)
                             master_decision <= DEC_SCREENING;
                         // Check if there are more nodes to process

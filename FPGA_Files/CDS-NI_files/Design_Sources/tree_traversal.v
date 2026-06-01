@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 // ============================================================================
-// tree_traversal.v — Scans all tree nodes, reports matches
+// tree_traversal.v - Scans all tree nodes, reports matches
 // ============================================================================
 //
 // BRAM TIMING FIX:
@@ -9,7 +9,7 @@
 //   After presenting an address, data is available TWO posedge cycles later:
 //     Cycle N:   FSM sets address (NBA, takes effect at end of cycle N)
 //     Cycle N+1: BRAM clocks in address, computes data (NBA, end of N+1)
-//     Cycle N+2: Data is stable — FSM can read it
+//     Cycle N+2: Data is stable - FSM can read it
 //
 //   We insert a WAIT state between each address-set and data-capture
 //   so the BRAM has time to produce valid data.
@@ -89,7 +89,7 @@ module tree_traversal (
                     end
                 end
 
-                // Root (node 0) always matches — emit it unconditionally.
+                // Root (node 0) always matches - emit it unconditionally.
                 // Also set up tree_read_addr for node 1's word 0.
                 S_ROOT_EMIT: begin
                     active_node_idx   <= 8'd0;      // root = node index 0

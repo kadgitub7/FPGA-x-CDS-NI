@@ -1,5 +1,5 @@
 // ============================================================================
-// result_sender.v — Sends 5-byte result packet over UART
+// result_sender.v - Sends 5-byte result packet over UART
 // ============================================================================
 //
 // Packet format (5 bytes, MSB first):
@@ -9,9 +9,9 @@
 //   Byte 3: AF[15:8]
 //   Byte 4: AF[7:0]    (least significant byte)
 //
-// IMPORTANT PATTERN — "wait for busy, then wait for not-busy":
+// IMPORTANT PATTERN - "wait for busy, then wait for not-busy":
 //   After we pulse tx_start to begin a byte, we must NOT immediately
-//   check !tx_busy — uart_tx takes 1 clock cycle to assert tx_busy
+//   check !tx_busy - uart_tx takes 1 clock cycle to assert tx_busy
 //   (r_Tx_Active) via non-blocking assignment. If we check too early,
 //   tx_busy is still 0 and we'd RACE to the next byte.
 //
