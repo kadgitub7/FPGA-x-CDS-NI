@@ -1,24 +1,22 @@
 `timescale 1ns / 1ps
 
 // ============================================================================
-// af_engine.v - Anomaly Factor computation for one tree node
+// af_engine.v - 4-Lane Parallel Anomaly Factor computation
 // ============================================================================
 //
-// BRAM TIMING FIX:
-//   All BRAMs (model_rom, sensor_interface) have REGISTERED read ports.
-//   After presenting an address, data needs 1 extra clock cycle to appear:
-//     Cycle N:   FSM sets address (NBA)
-//     Cycle N+1: BRAM clocks in address, data appears via NBA (end of N+1)
-//     Cycle N+2: Data is stable - FSM can capture it
+// PARALLELISM STRATEGY:
+//   - BRAM reads (action_hdr, action_data, prob, healthy range) are SHARED
+//     across all 4 lanes — done once per action.
+//   - Multiply and divide are SHARED — delta_AF is computed once since it
+//     only depends on model parameters (r_j_h, P(h,f), P(h>1,f)), not
+//     on sensor data.
+//   - Sensor reads are BROADCAST — same address to all 4 sensor_interfaces,
+//     4 different data values returned simultaneously.
+//   - Range comparisons are REPLICATED — 4 rangeComparators, one per lane.
+//   - Accumulations are REPLICATED — 4 af_accumulators, conditionally updated.
 //
-//   A WAIT state is inserted after every address setup.
-//
-//   For the healthy range two-level lookup (hr_index → hr_pairs):
-//     Cycle N:   set compact address → hr_index BRAM
-//     Cycle N+1: hr_index BRAM processes → pair_id appears (end of N+1)
-//     Cycle N+2: pair_id feeds hr_pairs BRAM → {bmin,bmax} appears (end of N+2)
-//     Cycle N+3: FSM captures bmin/bmax
-//   This needs 3 WAIT states (S_WAIT_RANGE_L1, S_WAIT_RANGE_L2, S_CAPTURE_RANGE).
+// Per-lane state: accumulator, alarm flag, alarm class, decision.
+// Lane processing is gated by lane_mask (which lanes matched this tree node).
 // ============================================================================
 
 module af_engine(
@@ -26,28 +24,40 @@ module af_engine(
     input wire reset,
     input wire start,
     input wire [7:0] node_idx,
-    input wire signed [31:0] AF_init,
+    input wire [3:0] lane_mask,             // which lanes are active for this node
 
-    // BRAM read data (from model_rom / sensor_interface)
+    // Per-lane AF carry-forward
+    input wire signed [31:0] AF_init_0,
+    input wire signed [31:0] AF_init_1,
+    input wire signed [31:0] AF_init_2,
+    input wire signed [31:0] AF_init_3,
+
+    // BRAM read data (shared, from model_rom)
     input wire [15:0] action_hdr_data,
     input wire [15:0] action_data_out,
     input wire signed [15:0] prob_phf_data,
     input wire signed [15:0] prob_pgt1_data,
     input wire signed [15:0] hr_bmin,
     input wire signed [15:0] hr_bmax,
-    input wire signed [15:0] user_feature_value,
 
-    // BRAM address outputs (to model_rom / sensor_interface)
+    // 4 sensor data inputs (broadcast address, per-lane data)
+    input wire signed [15:0] user_feature_value_0,
+    input wire signed [15:0] user_feature_value_1,
+    input wire signed [15:0] user_feature_value_2,
+    input wire signed [15:0] user_feature_value_3,
+
+    // BRAM address outputs (shared, to model_rom)
     output reg [12:0] action_hdr_addr,
     output reg [13:0] action_data_addr,
     output reg [11:0] prob_phf_addr,
     output reg [7:0]  prob_pgt1_addr,
-    output reg [15:0] hr_read_addr,    // compact: node_idx*279 + feat_idx
-    output reg [8:0]  feature_read_addr,
+    output reg [15:0] hr_read_addr,
+    output reg [8:0]  feature_read_addr,    // broadcast to all 4 sensors
 
-    output reg [1:0]  decision,
-    output reg signed [31:0] AF_out,
-    output reg [3:0]  alarm_class,
+    // Per-lane results
+    output reg [1:0]  decision_0, decision_1, decision_2, decision_3,
+    output reg signed [31:0] AF_out_0, AF_out_1, AF_out_2, AF_out_3,
+    output reg [3:0]  alarm_class_0, alarm_class_1, alarm_class_2, alarm_class_3,
     output reg done
 );
     localparam [1:0] DEC_HEALTHY   = 2'b00,
@@ -56,160 +66,176 @@ module af_engine(
                      DEC_UNKNOWN   = 2'b11;
 
     localparam [3:0] N_DISEASES = 4'd12;
+    localparam signed [31:0] THRESHOLD_FP = 32'sh0199999A;
 
-    localparam signed [31:0] THRESHOLD_FP = 32'sh0199999A; // 0.025 in Q s2.30
-
-    // ── State encoding (6 bits, 34 states) ────────────────────────────
+    // ── State encoding (same states as single-lane) ──────────────────
     localparam [5:0]
         S_IDLE           = 6'd0,
         S_LOAD_DISEASE   = 6'd1,
-        S_LOAD_HDR_W0    = 6'd2,   // issue addr for header word 0
-        S_WAIT_HDR_W0    = 6'd3,   // *** WAIT for BRAM ***
-        S_LOAD_HDR_W1    = 6'd4,   // capture word 0, issue addr for word 1
-        S_WAIT_HDR_W1    = 6'd5,   // *** WAIT for BRAM ***
-        S_CAPTURE_HDR    = 6'd6,   // capture word 1 (start_addr)
-        S_LOAD_ACT_W0    = 6'd7,   // issue addr for action feature_idx
-        S_WAIT_ACT_W0    = 6'd8,   // *** WAIT for BRAM ***
-        S_LOAD_ACT_W1    = 6'd9,   // capture feature_idx, issue addr for r_j_h
-        S_WAIT_ACT_W1    = 6'd10,  // *** WAIT for BRAM ***
-        S_CAPTURE_ACT    = 6'd11,  // capture r_j_h
-        S_LOAD_PROBS     = 6'd12,  // issue addr to prob_phf and prob_pgt1
-        S_WAIT_PROBS     = 6'd13,  // *** WAIT for BRAM ***
-        S_CAPTURE_PROBS  = 6'd14,  // capture P(h,f) and recip(P(h>1,f))
-        S_LOAD_SENSOR    = 6'd15,  // issue feature_read_addr
-        S_WAIT_SENSOR    = 6'd16,  // *** WAIT for sensor BRAM ***
-        S_CAPTURE_SENSOR = 6'd17,  // capture user_feature_value
-        S_LOAD_RANGE     = 6'd18,  // issue compact addr to hr_index BRAM (level 1)
-        S_WAIT_RANGE_L1  = 6'd19,  // wait for hr_index → pair_id (level 1)
-        S_WAIT_RANGE_L2  = 6'd20,  // wait for hr_pairs → {bmin,bmax} (level 2)
-        S_CAPTURE_RANGE  = 6'd21,  // capture hr_bmin / hr_bmax
-        S_COMPUTE_MUL    = 6'd22,  // drive fixedMultiply inputs
-        S_WAIT_MUL       = 6'd23,  // wait for multiply result
-        S_COMPUTE_DIV    = 6'd24,  // drive fixedDivide inputs
-        S_WAIT_DIV       = 6'd25,  // wait for divide result
-        S_ACCUMULATE     = 6'd26,  // pulse af_accumulator
-        S_CHECK_RANGE    = 6'd27,  // drive rangeComparator inputs
-        S_EVAL_RANGE     = 6'd28,  // read rangeComparator outputs
-        S_NEXT_ACTION    = 6'd29,  // increment action pointer
-        S_NEXT_DISEASE   = 6'd30,  // increment disease_offset
-        S_THRESHOLD      = 6'd31,  // compare rw_real vs THRESHOLD_FP
-        S_ALARM          = 6'd32,  // latch UNHEALTHY result
-        S_DONE           = 6'd33;  // assert done
+        S_LOAD_HDR_W0    = 6'd2,
+        S_WAIT_HDR_W0    = 6'd3,
+        S_LOAD_HDR_W1    = 6'd4,
+        S_WAIT_HDR_W1    = 6'd5,
+        S_CAPTURE_HDR    = 6'd6,
+        S_LOAD_ACT_W0    = 6'd7,
+        S_WAIT_ACT_W0    = 6'd8,
+        S_LOAD_ACT_W1    = 6'd9,
+        S_WAIT_ACT_W1    = 6'd10,
+        S_CAPTURE_ACT    = 6'd11,
+        S_LOAD_PROBS     = 6'd12,
+        S_WAIT_PROBS     = 6'd13,
+        S_CAPTURE_PROBS  = 6'd14,
+        S_LOAD_SENSOR    = 6'd15,
+        S_WAIT_SENSOR    = 6'd16,
+        S_CAPTURE_SENSOR = 6'd17,
+        S_LOAD_RANGE     = 6'd18,
+        S_WAIT_RANGE_L1  = 6'd19,
+        S_WAIT_RANGE_L2  = 6'd20,
+        S_CAPTURE_RANGE  = 6'd21,
+        S_COMPUTE_MUL    = 6'd22,
+        S_WAIT_MUL       = 6'd23,
+        S_COMPUTE_DIV    = 6'd24,
+        S_WAIT_DIV       = 6'd25,
+        S_ACCUMULATE     = 6'd26,
+        S_CHECK_RANGE    = 6'd27,
+        S_EVAL_RANGE     = 6'd28,
+        S_NEXT_ACTION    = 6'd29,
+        S_NEXT_DISEASE   = 6'd30,
+        S_THRESHOLD      = 6'd31,
+        S_DONE           = 6'd33;
 
     reg [5:0] state;
 
-    reg [3:0]  disease_offset;       // 0 to 11
-    reg [5:0]  action_count;         // actions in current (node, disease) group
-    reg [5:0]  action_idx;           // current action within group
-    reg [13:0] action_base_addr;     // start_address of current group in data BRAM
+    // Shared iteration state (unchanged)
+    reg [3:0]  disease_offset;
+    reg [5:0]  action_count;
+    reg [5:0]  action_idx;
+    reg [13:0] action_base_addr;
 
-    // BRAM data
-    reg [15:0]        hdr_word0;           // action_count (full 16-bit)
-    reg [15:0]        hdr_start_addr;      // start address in action data BRAM
-    reg [8:0]         latched_feature_idx;  // from action data word 0 (9 bits used)
-    reg signed [15:0] latched_r_j_h;       // from action data word 1 (Q s1.15)
-    reg signed [15:0] latched_phf;         // P(h,f) (Q s1.15)
-    reg signed [15:0] latched_pgt1_recip;  // reciprocal of P(h>1,f) (Q s3.13)
-    reg signed [15:0] latched_sensor_val;  // user feature value
-    reg signed [15:0] latched_bmin;        // healthy-range lower bound
-    reg signed [15:0] latched_bmax;        // healthy-range upper bound
+    // Shared BRAM data (unchanged)
+    reg [15:0]        hdr_word0;
+    reg [15:0]        hdr_start_addr;
+    reg [8:0]         latched_feature_idx;
+    reg signed [15:0] latched_r_j_h;
+    reg signed [15:0] latched_phf;
+    reg signed [15:0] latched_pgt1_recip;
+    reg signed [15:0] latched_bmin;
+    reg signed [15:0] latched_bmax;
 
-    reg signed [31:0] mul_result_reg;      // captured multiply product (Q s2.30)
-    reg signed [31:0] div_result_reg;      // captured divide quotient  (Q s2.30)
+    reg signed [31:0] mul_result_reg;
+    reg signed [31:0] div_result_reg;
 
-    // node_idx * 12 = (node_idx << 3) + (node_idx << 2)
+    // Per-lane sensor values and NaN flags
+    reg signed [15:0] latched_sensor_0, latched_sensor_1,
+                      latched_sensor_2, latched_sensor_3;
+    reg [3:0] nan_mask;       // which lanes have NaN for current feature
+    reg [3:0] lane_alarm;     // which lanes triggered UNHEALTHY
+
+    // Shared address computation (unchanged)
     wire [11:0] node_times_12 = {1'b0, node_idx, 3'b0} + {2'b0, node_idx, 2'b0};
+    wire [15:0] node_times_279 = {node_idx, 8'd0} + {4'd0, node_idx, 4'd0}
+                                + {6'd0, node_idx, 2'd0} + {7'd0, node_idx, 1'd0}
+                                + {8'd0, node_idx};
 
-    // Compact healthy-range address: node_idx * 279 + feature_idx
-    // 279 = 256 + 16 + 4 + 2 + 1
-    wire [15:0] node_times_279 = {node_idx, 8'd0}        // node_idx * 256
-                                + {4'd0, node_idx, 4'd0}  // node_idx * 16
-                                + {6'd0, node_idx, 2'd0}  // node_idx * 4
-                                + {7'd0, node_idx, 1'd0}  // node_idx * 2
-                                + {8'd0, node_idx};        // node_idx * 1
-
-    // ── Sub-module interfaces ─────────────────────────────────────────
-
-    // fixedMultiply
+    // ── Shared multiply/divide (1 instance each) ─────────────────────
     reg  signed [15:0] mul_a, mul_b;
     reg                mul_valid;
     wire signed [31:0] mul_product;
     wire               mul_result_valid;
 
-    // fixedDivide
     reg  signed [31:0] div_numerator;
     reg  signed [15:0] div_recip;
     reg                div_valid;
     wire signed [31:0] div_quotient;
     wire               div_result_valid;
 
-    // af_accumulator
-    reg  signed [31:0] accum_delta;
-    reg                accum_delta_valid;
-    reg                accum_clear;
-    wire signed [31:0] accum_AF_real;
-    wire signed [31:0] accum_rw_real;
-
-    // rangeComparator
-    reg  signed [15:0] rc_raw, rc_bmin, rc_bmax;
-    reg                rc_valid;
-    wire               rc_triggered;
-    wire               rc_is_nan;
-    wire               rc_result_valid;
-
     fixedMultiply u_mul (
-        .clk          (clk),
-        .reset        (reset),
-        .a            (mul_a),
-        .b            (mul_b),
-        .valid        (mul_valid),
-        .product      (mul_product),
-        .result_valid (mul_result_valid)
+        .clk(clk), .reset(reset),
+        .a(mul_a), .b(mul_b), .valid(mul_valid),
+        .product(mul_product), .result_valid(mul_result_valid)
     );
 
     fixedDivide u_div (
-        .clk                    (clk),
-        .reset                  (reset),
-        .numerator              (div_numerator),
-        .reciprocal_denominator (div_recip),
-        .valid                  (div_valid),
-        .quotient               (div_quotient),
-        .result_valid           (div_result_valid)
+        .clk(clk), .reset(reset),
+        .numerator(div_numerator), .reciprocal_denominator(div_recip),
+        .valid(div_valid), .quotient(div_quotient), .result_valid(div_result_valid)
     );
 
-    af_accumulator u_accum (
-        .clk         (clk),
-        .reset       (reset),
-        .delta_AF    (accum_delta),
-        .delta_valid (accum_delta_valid),
-        .clear       (accum_clear),
-        .AF_real     (accum_AF_real),
-        .rw_real     (accum_rw_real)
+    // ── 4 accumulators ───────────────────────────────────────────────
+    reg  signed [31:0] accum_delta;         // shared delta value
+    reg  [3:0]         accum_delta_valid;    // per-lane pulse
+    reg  [3:0]         accum_clear;          // per-lane clear
+    wire signed [31:0] accum_AF_real  [0:3]; // per-lane AF output
+    wire signed [31:0] accum_rw_real  [0:3]; // per-lane rw output
+
+    af_accumulator u_accum_0 (
+        .clk(clk), .reset(reset), .delta_AF(accum_delta),
+        .delta_valid(accum_delta_valid[0]), .clear(accum_clear[0]),
+        .AF_real(accum_AF_real[0]), .rw_real(accum_rw_real[0])
+    );
+    af_accumulator u_accum_1 (
+        .clk(clk), .reset(reset), .delta_AF(accum_delta),
+        .delta_valid(accum_delta_valid[1]), .clear(accum_clear[1]),
+        .AF_real(accum_AF_real[1]), .rw_real(accum_rw_real[1])
+    );
+    af_accumulator u_accum_2 (
+        .clk(clk), .reset(reset), .delta_AF(accum_delta),
+        .delta_valid(accum_delta_valid[2]), .clear(accum_clear[2]),
+        .AF_real(accum_AF_real[2]), .rw_real(accum_rw_real[2])
+    );
+    af_accumulator u_accum_3 (
+        .clk(clk), .reset(reset), .delta_AF(accum_delta),
+        .delta_valid(accum_delta_valid[3]), .clear(accum_clear[3]),
+        .AF_real(accum_AF_real[3]), .rw_real(accum_rw_real[3])
     );
 
-    rangeComparator u_range (
-        .raw_value    (rc_raw),
-        .b_min        (rc_bmin),
-        .b_max        (rc_bmax),
-        .valid        (rc_valid),
-        .triggered    (rc_triggered),
-        .is_nan       (rc_is_nan),
-        .result_valid (rc_result_valid)
+    // ── 4 range comparators (combinational) ──────────────────────────
+    // All share the same bmin/bmax (from model BRAM), differ on raw_value
+    reg                rc_valid;
+    wire [3:0]         rc_triggered;
+    wire [3:0]         rc_is_nan;
+
+    rangeComparator u_range_0 (
+        .raw_value(latched_sensor_0), .b_min(latched_bmin), .b_max(latched_bmax),
+        .valid(rc_valid), .triggered(rc_triggered[0]), .is_nan(rc_is_nan[0]),
+        .result_valid()
+    );
+    rangeComparator u_range_1 (
+        .raw_value(latched_sensor_1), .b_min(latched_bmin), .b_max(latched_bmax),
+        .valid(rc_valid), .triggered(rc_triggered[1]), .is_nan(rc_is_nan[1]),
+        .result_valid()
+    );
+    rangeComparator u_range_2 (
+        .raw_value(latched_sensor_2), .b_min(latched_bmin), .b_max(latched_bmax),
+        .valid(rc_valid), .triggered(rc_triggered[2]), .is_nan(rc_is_nan[2]),
+        .result_valid()
+    );
+    rangeComparator u_range_3 (
+        .raw_value(latched_sensor_3), .b_min(latched_bmin), .b_max(latched_bmax),
+        .valid(rc_valid), .triggered(rc_triggered[3]), .is_nan(rc_is_nan[3]),
+        .result_valid()
     );
 
+    // Active lanes that are not NaN and not already alarmed
+    wire [3:0] live_lanes = lane_mask & ~lane_alarm;
 
     always @(posedge clk) begin
         if (reset) begin
             state             <= S_IDLE;
             done              <= 1'b0;
-            decision          <= DEC_UNKNOWN;
-            AF_out            <= 32'sd0;
-            alarm_class       <= 4'd0;
+            decision_0 <= DEC_UNKNOWN; decision_1 <= DEC_UNKNOWN;
+            decision_2 <= DEC_UNKNOWN; decision_3 <= DEC_UNKNOWN;
+            AF_out_0 <= 32'sd0; AF_out_1 <= 32'sd0;
+            AF_out_2 <= 32'sd0; AF_out_3 <= 32'sd0;
+            alarm_class_0 <= 4'd0; alarm_class_1 <= 4'd0;
+            alarm_class_2 <= 4'd0; alarm_class_3 <= 4'd0;
 
             disease_offset    <= 4'd0;
             action_count      <= 6'd0;
             action_idx        <= 6'd0;
             action_base_addr  <= 14'd0;
+            lane_alarm        <= 4'd0;
+            nan_mask          <= 4'd0;
 
             action_hdr_addr   <= 13'd0;
             action_data_addr  <= 14'd0;
@@ -218,77 +244,77 @@ module af_engine(
             hr_read_addr      <= 16'd0;
             feature_read_addr <= 9'd0;
 
-            mul_a             <= 16'sd0;
-            mul_b             <= 16'sd0;
-            mul_valid         <= 1'b0;
-            div_numerator     <= 32'sd0;
-            div_recip         <= 16'sd0;
-            div_valid         <= 1'b0;
-            accum_delta       <= 32'sd0;
-            accum_delta_valid <= 1'b0;
-            accum_clear       <= 1'b1;
-            rc_raw            <= 16'sd0;
-            rc_bmin           <= 16'sd0;
-            rc_bmax           <= 16'sd0;
-            rc_valid          <= 1'b0;
+            mul_a <= 16'sd0; mul_b <= 16'sd0; mul_valid <= 1'b0;
+            div_numerator <= 32'sd0; div_recip <= 16'sd0; div_valid <= 1'b0;
+            accum_delta <= 32'sd0;
+            accum_delta_valid <= 4'd0;
+            accum_clear <= 4'b1111;
+            rc_valid <= 1'b0;
         end
         else begin
-            // Default: de-assert one-shot pulses each cycle
+            // Default de-assertions
             mul_valid         <= 1'b0;
             div_valid         <= 1'b0;
-            accum_delta_valid <= 1'b0;
-            accum_clear       <= 1'b0;
+            accum_delta_valid <= 4'd0;
+            accum_clear       <= 4'd0;
             rc_valid          <= 1'b0;
             done              <= 1'b0;
 
             case (state)
 
-                // ── Idle: wait for start pulse ──────────────────────
                 S_IDLE: begin
                     if (start) begin
-                        accum_clear <= 1'b1;
-                        state <= S_LOAD_DISEASE;
+                        accum_clear <= 4'b1111;  // clear all 4 accumulators
+                        lane_alarm  <= 4'd0;
+                        state       <= S_LOAD_DISEASE;
                     end
                 end
 
-                // ── Initialize: load AF_init into accumulator ───────
+                // Load AF_init into lane 0's accumulator (1 lane per cycle)
                 S_LOAD_DISEASE: begin
-                    accum_delta <= AF_init;
-                    accum_delta_valid <= 1'b1;
                     disease_offset <= 4'd0;
+                    if (lane_mask[0]) begin
+                        accum_delta <= AF_init_0;
+                        accum_delta_valid[0] <= 1'b1;
+                    end
+                    state <= 6'd34; // S_LOAD_INIT_1
+                end
+
+                // ── Per-lane AF_init loading (3 more sub-cycles) ─────
+                6'd34: begin // lane 1
+                    if (lane_mask[1]) begin
+                        accum_delta <= AF_init_1;
+                        accum_delta_valid[1] <= 1'b1;
+                    end
+                    state <= 6'd35;
+                end
+                6'd35: begin // lane 2
+                    if (lane_mask[2]) begin
+                        accum_delta <= AF_init_2;
+                        accum_delta_valid[2] <= 1'b1;
+                    end
+                    state <= 6'd36;
+                end
+                6'd36: begin // lane 3
+                    if (lane_mask[3]) begin
+                        accum_delta <= AF_init_3;
+                        accum_delta_valid[3] <= 1'b1;
+                    end
                     state <= S_LOAD_HDR_W0;
                 end
 
-                // ═══════════════════════════════════════════════════
-                // ACTION HEADER READ (2 words per slot)
-                //   Word 0: action_count
-                //   Word 1: start_address in action_data BRAM
-                // ═══════════════════════════════════════════════════
-
-                // Issue address for header word 0
+                // ═══ ACTION HEADER READ (unchanged) ═══════════════════
                 S_LOAD_HDR_W0: begin
                     action_hdr_addr <= {node_times_12 + {8'd0, disease_offset}, 1'b0};
                     state <= S_WAIT_HDR_W0;
                 end
-
-                // *** WAIT for action_hdr BRAM ***
-                S_WAIT_HDR_W0: begin
-                    state <= S_LOAD_HDR_W1;
-                end
-
-                // Capture word 0 (action_count), issue address for word 1
+                S_WAIT_HDR_W0: state <= S_LOAD_HDR_W1;
                 S_LOAD_HDR_W1: begin
                     hdr_word0 <= action_hdr_data;
                     action_hdr_addr <= action_hdr_addr + 13'd1;
                     state <= S_WAIT_HDR_W1;
                 end
-
-                // *** WAIT for action_hdr BRAM ***
-                S_WAIT_HDR_W1: begin
-                    state <= S_CAPTURE_HDR;
-                end
-
-                // Capture word 1 (start_address), decide what to do
+                S_WAIT_HDR_W1: state <= S_CAPTURE_HDR;
                 S_CAPTURE_HDR: begin
                     hdr_start_addr <= action_hdr_data;
                     action_count <= hdr_word0[5:0];
@@ -297,89 +323,65 @@ module af_engine(
                         action_base_addr <= action_hdr_data[13:0];
                         state <= S_LOAD_ACT_W0;
                     end
-                    else begin
-                        state <= S_NEXT_DISEASE;
-                    end
+                    else state <= S_NEXT_DISEASE;
                 end
 
-                // ═══════════════════════════════════════════════════
-                // ACTION DATA READ (2 words per action)
-                //   Word 0: feature_idx (low 9 bits)
-                //   Word 1: r_j_h (Q s1.15)
-                // ═══════════════════════════════════════════════════
-
-                // Issue address for action word 0
+                // ═══ ACTION DATA READ (unchanged) ═════════════════════
                 S_LOAD_ACT_W0: begin
                     action_data_addr <= {action_base_addr + {8'd0, action_idx}, 1'b0};
                     state <= S_WAIT_ACT_W0;
                 end
-
-                // *** WAIT for action_data BRAM ***
-                S_WAIT_ACT_W0: begin
-                    state <= S_LOAD_ACT_W1;
-                end
-
-                // Capture word 0 (feature_idx), issue address for word 1
+                S_WAIT_ACT_W0: state <= S_LOAD_ACT_W1;
                 S_LOAD_ACT_W1: begin
                     latched_feature_idx <= action_data_out[8:0];
                     action_data_addr <= action_data_addr + 14'd1;
                     state <= S_WAIT_ACT_W1;
                 end
-
-                // *** WAIT for action_data BRAM ***
-                S_WAIT_ACT_W1: begin
-                    state <= S_CAPTURE_ACT;
-                end
-
-                // Capture word 1 (r_j_h)
+                S_WAIT_ACT_W1: state <= S_CAPTURE_ACT;
                 S_CAPTURE_ACT: begin
                     latched_r_j_h <= action_data_out;
                     state <= S_LOAD_PROBS;
                 end
 
-                // ═══════════════════════════════════════════════════
-                // PROBABILITY READS (both BRAMs simultaneously)
-                //   prob_phf:  P(h,f) at addr = node_idx*12 + disease_offset
-                //   prob_pgt1: 1/P(h>1,f) at addr = node_idx
-                // ═══════════════════════════════════════════════════
-
+                // ═══ PROBABILITY READS (unchanged) ════════════════════
                 S_LOAD_PROBS: begin
                     prob_phf_addr <= node_times_12 + disease_offset;
                     prob_pgt1_addr <= node_idx;
                     state <= S_WAIT_PROBS;
                 end
-
-                // *** WAIT for both prob BRAMs ***
-                S_WAIT_PROBS: begin
-                    state <= S_CAPTURE_PROBS;
-                end
-
+                S_WAIT_PROBS: state <= S_CAPTURE_PROBS;
                 S_CAPTURE_PROBS: begin
                     latched_phf <= prob_phf_data;
                     latched_pgt1_recip <= prob_pgt1_data;
                     state <= S_LOAD_SENSOR;
                 end
 
-                // ═══════════════════════════════════════════════════
-                // SENSOR READ (user feature value)
-                // ═══════════════════════════════════════════════════
-
+                // ═══ SENSOR READ — broadcast to all 4 lanes ═══════════
                 S_LOAD_SENSOR: begin
                     feature_read_addr <= latched_feature_idx;
                     state <= S_WAIT_SENSOR;
                 end
+                S_WAIT_SENSOR: state <= S_CAPTURE_SENSOR;
 
-                // *** WAIT for sensor BRAM ***
-                S_WAIT_SENSOR: begin
-                    state <= S_CAPTURE_SENSOR;
-                end
-
+                // Capture all 4 sensor values, check NaN per lane
                 S_CAPTURE_SENSOR: begin
-                    latched_sensor_val <= user_feature_value;
-                    // NaN sentinel check: if the feature value is 0x7FFF,
-                    // skip this action entirely (no AF, no range check).
-                    // This matches the Python golden model's "continue" on NaN.
-                    if (user_feature_value == 16'sh7FFF) begin
+                    latched_sensor_0 <= user_feature_value_0;
+                    latched_sensor_1 <= user_feature_value_1;
+                    latched_sensor_2 <= user_feature_value_2;
+                    latched_sensor_3 <= user_feature_value_3;
+
+                    nan_mask[0] <= (user_feature_value_0 == 16'sh7FFF);
+                    nan_mask[1] <= (user_feature_value_1 == 16'sh7FFF);
+                    nan_mask[2] <= (user_feature_value_2 == 16'sh7FFF);
+                    nan_mask[3] <= (user_feature_value_3 == 16'sh7FFF);
+
+                    // If ALL active non-alarmed lanes have NaN, skip
+                    if ( (live_lanes & ~{
+                            (user_feature_value_3 == 16'sh7FFF),
+                            (user_feature_value_2 == 16'sh7FFF),
+                            (user_feature_value_1 == 16'sh7FFF),
+                            (user_feature_value_0 == 16'sh7FFF)
+                         }) == 4'd0 ) begin
                         state <= S_NEXT_ACTION;
                     end
                     else begin
@@ -387,63 +389,38 @@ module af_engine(
                     end
                 end
 
-                // ═══════════════════════════════════════════════════
-                // HEALTHY RANGE - Two-level BRAM lookup
-                //   Level 1: hr_index BRAM  (compact addr → pair_id)
-                //   Level 2: hr_pairs BRAM  (pair_id → {bmin, bmax})
-                //   Total latency: 2 BRAM reads = 2 wait cycles
-                // ═══════════════════════════════════════════════════
-
+                // ═══ HEALTHY RANGE LOOKUP (unchanged) ═════════════════
                 S_LOAD_RANGE: begin
                     hr_read_addr <= node_times_279 + {7'd0, latched_feature_idx};
                     state <= S_WAIT_RANGE_L1;
                 end
-
-                // *** WAIT for level 1 (hr_index → pair_id) ***
-                S_WAIT_RANGE_L1: begin
-                    state <= S_WAIT_RANGE_L2;
-                end
-
-                // *** WAIT for level 2 (hr_pairs → {bmin, bmax}) ***
-                // pair_id from level 1 feeds into level 2 address
-                S_WAIT_RANGE_L2: begin
-                    state <= S_CAPTURE_RANGE;
-                end
-
-                // Both levels done - capture healthy range bounds
+                S_WAIT_RANGE_L1: state <= S_WAIT_RANGE_L2;
+                S_WAIT_RANGE_L2: state <= S_CAPTURE_RANGE;
                 S_CAPTURE_RANGE: begin
                     latched_bmin <= hr_bmin;
                     latched_bmax <= hr_bmax;
                     state <= S_COMPUTE_MUL;
                 end
 
-                // ═══════════════════════════════════════════════════
-                // COMPUTE: multiply, divide, accumulate, range-check
-                // ═══════════════════════════════════════════════════
-
-                // Multiply: P(h,f) * r_j_h → Q s2.30
+                // ═══ SHARED COMPUTE (1 multiply, 1 divide) ════════════
                 S_COMPUTE_MUL: begin
                     mul_a <= latched_phf;
                     mul_b <= latched_r_j_h;
                     mul_valid <= 1'b1;
                     state <= S_WAIT_MUL;
                 end
-
                 S_WAIT_MUL: begin
                     if (mul_result_valid) begin
                         mul_result_reg <= mul_product;
                         state <= S_COMPUTE_DIV;
                     end
                 end
-
-                // Divide: (P(h,f) * r_j_h) * (1/P(h>1,f)) → Q s2.30
                 S_COMPUTE_DIV: begin
                     div_numerator <= mul_result_reg;
                     div_recip <= latched_pgt1_recip;
                     div_valid <= 1'b1;
                     state <= S_WAIT_DIV;
                 end
-
                 S_WAIT_DIV: begin
                     if (div_result_valid) begin
                         div_result_reg <= div_quotient;
@@ -451,45 +428,53 @@ module af_engine(
                     end
                 end
 
-                // Accumulate: AF_real += delta_AF
+                // ═══ PER-LANE ACCUMULATE ══════════════════════════════
+                // delta_AF is shared; only non-NaN, non-alarmed, active
+                // lanes accumulate.
                 S_ACCUMULATE: begin
                     accum_delta <= div_result_reg;
-                    accum_delta_valid <= 1'b1;
+                    accum_delta_valid <= live_lanes & ~nan_mask;
                     state <= S_CHECK_RANGE;
                 end
 
-                // Check healthy range: is sensor value outside [bmin, bmax]?
+                // ═══ PER-LANE RANGE CHECK ════════════════════════════
                 S_CHECK_RANGE: begin
-                    rc_raw <= latched_sensor_val;
-                    rc_bmin <= latched_bmin;
-                    rc_bmax <= latched_bmax;
+                    // rangeComparators already have latched_sensor_i and
+                    // latched_bmin/bmax wired. Just pulse valid.
                     rc_valid <= 1'b1;
                     state <= S_EVAL_RANGE;
                 end
 
-                // Evaluate range check result
+                // Evaluate 4 range results simultaneously
                 S_EVAL_RANGE: begin
-                    rc_valid <= 1'b1;   // hold valid for combinational output
-                    if (rc_triggered) begin
-                        state <= S_ALARM;
+                    rc_valid <= 1'b1;
+                    // For each active, non-NaN, non-alarmed lane: check trigger
+                    if (rc_triggered[0] & live_lanes[0] & ~nan_mask[0]) begin
+                        lane_alarm[0] <= 1'b1;
+                        alarm_class_0 <= disease_offset;
                     end
-                    else begin
-                        state <= S_NEXT_ACTION;
+                    if (rc_triggered[1] & live_lanes[1] & ~nan_mask[1]) begin
+                        lane_alarm[1] <= 1'b1;
+                        alarm_class_1 <= disease_offset;
                     end
+                    if (rc_triggered[2] & live_lanes[2] & ~nan_mask[2]) begin
+                        lane_alarm[2] <= 1'b1;
+                        alarm_class_2 <= disease_offset;
+                    end
+                    if (rc_triggered[3] & live_lanes[3] & ~nan_mask[3]) begin
+                        lane_alarm[3] <= 1'b1;
+                        alarm_class_3 <= disease_offset;
+                    end
+                    state <= S_NEXT_ACTION;
                 end
 
-                // ═══════════════════════════════════════════════════
-                // ITERATION: next action / next disease / done
-                // ═══════════════════════════════════════════════════
-
+                // ═══ ITERATION (unchanged logic) ══════════════════════
                 S_NEXT_ACTION: begin
                     if (action_idx < action_count - 1) begin
                         action_idx <= action_idx + 1;
                         state <= S_LOAD_ACT_W0;
                     end
-                    else begin
-                        state <= S_NEXT_DISEASE;
-                    end
+                    else state <= S_NEXT_DISEASE;
                 end
 
                 S_NEXT_DISEASE: begin
@@ -497,30 +482,35 @@ module af_engine(
                         disease_offset <= disease_offset + 1;
                         state <= S_LOAD_HDR_W0;
                     end
-                    else begin
-                        state <= S_THRESHOLD;
-                    end
+                    else state <= S_THRESHOLD;
                 end
 
-                // ═══════════════════════════════════════════════════
-                // FINAL DECISION
-                // ═══════════════════════════════════════════════════
-
+                // ═══ PER-LANE FINAL DECISION ══════════════════════════
                 S_THRESHOLD: begin
-                    AF_out <= accum_AF_real;
-                    if (accum_rw_real <= THRESHOLD_FP) begin
-                        decision <= DEC_HEALTHY;
-                    end
-                    else begin
-                        decision <= DEC_SCREENING;
-                    end
-                    state <= S_DONE;
-                end
+                    // Lane 0
+                    AF_out_0 <= accum_AF_real[0];
+                    if (lane_alarm[0])           decision_0 <= DEC_UNHEALTHY;
+                    else if (accum_rw_real[0] <= THRESHOLD_FP) decision_0 <= DEC_HEALTHY;
+                    else                         decision_0 <= DEC_SCREENING;
 
-                S_ALARM: begin
-                    decision <= DEC_UNHEALTHY;
-                    alarm_class <= disease_offset;
-                    AF_out <= accum_AF_real;
+                    // Lane 1
+                    AF_out_1 <= accum_AF_real[1];
+                    if (lane_alarm[1])           decision_1 <= DEC_UNHEALTHY;
+                    else if (accum_rw_real[1] <= THRESHOLD_FP) decision_1 <= DEC_HEALTHY;
+                    else                         decision_1 <= DEC_SCREENING;
+
+                    // Lane 2
+                    AF_out_2 <= accum_AF_real[2];
+                    if (lane_alarm[2])           decision_2 <= DEC_UNHEALTHY;
+                    else if (accum_rw_real[2] <= THRESHOLD_FP) decision_2 <= DEC_HEALTHY;
+                    else                         decision_2 <= DEC_SCREENING;
+
+                    // Lane 3
+                    AF_out_3 <= accum_AF_real[3];
+                    if (lane_alarm[3])           decision_3 <= DEC_UNHEALTHY;
+                    else if (accum_rw_real[3] <= THRESHOLD_FP) decision_3 <= DEC_HEALTHY;
+                    else                         decision_3 <= DEC_SCREENING;
+
                     state <= S_DONE;
                 end
 
@@ -530,7 +520,6 @@ module af_engine(
                 end
 
                 default: state <= S_IDLE;
-
             endcase
         end
     end

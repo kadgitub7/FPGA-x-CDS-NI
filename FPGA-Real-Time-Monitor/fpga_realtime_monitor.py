@@ -16,7 +16,7 @@ FPGA, and then provides a live interactive diagnosis interface.
 
 === REAL-TIME DIAGNOSIS ===
 
-  python fpga_realtime_monitor.py --run --port COM3
+  python fpga_realtime_monitor.py --run --port COM4
 
   - Opens a live interactive session
   - Type 'diagnose me' to diagnose from a CSV file
@@ -148,23 +148,55 @@ def decode_fpga_response(response: bytes) -> Tuple[int, int, int]:
     return decision, alarm_class, af_value
 
 
-def send_to_fpga(ser, features: np.ndarray,
-                 timeout: float = 5.0) -> Optional[Tuple[int, int, int]]:
-    """Send one patient's features to FPGA, return (decision, alarm_class, af_value)."""
+N_LANES = 4  # parallel patient pipelines on FPGA
+
+
+def send_batch_to_fpga(
+    ser,
+    feature_list: List[np.ndarray],
+    timeout: float = 15.0,
+) -> Optional[List[Tuple[int, int, int]]]:
+    """Send 1-4 patients to the FPGA, return list of (decision, alarm_class, af_value).
+
+    Always pads to N_LANES (4) internally — the FPGA expects exactly 4 patients.
+    Padding uses the last real patient's data (results for padding slots are discarded
+    by the caller).
+
+    Returns results for all N_LANES slots, or None on timeout.
+    """
+    n_real = len(feature_list)
+    assert 1 <= n_real <= N_LANES
+
+    # Pad to exactly N_LANES
+    padded = list(feature_list)
+    while len(padded) < N_LANES:
+        padded.append(padded[-1])
+
     ser.reset_input_buffer()
-    ser.write(bytes([HEADER_BYTE]))
-    ser.write(features_to_uart_bytes(features))
+
+    # Send N_LANES patients back-to-back, each with 0xAA header
+    for features in padded:
+        ser.write(bytes([HEADER_BYTE]))
+        ser.write(features_to_uart_bytes(features))
     ser.flush()
 
+    # Receive N_LANES x 5 = 20 response bytes
+    n_expected = N_LANES * 5
     start = time.time()
     response = b''
-    while len(response) < 5 and (time.time() - start) < timeout:
-        chunk = ser.read(5 - len(response))
+    while len(response) < n_expected and (time.time() - start) < timeout:
+        chunk = ser.read(n_expected - len(response))
         if chunk:
             response += chunk
-    if len(response) < 5:
+
+    if len(response) < n_expected:
         return None
-    return decode_fpga_response(response)
+
+    results = []
+    for i in range(N_LANES):
+        results.append(decode_fpga_response(response[i*5 : i*5 + 5]))
+
+    return results
 
 
 # ===========================================================================
@@ -322,7 +354,7 @@ def run_setup(data: np.ndarray, labels: np.ndarray, output_dir: str) -> None:
     print(f"  Next steps:")
     print(f"    1. Copy {output_dir}/*.mem into your Vivado project")
     print(f"    2. Synthesize and program the FPGA")
-    print(f"    3. Run: python fpga_realtime_monitor.py --run --port COM3")
+    print(f"    3. Run: python fpga_realtime_monitor.py --run --port COM4")
     print(f"{'='*70}\n")
 
 
@@ -374,7 +406,7 @@ def run_realtime(
     port: str,
     baud: int = 115200,
 ) -> None:
-    """Interactive real-time diagnosis loop."""
+    """Interactive real-time diagnosis loop (4-lane parallel FPGA)."""
 
     try:
         import serial
@@ -383,24 +415,25 @@ def run_realtime(
         return
 
     print(f"\n{'='*70}")
-    print(f"FPGA REAL-TIME CARDIAC DIAGNOSIS SYSTEM")
+    print(f"FPGA REAL-TIME CARDIAC DIAGNOSIS SYSTEM  (4-Lane Parallel)")
     print(f"{'='*70}")
     print(f"  Serial port:  {port}")
     print(f"  Baud rate:    {baud}")
+    print(f"  Parallel:     {N_LANES} patients per batch")
     print(f"  Dataset:      {data.shape[0]} users loaded for reference")
     print(f"{'='*70}")
     print(f"")
     print(f"  Commands:")
-    print(f"    diagnose me          — Diagnose from loaded patient CSV file")
-    print(f"    diagnose <id>        — Diagnose user #id from the dataset")
-    print(f"    diagnose all         — Diagnose ALL users from the dataset")
-    print(f"    load <path.csv>      — Load a patient CSV file for 'diagnose me'")
-    print(f"    list                 — Show all users in the dataset")
-    print(f"    features             — Show the 279 feature names")
-    print(f"    quit                 — Exit")
+    print(f"    diagnose me            — Diagnose from loaded patient CSV")
+    print(f"    diagnose <id>          — Diagnose 1 user from the dataset")
+    print(f"    diagnose <id1> <id2>.. — Diagnose 1-4 users in parallel")
+    print(f"    diagnose all           — Diagnose ALL users (batches of 4)")
+    print(f"    load <path.csv>        — Load patient CSV for 'diagnose me'")
+    print(f"    list                   — Show all users in the dataset")
+    print(f"    features               — Show the 279 feature names")
+    print(f"    quit                   — Exit")
     print(f"")
 
-    # Open serial port
     print(f"  Connecting to FPGA on {port}...")
     try:
         ser = serial.Serial(port, baud, timeout=2.0)
@@ -472,64 +505,87 @@ def run_realtime(
 
         # --- diagnose ---
         elif cmd_lower.startswith('diagnose'):
-            target = cmd_lower[8:].strip()
+            target = cmd[8:].strip()   # preserve original case for paths
+            target_lower = target.lower()
 
-            if target == 'me':
+            # ── diagnose me ──────────────────────────────────────
+            if target_lower == 'me':
                 if patient_csv_path is None:
                     print("  No patient file loaded. Use: load <path.csv>")
                     continue
                 try:
-                    features = load_patient_csv(patient_csv_path)
+                    feats, _ = load_patient_csv_multi(patient_csv_path)
                 except Exception as e:
                     print(f"  ERROR reading CSV: {e}")
                     continue
 
-                n_valid = np.sum(~np.isnan(features))
-                n_missing = np.sum(np.isnan(features))
-                print(f"  Sending patient data to FPGA...")
-                print(f"  Features: {n_valid} valid, {n_missing} missing (NaN)")
+                n_patients = feats.shape[0]
+                print(f"  Sending {n_patients} patient(s) to FPGA "
+                      f"(batches of {N_LANES})...")
 
-                result = send_to_fpga(ser, features)
-                if result is None:
-                    print("  ERROR: FPGA did not respond (timeout)")
-                else:
-                    decision, alarm_class, af_value = result
-                    print_diagnosis(decision, alarm_class, af_value, "Your Patient")
+                for batch_start in range(0, n_patients, N_LANES):
+                    batch_end = min(batch_start + N_LANES, n_patients)
+                    batch_features = [feats[j] for j in range(batch_start, batch_end)]
+                    n_real = len(batch_features)
 
-            elif target == 'all':
-                print(f"\n  Diagnosing ALL {data.shape[0]} users...")
+                    results = send_batch_to_fpga(ser, batch_features)
+                    if results is None:
+                        print(f"  ERROR: FPGA timeout on batch "
+                              f"{batch_start}-{batch_end-1}")
+                        continue
+
+                    for k in range(n_real):
+                        decision, alarm_class, af_value = results[k]
+                        label = f"Patient {batch_start + k + 1}/{n_patients}"
+                        print_diagnosis(decision, alarm_class, af_value, label)
+
+            # ── diagnose all ─────────────────────────────────────
+            elif target_lower == 'all':
                 n_total = data.shape[0]
+                n_batches = (n_total + N_LANES - 1) // N_LANES
+                print(f"\n  Diagnosing ALL {n_total} users "
+                      f"({n_batches} batches of {N_LANES})...")
+
                 n_healthy_correct = 0
                 n_diseased_correct = 0
                 n_healthy = 0
                 n_diseased = 0
                 n_timeout = 0
+                processed = 0
 
-                for i in range(n_total):
-                    features = data[i]
-                    result = send_to_fpga(ser, features)
+                for batch_start in range(0, n_total, N_LANES):
+                    batch_end = min(batch_start + N_LANES, n_total)
+                    batch_features = [data[j] for j in range(batch_start, batch_end)]
+                    n_real = len(batch_features)
 
-                    if result is None:
-                        n_timeout += 1
+                    results = send_batch_to_fpga(ser, batch_features)
+
+                    if results is None:
+                        n_timeout += n_real
+                        processed += n_real
                         continue
 
-                    decision, alarm_class, af_value = result
-                    true_label = int(labels[i])
+                    for k in range(n_real):
+                        user_idx = batch_start + k
+                        decision, alarm_class, af_value = results[k]
+                        true_label = int(labels[user_idx])
 
-                    if true_label == HEALTHY_CLASS:
-                        n_healthy += 1
-                        if decision != FPGA_DEC_UNHEALTHY:
-                            n_healthy_correct += 1
-                    else:
-                        n_diseased += 1
-                        if decision == FPGA_DEC_UNHEALTHY:
-                            n_diseased_correct += 1
+                        if true_label == HEALTHY_CLASS:
+                            n_healthy += 1
+                            if decision != FPGA_DEC_UNHEALTHY:
+                                n_healthy_correct += 1
+                        else:
+                            n_diseased += 1
+                            if decision == FPGA_DEC_UNHEALTHY:
+                                n_diseased_correct += 1
 
-                    if (i + 1) % 50 == 0 or i == n_total - 1:
+                    processed += n_real
+                    if processed % 48 == 0 or processed >= n_total:
                         total_correct = n_healthy_correct + n_diseased_correct
                         total_responded = n_healthy + n_diseased
-                        acc = total_correct / total_responded * 100 if total_responded else 0
-                        print(f"  Progress: {i+1}/{n_total}  "
+                        acc = (total_correct / total_responded * 100
+                               if total_responded else 0)
+                        print(f"  Progress: {processed}/{n_total}  "
                               f"accuracy={acc:.1f}%  timeouts={n_timeout}")
 
                 total_correct = n_healthy_correct + n_diseased_correct
@@ -547,42 +603,66 @@ def run_realtime(
                 print(f"  Timeouts:    {n_timeout}")
                 print(f"  {'='*50}\n")
 
+            # ── diagnose <id> or diagnose <id1> <id2> ... ────────
             else:
-                try:
-                    user_id = int(target)
-                except ValueError:
-                    print("  Usage: diagnose me | diagnose <id> | diagnose all")
+                # Parse space-separated user IDs
+                parts = target_lower.split()
+                user_ids = []
+                bad_input = False
+                for p in parts:
+                    try:
+                        uid = int(p)
+                        if uid < 0 or uid >= data.shape[0]:
+                            print(f"  ERROR: User ID {uid} out of range "
+                                  f"(0-{data.shape[0]-1})")
+                            bad_input = True
+                            break
+                        user_ids.append(uid)
+                    except ValueError:
+                        print(f"  Usage: diagnose me | diagnose <id> [<id2> ...] "
+                              f"| diagnose all")
+                        bad_input = True
+                        break
+
+                if bad_input or not user_ids:
                     continue
 
-                if user_id < 0 or user_id >= data.shape[0]:
-                    print(f"  ERROR: User ID {user_id} out of range (0-{data.shape[0]-1})")
+                if len(user_ids) > N_LANES:
+                    print(f"  ERROR: Max {N_LANES} users per batch. "
+                          f"Got {len(user_ids)}.")
                     continue
 
-                true_label = int(labels[user_id])
-                true_status = "Healthy" if true_label == HEALTHY_CLASS else \
-                              DISEASE_NAMES.get(true_label, f"Disease {true_label}")
+                n_users = len(user_ids)
+                batch_features = [data[uid] for uid in user_ids]
 
-                print(f"  Sending user {user_id} to FPGA...")
-                print(f"  True label: {true_label} ({true_status})")
+                print(f"  Sending {n_users} user(s) to FPGA "
+                      f"(padded to {N_LANES} lanes)...")
 
-                result = send_to_fpga(ser, data[user_id])
-                if result is None:
+                results = send_batch_to_fpga(ser, batch_features)
+                if results is None:
                     print("  ERROR: FPGA did not respond (timeout)")
-                else:
-                    decision, alarm_class, af_value = result
+                    continue
+
+                for k, uid in enumerate(user_ids):
+                    true_label = int(labels[uid])
+                    true_status = ("Healthy" if true_label == HEALTHY_CLASS
+                                   else DISEASE_NAMES.get(true_label,
+                                                          f"Disease {true_label}"))
+                    decision, alarm_class, af_value = results[k]
                     print_diagnosis(decision, alarm_class, af_value,
-                                    f"User {user_id} (True: {true_status})")
+                                    f"User {uid} (True: {true_status})")
 
         # --- help ---
         elif cmd_lower in ('help', '?'):
             print(f"  Commands:")
-            print(f"    diagnose me          — Diagnose from loaded patient CSV")
-            print(f"    diagnose <id>        — Diagnose user #id from the dataset")
-            print(f"    diagnose all         — Diagnose ALL dataset users")
-            print(f"    load <path.csv>      — Load a patient CSV file")
-            print(f"    list                 — List all dataset users")
-            print(f"    features             — Show feature names")
-            print(f"    quit                 — Exit")
+            print(f"    diagnose me            — Diagnose from loaded patient CSV")
+            print(f"    diagnose <id>          — Diagnose 1 user from the dataset")
+            print(f"    diagnose <id1> <id2>.. — Diagnose up to {N_LANES} users in parallel")
+            print(f"    diagnose all           — Diagnose ALL dataset users")
+            print(f"    load <path.csv>        — Load a patient CSV file")
+            print(f"    list                   — List all dataset users")
+            print(f"    features               — Show feature names")
+            print(f"    quit                   — Exit")
 
         else:
             print(f"  Unknown command: '{cmd}'. Type 'help' for commands.")
@@ -608,7 +688,7 @@ Workflow:
   2. Load .mem files into Vivado, synthesize, program FPGA
 
   3. Run real-time diagnosis:
-     python fpga_realtime_monitor.py --run --port COM3
+     python fpga_realtime_monitor.py --run --port COM4
 
   4. At the CDS> prompt:
      - Type 'diagnose me' after loading a patient CSV
@@ -622,8 +702,8 @@ Workflow:
                         help="Start real-time diagnosis mode")
     parser.add_argument("--data", type=str, default=None,
                         help="Path to arrhythmia.data")
-    parser.add_argument("--port", type=str, default="COM3",
-                        help="Serial port for FPGA (default: COM3)")
+    parser.add_argument("--port", type=str, default="COM4",
+                        help="Serial port for FPGA (default: COM4)")
     parser.add_argument("--baud", type=int, default=115200,
                         help="Baud rate (default: 115200)")
     parser.add_argument("--output", type=str, default=None,
