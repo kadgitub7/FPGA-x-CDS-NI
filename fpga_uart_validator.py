@@ -41,6 +41,7 @@ import csv
 import json
 import os
 import random
+import statistics
 import sys
 import time
 from collections import defaultdict
@@ -184,23 +185,26 @@ def save_golden_results(
     records: List[PredictionRecord],
     test_indices: List[int],
     filepath: str,
+    sw_latencies_ms: Optional[List[float]] = None,
 ) -> None:
     """Save golden model predictions to a CSV file for later FPGA comparison.
 
-    Format: user_idx, true_label, decision_code, alarm_class, is_correct, af_value
+    Format: user_idx, true_label, decision_code, alarm_class, is_correct, af_value, sw_latency_ms
     """
     with open(filepath, 'w', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
         writer.writerow([
             'user_idx', 'true_label', 'decision_code',
-            'alarm_class', 'is_correct', 'af_value',
+            'alarm_class', 'is_correct', 'af_value', 'sw_latency_ms',
         ])
-        for record, user_idx in zip(records, test_indices):
+        for i, (record, user_idx) in enumerate(zip(records, test_indices)):
             # Get final AF from last trace step
             if record.af_trace:
                 final_af = record.af_trace[-1].AF_real
             else:
                 final_af = 0
+
+            lat = sw_latencies_ms[i] if sw_latencies_ms else 0.0
 
             writer.writerow([
                 user_idx,
@@ -209,6 +213,7 @@ def save_golden_results(
                 record.alarm_class if record.alarm_class is not None else -1,
                 1 if record.is_correct else 0,
                 final_af,
+                f"{lat:.3f}",
             ])
 
 
@@ -218,14 +223,20 @@ def load_golden_results(filepath: str) -> List[Dict]:
     with open(filepath, 'r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
         for row in reader:
-            results.append({
+            entry = {
                 'user_idx': int(row['user_idx']),
                 'true_label': int(row['true_label']),
                 'decision_code': int(row['decision_code']),
                 'alarm_class': int(row['alarm_class']),
                 'is_correct': bool(int(row['is_correct'])),
                 'af_value': int(row['af_value']),
-            })
+            }
+            # Backwards-compatible: sw_latency_ms may not exist in old CSVs
+            if 'sw_latency_ms' in row:
+                entry['sw_latency_ms'] = float(row['sw_latency_ms'])
+            else:
+                entry['sw_latency_ms'] = 0.0
+            results.append(entry)
     return results
 
 
@@ -265,9 +276,10 @@ def decode_fpga_response(response: bytes) -> Tuple[int, int, int]:
 
 
 def send_user_to_fpga(ser, data: np.ndarray, user_idx: int,
-                       timeout: float = 5.0) -> Optional[Tuple[int, int, int]]:
-    """Send one user to FPGA, return (decision, alarm_class, af_value) or None."""
+                       timeout: float = 5.0) -> Optional[Tuple[int, int, int, float]]:
+    """Send one user to FPGA, return (decision, alarm_class, af_value, latency_ms) or None."""
     ser.reset_input_buffer()
+    t_start = time.perf_counter()
     ser.write(bytes([HEADER_BYTE]))
     ser.write(features_to_uart_bytes(data, user_idx))
     ser.flush()
@@ -278,9 +290,61 @@ def send_user_to_fpga(ser, data: np.ndarray, user_idx: int,
         chunk = ser.read(5 - len(response))
         if chunk:
             response += chunk
+    t_end = time.perf_counter()
     if len(response) < 5:
         return None
-    return decode_fpga_response(response)
+    dec, alarm, af = decode_fpga_response(response)
+    latency_ms = (t_end - t_start) * 1000.0
+    return dec, alarm, af, latency_ms
+
+
+N_LANES = 4  # number of parallel patient lanes on FPGA
+
+
+def send_batch_to_fpga(
+    ser, data: np.ndarray, user_indices: List[int],
+    timeout: float = 15.0,
+) -> Optional[List[Tuple[int, int, int, float]]]:
+    """Send 4 users to FPGA in one batch, return list of 4 result tuples or None.
+
+    Protocol: send 4 x [0xAA + 558 bytes] back-to-back.
+    FPGA processes all 4 in parallel, returns 4 x 5-byte responses.
+
+    Each result tuple: (decision, alarm_class, af_value, per_user_latency_ms).
+    """
+    assert len(user_indices) == N_LANES
+
+    ser.reset_input_buffer()
+    t_start = time.perf_counter()
+
+    # Send all 4 patients back-to-back
+    for user_idx in user_indices:
+        ser.write(bytes([HEADER_BYTE]))
+        ser.write(features_to_uart_bytes(data, user_idx))
+    ser.flush()
+
+    # Receive 4 x 5 = 20 response bytes
+    n_expected = N_LANES * 5
+    start = time.time()
+    response = b''
+    while len(response) < n_expected and (time.time() - start) < timeout:
+        chunk = ser.read(n_expected - len(response))
+        if chunk:
+            response += chunk
+    t_end = time.perf_counter()
+
+    if len(response) < n_expected:
+        return None
+
+    batch_latency_ms = (t_end - t_start) * 1000.0
+    per_user_ms = batch_latency_ms / N_LANES
+
+    results = []
+    for i in range(N_LANES):
+        dec, alarm, af = decode_fpga_response(response[i*5 : i*5 + 5])
+        results.append((dec, alarm, af, per_user_ms))
+
+    return results
 
 
 # ===========================================================================
@@ -355,12 +419,16 @@ def run_software_mode(
         # ---- Run golden model on TEST partition ----
         print(f"  Running golden model on {len(test_indices)} test users...")
         fold_records: List[PredictionRecord] = []
+        fold_sw_latencies: List[float] = []
         for user_idx in test_indices:
+            t0 = time.perf_counter()
             record = run_algorithm4(
                 user_idx, data, labels, tree_i, alg2_i, alg3_i,
                 rng_seed=rng_seed,
             )
+            t1 = time.perf_counter()
             fold_records.append(record)
+            fold_sw_latencies.append((t1 - t0) * 1000.0)
 
         # ---- Export golden predictions (.mem format for Verilog testbench) ----
         golden_records = export_golden_predictions(
@@ -376,6 +444,7 @@ def run_software_mode(
         save_golden_results(
             fold_records, test_indices,
             os.path.join(fold_dir, "golden_results.csv"),
+            sw_latencies_ms=fold_sw_latencies,
         )
 
         # ---- Compute per-fold stats ----
@@ -487,6 +556,15 @@ def run_fpga_mode(
 ) -> None:
     """Send one fold's test users to the FPGA and compare against golden predictions.
 
+    Binary decision only: HEALTHY vs UNHEALTHY (SCREENING counted as not-unhealthy).
+
+    Collects 5 metrics:
+      1. Bit-Exact Match Rate       — % FPGA decisions matching Python golden model
+      2. AF Value Deviation          — mean/max |FPGA_AF - Python_AF| in Q s2.30
+      3. Per-User Latency            — min/median/max/stdev of UART round-trip (ms)
+      4. Throughput                   — users/sec for FPGA vs Python
+      5. Binary Confusion Matrix     — 2x2 (Healthy/Unhealthy) Python vs FPGA
+
     Prerequisites:
       1. Software mode was run first (generated golden_results.csv per fold)
       2. fold_N's .mem files were loaded into FPGA (synthesized with those BRAMs)
@@ -510,13 +588,14 @@ def run_fpga_mode(
     n_test = len(golden_results)
 
     print(f"\n{'='*70}")
-    print(f"FPGA VALIDATION — Fold {fold_idx}")
+    print(f"FPGA VALIDATION — Fold {fold_idx}  (5-Metric Analysis)")
     print(f"{'='*70}")
     print(f"  Serial port:      {port}")
     print(f"  Baud rate:        {baud}")
     print(f"  Test users:       {n_test}")
     print(f"  Golden results:   {golden_path}")
     print(f"  .mem files from:  {output_dir}/fold_{fold_idx}/")
+    print(f"  Decision mode:    Binary (Healthy vs Unhealthy)")
     print(f"{'='*70}")
 
     # ---- Open serial port ----
@@ -530,88 +609,204 @@ def run_fpga_mode(
 
     time.sleep(1.0)  # let FPGA reset settle
 
-    # ---- Send each test user and compare ----
-    print(f"  Sending {n_test} test users to FPGA...\n")
+    # ---- Helper: map raw decision to binary ----
+    # 0=HEALTHY, 1=UNHEALTHY, 2=SCREENING  -->  binary: 1=UNHEALTHY, else=HEALTHY
+    def to_binary(dec_code: int) -> int:
+        return 1 if dec_code == 1 else 0  # only UNHEALTHY counts as positive
+
+    # ---- Collect per-user data (batches of 4) ----
+    n_batches = (n_test + N_LANES - 1) // N_LANES
+    print(f"  Sending {n_test} test users in {n_batches} batches "
+          f"of {N_LANES}...\n")
 
     n_match = 0
     n_mismatch = 0
     n_timeout = 0
-    n_correct = 0  # correct vs ground truth
 
-    for i, golden in enumerate(golden_results):
-        user_idx = golden['user_idx']
-        golden_dec = golden['decision_code']
-        golden_alarm = golden['alarm_class']
-        golden_correct = golden['is_correct']
+    fpga_latencies_ms: List[float] = []
+    af_deviations: List[int] = []
 
-        # Send to FPGA
-        fpga_result = send_user_to_fpga(ser, data, user_idx)
+    confusion = [[0, 0], [0, 0]]
+    py_confusion = [[0, 0], [0, 0]]
 
-        if fpga_result is None:
-            print(f"  User {user_idx:3d}: TIMEOUT")
-            n_timeout += 1
+    processed = 0
+
+    for batch_start in range(0, n_test, N_LANES):
+        batch_end = min(batch_start + N_LANES, n_test)
+        batch_goldens = golden_results[batch_start:batch_end]
+
+        # Build list of user indices; pad to N_LANES if short
+        batch_user_indices = [g['user_idx'] for g in batch_goldens]
+        while len(batch_user_indices) < N_LANES:
+            batch_user_indices.append(batch_user_indices[-1])
+
+        batch_results = send_batch_to_fpga(ser, data, batch_user_indices)
+
+        if batch_results is None:
+            print(f"  Batch @user {batch_user_indices[0]}: TIMEOUT")
+            n_timeout += len(batch_goldens)
+            processed += len(batch_goldens)
             continue
 
-        fpga_dec, fpga_alarm, fpga_af = fpga_result
+        # Only process real users (ignore padding results)
+        for lane_idx, golden in enumerate(batch_goldens):
+            user_idx   = golden['user_idx']
+            golden_dec = golden['decision_code']
+            golden_af  = golden['af_value']
+            true_label = golden['true_label']
 
-        # Compare decision
-        decisions_match = (fpga_dec == golden_dec)
-        if decisions_match:
-            n_match += 1
-        else:
-            n_mismatch += 1
-            golden_dec_name = [k.value for k, v in DECISION_TO_CODE.items() if v == golden_dec][0]
-            fpga_dec_name = DECISION_FROM_CODE.get(fpga_dec, HealthDecision.UNKNOWN).value
-            print(f"  User {user_idx:3d}: MISMATCH  "
-                  f"golden={golden_dec_name}  fpga={fpga_dec_name}  "
-                  f"true_label={golden['true_label']}")
+            fpga_dec, _, fpga_af, latency_ms = batch_results[lane_idx]
+            fpga_latencies_ms.append(latency_ms)
 
-        # Check correctness vs ground truth
-        fpga_decision = DECISION_FROM_CODE.get(fpga_dec, HealthDecision.UNKNOWN)
-        true_label = golden['true_label']
-        if true_label == HEALTHY_CLASS:
-            is_correct = (fpga_decision != HealthDecision.UNHEALTHY)
-        else:
-            is_correct = (fpga_decision == HealthDecision.UNHEALTHY)
-        if is_correct:
-            n_correct += 1
+            py_bin    = to_binary(golden_dec)
+            fp_bin    = to_binary(fpga_dec)
+            truth_bin = 0 if true_label == HEALTHY_CLASS else 1
 
-        # Progress
-        if (i + 1) % 10 == 0 or i == n_test - 1:
+            if fp_bin == py_bin:
+                n_match += 1
+            else:
+                n_mismatch += 1
+                py_label = "UNHEALTHY" if py_bin else "HEALTHY"
+                fp_label = "UNHEALTHY" if fp_bin else "HEALTHY"
+                print(f"  User {user_idx:3d}: MISMATCH  "
+                      f"python={py_label}  fpga={fp_label}  "
+                      f"true={'UNHEALTHY' if truth_bin else 'HEALTHY'}")
+
+            af_deviations.append(abs(fpga_af - golden_af))
+            confusion[truth_bin][fp_bin] += 1
+            py_confusion[truth_bin][py_bin] += 1
+
+        processed += len(batch_goldens)
+        if processed % 8 == 0 or processed >= n_test:
             n_responded = n_match + n_mismatch
             match_pct = n_match / n_responded * 100 if n_responded else 0
-            print(f"  Progress: {i+1:3d}/{n_test}  "
+            print(f"  Progress: {processed:3d}/{n_test}  "
                   f"match={n_match}/{n_responded} ({match_pct:.1f}%)  "
-                  f"timeouts={n_timeout}")
+                  f"timeouts={n_timeout}  ({N_LANES}/batch)")
 
     ser.close()
 
-    # ---- Report ----
+    # ================================================================
+    # REPORT — All 5 Metrics
+    # ================================================================
     n_responded = n_match + n_mismatch
-    match_rate = n_match / n_responded * 100 if n_responded else 0
-    accuracy = n_correct / n_responded * 100 if n_responded else 0
+    if n_responded == 0:
+        print("\n  ERROR: No FPGA responses received. Cannot compute metrics.")
+        return
 
-    # Load Python golden accuracy for comparison
-    golden_correct_count = sum(1 for g in golden_results if g['is_correct'])
-    golden_accuracy = golden_correct_count / n_test * 100
+    match_rate = n_match / n_responded * 100
 
     print(f"\n{'='*70}")
-    print(f"FPGA VALIDATION RESULTS — Fold {fold_idx}")
+    print(f"FPGA vs PYTHON — 5-METRIC COMPARISON REPORT  (Fold {fold_idx})")
     print(f"{'='*70}")
-    print(f"  Test users:             {n_test}")
-    print(f"  FPGA responses:         {n_responded}")
-    print(f"  Timeouts:               {n_timeout}")
-    print(f"")
-    print(f"  Match (FPGA vs Python): {n_match}/{n_responded} ({match_rate:.1f}%)")
-    print(f"  Mismatches:             {n_mismatch}")
-    print(f"")
-    print(f"  FPGA accuracy:          {accuracy:.1f}%")
-    print(f"  Python accuracy:        {golden_accuracy:.1f}%")
+    print(f"  Test users: {n_test}   Responded: {n_responded}   "
+          f"Timeouts: {n_timeout}")
 
+    # ------ Metric 1: Bit-Exact Match Rate ------
+    print(f"\n  ---- METRIC 1: Bit-Exact Match Rate (Binary: H vs U) ----")
+    print(f"  Matching:    {n_match}/{n_responded}  ({match_rate:.1f}%)")
+    print(f"  Mismatches:  {n_mismatch}")
+    if n_mismatch == 0:
+        print(f"  PASS")
+    else:
+        print(f"  FAIL — FPGA diverges from golden model on {n_mismatch} users")
+
+    # ------ Metric 2: AF Value Deviation ------
+    print(f"\n  ---- METRIC 2: AF Value Deviation (Q s2.30) ----")
+    if af_deviations:
+        mean_dev = sum(af_deviations) / len(af_deviations)
+        max_dev = max(af_deviations)
+        scale = 1 << 30
+        print(f"  Mean |FPGA_AF - Py_AF|:  {mean_dev:.0f}  "
+              f"({mean_dev / scale:.8f} real)")
+        print(f"  Max  |FPGA_AF - Py_AF|:  {max_dev}  "
+              f"({max_dev / scale:.8f} real)")
+        n_zero = sum(1 for d in af_deviations if d == 0)
+        print(f"  Exact AF matches:        {n_zero}/{len(af_deviations)}  "
+              f"({n_zero / len(af_deviations) * 100:.1f}%)")
+
+    # ------ Metric 3: Per-User Latency ------
+    print(f"\n  ---- METRIC 3: Per-User Latency (ms) ----")
+    fpga_processing = 0.0
+    if fpga_latencies_ms:
+        lat_min = min(fpga_latencies_ms)
+        lat_max = max(fpga_latencies_ms)
+        lat_med = statistics.median(fpga_latencies_ms)
+        lat_mean = statistics.mean(fpga_latencies_ms)
+        lat_std = statistics.stdev(fpga_latencies_ms) if len(fpga_latencies_ms) > 1 else 0
+
+        uart_overhead_ms = (559 * 10 / baud + 5 * 10 / baud) * 1000
+        fpga_processing = max(0, lat_med - uart_overhead_ms)
+
+        print(f"  FPGA round-trip:    min={lat_min:.1f}  median={lat_med:.1f}  "
+              f"max={lat_max:.1f}  stdev={lat_std:.1f}")
+        print(f"  UART wire time:     ~{uart_overhead_ms:.1f} ms  "
+              f"(559 TX + 5 RX bytes @ {baud} baud)")
+        print(f"  Est. FPGA compute:  ~{fpga_processing:.1f} ms  "
+              f"(median - wire time)")
+
+    sw_latencies = [g['sw_latency_ms'] for g in golden_results
+                    if g['sw_latency_ms'] > 0]
+    if sw_latencies:
+        sw_med = statistics.median(sw_latencies)
+        sw_mean = statistics.mean(sw_latencies)
+        sw_min = min(sw_latencies)
+        sw_max = max(sw_latencies)
+        print(f"  Python inference:   min={sw_min:.1f}  median={sw_med:.1f}  "
+              f"max={sw_max:.1f} ms")
+
+    # ------ Metric 4: Throughput ------
+    print(f"\n  ---- METRIC 4: Throughput ----")
+    if fpga_latencies_ms:
+        fpga_throughput = 1000.0 / lat_mean
+        print(f"  FPGA:    {fpga_throughput:.1f} users/sec  "
+              f"(mean {lat_mean:.1f} ms)")
+    if sw_latencies:
+        sw_throughput = 1000.0 / sw_mean
+        print(f"  Python:  {sw_throughput:.1f} users/sec  "
+              f"(mean {sw_mean:.1f} ms)")
+        if fpga_latencies_ms:
+            ratio = sw_mean / lat_mean
+            if ratio > 1:
+                print(f"  FPGA is {ratio:.1f}x FASTER (wall-clock, incl. UART)")
+            else:
+                print(f"  Python is {1/ratio:.1f}x faster (UART overhead dominates)")
+                print(f"  Note: FPGA compute alone ~{fpga_processing:.1f} ms vs "
+                      f"Python {sw_med:.1f} ms")
+
+    # ------ Metric 5: Binary Confusion Matrix ------
+    print(f"\n  ---- METRIC 5: Binary Confusion Matrix (H vs U) ----")
+
+    # Helper to print one confusion matrix and derive stats
+    def print_binary_confusion(label: str, cm: List[List[int]]) -> None:
+        tn, fp = cm[0][0], cm[0][1]
+        fn, tp = cm[1][0], cm[1][1]
+        total = tn + fp + fn + tp
+
+        accuracy = (tp + tn) / total * 100 if total else 0
+        sensitivity = tp / (tp + fn) * 100 if (tp + fn) else 0
+        specificity = tn / (tn + fp) * 100 if (tn + fp) else 0
+        fa_rate = fp / (fp + tn) * 100 if (fp + tn) else 0
+
+        print(f"\n  {label}:")
+        print(f"  {'':>14}  Predicted H  Predicted U")
+        print(f"  {'True Healthy':>14}  {tn:>10}   {fp:>10}   (n={tn+fp})")
+        print(f"  {'True Unhealthy':>14}  {fn:>10}   {tp:>10}   (n={fn+tp})")
+        print(f"  Accuracy:     {accuracy:.1f}%  ({tp+tn}/{total})")
+        print(f"  Sensitivity:  {sensitivity:.1f}%  ({tp}/{tp+fn} unhealthy detected)")
+        print(f"  Specificity:  {specificity:.1f}%  ({tn}/{tn+fp} healthy correct)")
+        print(f"  False Alarm:  {fa_rate:.1f}%  ({fp}/{fp+tn} healthy misclassified)")
+
+    print_binary_confusion("FPGA", confusion)
+    print_binary_confusion("Python (golden model)", py_confusion)
+
+    # ------ Final Verdict ------
+    print(f"\n  {'='*50}")
     if n_mismatch == 0 and n_responded > 0:
-        print(f"\n  PASS: All {n_responded} predictions match the golden model!")
+        print(f"  PASS: All {n_responded} binary decisions match!")
     elif n_mismatch > 0:
-        print(f"\n  FAIL: {n_mismatch} mismatches — FPGA implementation has bugs.")
+        print(f"  FAIL: {n_mismatch}/{n_responded} binary mismatches.")
+    print(f"  {'='*50}")
     print(f"{'='*70}\n")
 
 
