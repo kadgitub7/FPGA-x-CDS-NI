@@ -6,7 +6,9 @@
     "accuracy": 0.6902654867256637,
     "sensitivity": 0.8357487922705314,
     "specificity": 0.5673469387755102,
-    "false_alarm_rate": 0.4326530612244898
+    "false_alarm_rate": 0.4326530612244898,
+    "total_energy_kwh": 3.051252786113328e-06,
+    "avg_power_watts": 1.1890661587263782
   },
   "per_fold": [
     {
@@ -14,70 +16,120 @@
       "n_test": 46,
       "accuracy": 0.5869565217391305,
       "sensitivity": 0.7272727272727273,
-      "specificity": 0.4583333333333333
+      "specificity": 0.4583333333333333,
+      "energy_kwh": 1.8007394929103803e-07,
+      "power_watts": 1.2044420037281767,
+      "duration_s": 0.5382295000017621,
+      "cpu_energy_kwh": 1.4926729160717531e-06,
+      "ram_energy_kwh": 1.2895803333473547e-06
     },
     {
       "fold": 1,
       "n_test": 46,
       "accuracy": 0.6956521739130435,
       "sensitivity": 0.7916666666666666,
-      "specificity": 0.5909090909090909
+      "specificity": 0.5909090909090909,
+      "energy_kwh": 2.068347843692689e-07,
+      "power_watts": 0.9583210781950148,
+      "duration_s": 0.7769893000076991,
+      "cpu_energy_kwh": 1.7066711074214624e-06,
+      "ram_energy_kwh": 1.4890534999964682e-06
     },
     {
       "fold": 2,
       "n_test": 46,
       "accuracy": 0.7391304347826086,
       "sensitivity": 1.0,
-      "specificity": 0.5555555555555556
+      "specificity": 0.5555555555555556,
+      "energy_kwh": 2.654913459898091e-07,
+      "power_watts": 1.1892349274479352,
+      "duration_s": 0.8036837999825366,
+      "cpu_energy_kwh": 2.590854470818925e-06,
+      "ram_energy_kwh": 1.5111500833154424e-06
     },
     {
       "fold": 3,
       "n_test": 46,
       "accuracy": 0.782608695652174,
       "sensitivity": 0.9523809523809523,
-      "specificity": 0.64
+      "specificity": 0.64,
+      "energy_kwh": 4.929723563181307e-07,
+      "power_watts": 1.8921808850084005,
+      "duration_s": 0.9379126999992877,
+      "cpu_energy_kwh": 5.997537381939438e-06,
+      "ram_energy_kwh": 1.619188666663831e-06
     },
     {
       "fold": 4,
       "n_test": 46,
       "accuracy": 0.6956521739130435,
       "sensitivity": 0.9,
-      "specificity": 0.5384615384615384
+      "specificity": 0.5384615384615384,
+      "energy_kwh": 2.702356754621984e-07,
+      "power_watts": 0.9761999212401922,
+      "duration_s": 0.9965667999931611,
+      "cpu_energy_kwh": 2.50296636192529e-06,
+      "ram_energy_kwh": 1.6723409999879854e-06
     },
     {
       "fold": 5,
       "n_test": 46,
       "accuracy": 0.6739130434782609,
       "sensitivity": 0.875,
-      "specificity": 0.45454545454545453
+      "specificity": 0.45454545454545453,
+      "energy_kwh": 7.410387351026492e-07,
+      "power_watts": 0.897737915747696,
+      "duration_s": 2.971623899997212,
+      "cpu_energy_kwh": 8.135033227614591e-06,
+      "ram_energy_kwh": 3.3144709166663233e-06
     },
     {
       "fold": 6,
       "n_test": 46,
       "accuracy": 0.6521739130434783,
       "sensitivity": 0.75,
-      "specificity": 0.5454545454545454
+      "specificity": 0.5454545454545454,
+      "energy_kwh": 2.1767951298053974e-07,
+      "power_watts": 0.8844025102192861,
+      "duration_s": 0.8860742000106256,
+      "cpu_energy_kwh": 1.7856848332112827e-06,
+      "ram_energy_kwh": 1.5775974999996834e-06
     },
     {
       "fold": 7,
       "n_test": 46,
       "accuracy": 0.5869565217391305,
       "sensitivity": 0.6470588235294118,
-      "specificity": 0.5517241379310345
+      "specificity": 0.5517241379310345,
+      "energy_kwh": 2.881019828132658e-07,
+      "power_watts": 0.9216233971574695,
+      "duration_s": 1.125369799992768,
+      "cpu_energy_kwh": 2.6748397136772297e-06,
+      "ram_energy_kwh": 1.7765130833383107e-06
     },
     {
       "fold": 8,
       "n_test": 46,
       "accuracy": 0.7391304347826086,
       "sensitivity": 0.8235294117647058,
-      "specificity": 0.6896551724137931
+      "specificity": 0.6896551724137931,
+      "energy_kwh": 1.738726022594168e-07,
+      "power_watts": 1.1929043521465343,
+      "duration_s": 0.5247205000196118,
+      "cpu_energy_kwh": 1.4110263743768237e-06,
+      "ram_energy_kwh": 1.275412250009443e-06
     },
     {
       "fold": 9,
       "n_test": 38,
       "accuracy": 0.7631578947368421,
       "sensitivity": 0.8947368421052632,
-      "specificity": 0.631578947368421
+      "specificity": 0.631578947368421,
+      "energy_kwh": 2.14951841527011e-07,
+      "power_watts": 1.773614596373077,
+      "duration_s": 0.4362991999951191,
+      "cpu_energy_kwh": 2.1194545485777337e-06,
+      "ram_energy_kwh": 1.2016835833492223e-06
     }
   ]
 }

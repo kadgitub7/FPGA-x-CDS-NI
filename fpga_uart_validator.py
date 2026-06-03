@@ -49,6 +49,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 import numpy as np
+from codecarbon import EmissionsTracker
 
 # ---------------------------------------------------------------------------
 # Import paths
@@ -186,16 +187,20 @@ def save_golden_results(
     test_indices: List[int],
     filepath: str,
     sw_latencies_ms: Optional[List[float]] = None,
+    fold_energy: Optional[Dict] = None,
 ) -> None:
     """Save golden model predictions to a CSV file for later FPGA comparison.
 
-    Format: user_idx, true_label, decision_code, alarm_class, is_correct, af_value, sw_latency_ms
+    Format: user_idx, true_label, decision_code, alarm_class, is_correct, af_value, sw_latency_ms,
+            fold_energy_kwh, fold_power_watts, fold_duration_s, fold_cpu_energy_kwh, fold_ram_energy_kwh
     """
     with open(filepath, 'w', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
         writer.writerow([
             'user_idx', 'true_label', 'decision_code',
             'alarm_class', 'is_correct', 'af_value', 'sw_latency_ms',
+            'fold_energy_kwh', 'fold_power_watts', 'fold_duration_s',
+            'fold_cpu_energy_kwh', 'fold_ram_energy_kwh',
         ])
         for i, (record, user_idx) in enumerate(zip(records, test_indices)):
             # Get final AF from last trace step
@@ -206,6 +211,7 @@ def save_golden_results(
 
             lat = sw_latencies_ms[i] if sw_latencies_ms else 0.0
 
+            e = fold_energy or {}
             writer.writerow([
                 user_idx,
                 record.true_label,
@@ -214,6 +220,11 @@ def save_golden_results(
                 1 if record.is_correct else 0,
                 final_af,
                 f"{lat:.3f}",
+                f"{e.get('energy_kwh', 0):.10f}",
+                f"{e.get('power_watts', 0):.4f}",
+                f"{e.get('duration_s', 0):.3f}",
+                f"{e.get('cpu_energy_kwh', 0):.10f}",
+                f"{e.get('ram_energy_kwh', 0):.10f}",
             ])
 
 
@@ -231,11 +242,14 @@ def load_golden_results(filepath: str) -> List[Dict]:
                 'is_correct': bool(int(row['is_correct'])),
                 'af_value': int(row['af_value']),
             }
-            # Backwards-compatible: sw_latency_ms may not exist in old CSVs
             if 'sw_latency_ms' in row:
                 entry['sw_latency_ms'] = float(row['sw_latency_ms'])
             else:
                 entry['sw_latency_ms'] = 0.0
+            for col in ('fold_energy_kwh', 'fold_power_watts', 'fold_duration_s',
+                        'fold_cpu_energy_kwh', 'fold_ram_energy_kwh'):
+                if col in row:
+                    entry[col] = float(row[col])
             results.append(entry)
     return results
 
@@ -373,6 +387,7 @@ def run_software_mode(
 
     all_records: List[PredictionRecord] = []
     fold_stats_list: List[Dict] = []
+    fold_energy_list: List[Dict] = []
 
     for fold_idx, (train_indices, test_indices) in enumerate(folds):
         fold_dir = os.path.join(output_dir, f"fold_{fold_idx}")
@@ -416,7 +431,19 @@ def run_software_mode(
         export_test_vectors(data, labels, test_indices,
                             os.path.join(fold_dir, "test_vectors.mem"))
 
-        # ---- Run golden model on TEST partition ----
+        # ---- Run golden model on TEST partition (Alg 4 only — energy tracked) ----
+        # Energy measurement covers ONLY Algorithm 4 inference, not Alg 1-3
+        # training. This matches what the FPGA executes for fair comparison.
+        tracker = EmissionsTracker(
+            project_name=f"fold_{fold_idx}",
+            output_dir=fold_dir,
+            output_file=f"fold_{fold_idx}_emissions.csv",
+            log_level="error",
+            save_to_file=True,
+        )
+        tracker.start()
+        fold_t0 = time.perf_counter()
+
         print(f"  Running golden model on {len(test_indices)} test users...")
         fold_records: List[PredictionRecord] = []
         fold_sw_latencies: List[float] = []
@@ -429,6 +456,25 @@ def run_software_mode(
             t1 = time.perf_counter()
             fold_records.append(record)
             fold_sw_latencies.append((t1 - t0) * 1000.0)
+
+        fold_t1 = time.perf_counter()
+        fold_emissions = tracker.stop()
+        fold_duration_s = fold_t1 - fold_t0
+
+        fold_energy_kwh = fold_emissions if fold_emissions is not None else 0.0
+        fold_power_watts = (fold_energy_kwh * 1000.0 * 3600.0) / fold_duration_s if fold_duration_s > 0 else 0.0
+
+        cpu_energy_kwh = tracker._total_cpu_energy.kWh if hasattr(tracker, '_total_cpu_energy') else 0.0
+        ram_energy_kwh = tracker._total_ram_energy.kWh if hasattr(tracker, '_total_ram_energy') else 0.0
+
+        fold_energy = {
+            'energy_kwh': fold_energy_kwh,
+            'power_watts': fold_power_watts,
+            'duration_s': fold_duration_s,
+            'cpu_energy_kwh': cpu_energy_kwh,
+            'ram_energy_kwh': ram_energy_kwh,
+        }
+        fold_energy_list.append(fold_energy)
 
         # ---- Export golden predictions (.mem format for Verilog testbench) ----
         golden_records = export_golden_predictions(
@@ -445,6 +491,7 @@ def run_software_mode(
             fold_records, test_indices,
             os.path.join(fold_dir, "golden_results.csv"),
             sw_latencies_ms=fold_sw_latencies,
+            fold_energy=fold_energy,
         )
 
         # ---- Compute per-fold stats ----
@@ -454,39 +501,49 @@ def run_software_mode(
 
         print(f"  Fold {fold_idx} results: accuracy={stats['accuracy']*100:.1f}%  "
               f"sensitivity={stats['sensitivity']*100:.1f}%  "
-              f"specificity={stats['specificity']*100:.1f}%\n")
+              f"specificity={stats['specificity']*100:.1f}%")
+        print(f"  Energy: {fold_energy_kwh*1e6:.4f} uWh  "
+              f"({fold_power_watts:.2f} W avg over {fold_duration_s:.1f}s)\n")
 
     # ================================================================
     # Print per-fold summary table
     # ================================================================
-    print(f"\n{'='*70}")
+    print(f"\n{'='*90}")
     print("PER-FOLD RESULTS")
-    print(f"{'='*70}")
+    print(f"{'='*90}")
     print(f"  {'Fold':>4}  {'Users':>5}  {'Correct':>7}  {'Acc':>7}  "
-          f"{'Sens':>7}  {'Spec':>7}  {'FA Rate':>7}  {'Screen':>6}")
-    print(f"  {'-'*60}")
+          f"{'Sens':>7}  {'Spec':>7}  {'FA Rate':>7}  {'Screen':>6}  "
+          f"{'Energy(uWh)':>11}  {'Power(W)':>8}")
+    print(f"  {'-'*82}")
 
     for i, stats in enumerate(fold_stats_list):
+        e = fold_energy_list[i]
         print(f"  {i:4d}  {stats['n']:5d}  {stats['n_correct']:7d}  "
               f"{stats['accuracy']*100:6.1f}%  "
               f"{stats['sensitivity']*100:6.1f}%  "
               f"{stats['specificity']*100:6.1f}%  "
               f"{stats['false_alarm_rate']*100:6.1f}%  "
-              f"{stats['n_screening']:6d}")
+              f"{stats['n_screening']:6d}  "
+              f"{e['energy_kwh']*1e6:11.4f}  "
+              f"{e['power_watts']:8.2f}")
 
     # ================================================================
     # Print aggregate results
     # ================================================================
     agg = compute_fold_stats(all_records)
+    total_energy_kwh = sum(e['energy_kwh'] for e in fold_energy_list)
+    avg_power_watts = sum(e['power_watts'] for e in fold_energy_list) / len(fold_energy_list) if fold_energy_list else 0
 
-    print(f"  {'-'*60}")
-    print(f"  {'AVG':>4}  {agg['n']:5d}  {agg['n_correct']:7d}  "
+    print(f"  {'-'*82}")
+    print(f"  {'TOT':>4}  {agg['n']:5d}  {agg['n_correct']:7d}  "
           f"{agg['accuracy']*100:6.1f}%  "
           f"{agg['sensitivity']*100:6.1f}%  "
           f"{agg['specificity']*100:6.1f}%  "
           f"{agg['false_alarm_rate']*100:6.1f}%  "
-          f"{agg['n_screening']:6d}")
-    print(f"{'='*70}")
+          f"{agg['n_screening']:6d}  "
+          f"{total_energy_kwh*1e6:11.4f}  "
+          f"{avg_power_watts:8.2f}")
+    print(f"{'='*90}")
 
     # Per-class breakdown (aggregate)
     diseased = [r for r in all_records if r.true_is_diseased]
@@ -523,6 +580,8 @@ def run_software_mode(
             'sensitivity': agg['sensitivity'],
             'specificity': agg['specificity'],
             'false_alarm_rate': agg['false_alarm_rate'],
+            'total_energy_kwh': total_energy_kwh,
+            'avg_power_watts': avg_power_watts,
         },
         'per_fold': [
             {
@@ -531,6 +590,11 @@ def run_software_mode(
                 'accuracy': s['accuracy'],
                 'sensitivity': s['sensitivity'],
                 'specificity': s['specificity'],
+                'energy_kwh': fold_energy_list[i]['energy_kwh'],
+                'power_watts': fold_energy_list[i]['power_watts'],
+                'duration_s': fold_energy_list[i]['duration_s'],
+                'cpu_energy_kwh': fold_energy_list[i]['cpu_energy_kwh'],
+                'ram_energy_kwh': fold_energy_list[i]['ram_energy_kwh'],
             }
             for i, s in enumerate(fold_stats_list)
         ],
