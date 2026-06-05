@@ -1,11 +1,7 @@
 """
-fpga_realtime_monitor.py — Real-Time CDS Cardiac Diagnosis via FPGA
-
 Unlike the validation pipeline (which uses 10-fold CV on a fixed dataset),
 this script trains the model on ALL 452 users, exports .mem files for the
 FPGA, and then provides a live interactive diagnosis interface.
-
-=== SETUP (run once) ===
 
   python fpga_realtime_monitor.py --setup
 
@@ -14,7 +10,7 @@ FPGA, and then provides a live interactive diagnosis interface.
   - After this, load fpga_mem/*.mem into your Vivado project,
     synthesize, and program the FPGA
 
-=== REAL-TIME DIAGNOSIS ===
+    For real time diagnosis, run:
 
   python fpga_realtime_monitor.py --run --port COM4
 
@@ -25,13 +21,14 @@ FPGA, and then provides a live interactive diagnosis interface.
   - Type 'list' to show all users in the dataset
   - Type 'quit' to exit
 
-=== PATIENT CSV FORMAT ===
-
+  If you want to load a new patient, you need to add the following to the csv:
   The patient CSV file should have 279 feature columns matching the
   arrhythmia dataset format. Column names are optional — if absent,
   columns are read positionally. Missing values use '?' or NaN.
 
   A template CSV with column headers is generated during --setup.
+
+  This is the main project which is used to predict and acts as a real product which can theoretically be used
 """
 
 from __future__ import annotations
@@ -47,9 +44,6 @@ from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 
-# ---------------------------------------------------------------------------
-# Import from the main CDS-NI project
-# ---------------------------------------------------------------------------
 PROJECT_ROOT = Path(__file__).parent
 CDS_NI_ROOT = PROJECT_ROOT.parent
 sys.path.insert(0, str(CDS_NI_ROOT))
@@ -69,9 +63,6 @@ from FixedPoint_pipeline.decision_pipeline_fixedPoint import (
 from FixedPoint_pipeline.parameter_export import export_model_parameters
 
 
-# ===========================================================================
-# Constants
-# ===========================================================================
 HEADER_BYTE = 0xAA
 N_FEAT = N_FEATURES  # 279
 
@@ -104,18 +95,8 @@ DECISION_NAMES = {
     3: "UNKNOWN",
 }
 
-
-# ===========================================================================
-# Feature name list for CSV template
-# ===========================================================================
-
 def get_ordered_feature_names() -> List[str]:
     return [FEATURE_NAMES.get(i, f"feature_{i}") for i in range(N_FEAT)]
-
-
-# ===========================================================================
-# UART Communication
-# ===========================================================================
 
 def features_to_uart_bytes(features: np.ndarray) -> bytes:
     """Convert a 279-element feature vector to 558 UART payload bytes."""
@@ -197,11 +178,6 @@ def send_batch_to_fpga(
         results.append(decode_fpga_response(response[i*5 : i*5 + 5]))
 
     return results
-
-
-# ===========================================================================
-# CSV Patient Loading
-# ===========================================================================
 
 def load_patient_csv(csv_path: str) -> np.ndarray:
     """Load patient features from a CSV file.
@@ -291,11 +267,6 @@ def load_patient_csv_multi(csv_path: str) -> Tuple[np.ndarray, Optional[np.ndarr
 
     return features, labels
 
-
-# ===========================================================================
-# Setup Mode — Train on all data, export .mem files
-# ===========================================================================
-
 def run_setup(data: np.ndarray, labels: np.ndarray, output_dir: str) -> None:
     """Train on ALL users and export .mem files for FPGA synthesis."""
 
@@ -357,11 +328,6 @@ def run_setup(data: np.ndarray, labels: np.ndarray, output_dir: str) -> None:
     print(f"    3. Run: python fpga_realtime_monitor.py --run --port COM4")
     print(f"{'='*70}\n")
 
-
-# ===========================================================================
-# Diagnosis Display
-# ===========================================================================
-
 def print_diagnosis(decision: int, alarm_class: int, af_value: int,
                     patient_label: str = "Patient") -> None:
     """Pretty-print a diagnosis result from the FPGA."""
@@ -395,10 +361,6 @@ def print_diagnosis(decision: int, alarm_class: int, af_value: int,
 
     print(f"  {'='*50}\n")
 
-
-# ===========================================================================
-# Interactive Real-Time Mode
-# ===========================================================================
 
 def run_realtime(
     data: np.ndarray,
@@ -459,12 +421,10 @@ def run_realtime(
 
         cmd_lower = cmd.lower()
 
-        # --- quit ---
         if cmd_lower in ('quit', 'exit', 'q'):
             print("  Goodbye!")
             break
 
-        # --- load CSV ---
         elif cmd_lower.startswith('load '):
             path = cmd[5:].strip().strip('"').strip("'")
             if os.path.isfile(path):
@@ -481,7 +441,6 @@ def run_realtime(
             else:
                 print(f"  ERROR: File not found: {path}")
 
-        # --- list users ---
         elif cmd_lower == 'list':
             print(f"\n  Dataset: {data.shape[0]} users")
             print(f"  {'ID':>4}  {'Label':>5}  {'Status':>10}  {'Sex':>4}  {'Age':>4}")
@@ -494,7 +453,6 @@ def run_realtime(
                 print(f"  {i:4d}  {label:5d}  {status:>10}  {sex:>4}  {age:>4}")
             print()
 
-        # --- features ---
         elif cmd_lower == 'features':
             print(f"\n  279 ECG Feature Names:")
             print(f"  {'Idx':>4}  {'Name':<25}")
@@ -503,12 +461,10 @@ def run_realtime(
                 print(f"  {i:4d}  {FEATURE_NAMES.get(i, f'feature_{i}'):<25}")
             print()
 
-        # --- diagnose ---
         elif cmd_lower.startswith('diagnose'):
             target = cmd[8:].strip()   # preserve original case for paths
             target_lower = target.lower()
 
-            # ── diagnose me ──────────────────────────────────────
             if target_lower == 'me':
                 if patient_csv_path is None:
                     print("  No patient file loaded. Use: load <path.csv>")
@@ -539,7 +495,6 @@ def run_realtime(
                         label = f"Patient {batch_start + k + 1}/{n_patients}"
                         print_diagnosis(decision, alarm_class, af_value, label)
 
-            # ── diagnose all ─────────────────────────────────────
             elif target_lower == 'all':
                 n_total = data.shape[0]
                 n_batches = (n_total + N_LANES - 1) // N_LANES
@@ -603,7 +558,6 @@ def run_realtime(
                 print(f"  Timeouts:    {n_timeout}")
                 print(f"  {'='*50}\n")
 
-            # ── diagnose <id> or diagnose <id1> <id2> ... ────────
             else:
                 # Parse space-separated user IDs
                 parts = target_lower.split()
@@ -652,7 +606,6 @@ def run_realtime(
                     print_diagnosis(decision, alarm_class, af_value,
                                     f"User {uid} (True: {true_status})")
 
-        # --- help ---
         elif cmd_lower in ('help', '?'):
             print(f"  Commands:")
             print(f"    diagnose me            — Diagnose from loaded patient CSV")
@@ -669,11 +622,6 @@ def run_realtime(
 
     ser.close()
     print("  Serial port closed.")
-
-
-# ===========================================================================
-# Main
-# ===========================================================================
 
 def main():
     parser = argparse.ArgumentParser(

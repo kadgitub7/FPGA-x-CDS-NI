@@ -7,10 +7,6 @@ Prediction/inference phase. For a single test user, applies cognitive actions
   HEALTHY    - rw = (1 - AF) <= threshold
   SCREENING  - all disease classes checked, AF insufficient
 
-Key equations:
-  Eq. 7: AF_t = P(h,f) * r_{j|h} / P(h>1,f) + AF_{t-1}
-  Eq. 8: rw_t = 1 - AF_t
-
 Includes LOOCV evaluation pipeline for accuracy measurement.
 """
 
@@ -40,13 +36,8 @@ from action_normalRange import (
 )
 from action_pruning import Algorithm3Output, run_algorithm3
 
-
-# --- Constants ---
-
 ALL_DISEASE_CLASSES: Tuple[int, ...] = (2, 3, 4, 5, 6, 7, 8, 9, 10, 14, 15, 16)
 
-
-# --- Data Structures ---
 
 class HealthDecision(Enum):
     HEALTHY = "Healthy"
@@ -66,33 +57,29 @@ class FPGATraceStep:
       "branch_route"    — node routing comparison
       "threshold_check" — final rw vs threshold comparison
     """
-    # --- Main PAC values ---
+
     raw_value: float = float("nan")   # BD_m^k(o,u) — sensor reading
-    b_min: float = float("nan")       # Eq. 5 — lower healthy boundary
-    b_max: float = float("nan")       # Eq. 5 — upper healthy boundary
+    b_min: float = float("nan")       # lower healthy boundary
+    b_max: float = float("nan")       # upper healthy boundary
     r_j_h: float = float("nan")       # Algorithm 3 — action weight
     p_h_f: float = float("nan")       # P(h, f^k_m) — disease prevalence in node
     p_h_gt1_f: float = float("nan")   # P(h>1, f^k_m) — denominator term
     numerator: float = float("nan")   # p_h_f * r_j_h — intermediate product before division
     delta_AF: float = float("nan")    # numerator / p_h_gt1_f — AF increment this step
-    AF_real: float = float("nan")     # Eq. 7 cumulative — running assurance factor
-    rw_real: float = float("nan")     # Eq. 8: 1 - AF — remaining risk
+    AF_real: float = float("nan")     # cumulative — running assurance factor
+    rw_real: float = float("nan")     # 1 - AF — remaining risk
 
-    # --- RL lookahead values (lines 11-17 of Algorithm 4) ---
     AF_sim: float = float("nan")      # simulated AF increment for candidate
     rw_sim: float = float("nan")      # 1 - (AF_sim + AF_real) — can go negative
     best_rw: float = float("nan")     # running minimum rw_sim across candidates
 
-    # --- Node routing values (BranchDef.contains) ---
     branch_val: float = float("nan")  # sensor value used for tree routing
     branch_low: float = float("nan")  # tree partition lower bound
     branch_high: float = float("nan") # tree partition upper bound
 
-    # --- Threshold comparison ---
     rw_final: float = float("nan")    # final 1 - AF compared to threshold
     threshold: float = float("nan")   # DIAGNOSTIC_THRESHOLD constant
 
-    # --- Metadata (not profiled, just for traceability) ---
     feature_idx: int = -1
     disease_class: int = -1
     node_id: str = ""
@@ -156,9 +143,6 @@ class Algorithm4Output:
 
         n_fa = sum(1 for r in self.records if r.true_is_healthy and r.decision == HealthDecision.UNHEALTHY)
         self.false_alarm_rate = n_fa / self.n_healthy_total if self.n_healthy_total else 0.0
-
-
-# --- Helper Functions ---
 
 def _is_outside_healthy_range(value: float, b_min: float, b_max: float) -> bool:
     if np.isnan(value) or np.isnan(b_min) or np.isnan(b_max) or b_min > b_max:
@@ -233,7 +217,7 @@ def _rl_select_best_action(
     alg2_output: Algorithm2Output,
     record: Optional[PredictionRecord] = None,
 ) -> Optional[ExecutiveActionEntry]:
-    """RL lookahead: select action minimizing rw_sim (lines 11-17)."""
+    """RL lookahead: select action minimizing rw_sim."""
     if not candidates:
         return None
 
@@ -260,9 +244,6 @@ def _rl_select_best_action(
             ))
 
     return best_action
-
-
-# --- Core Prediction (Single Node) ---
 
 def _predict_at_node(
     user_idx: int,
@@ -358,9 +339,6 @@ def _predict_at_node(
         return HealthDecision.UNKNOWN, AF_real, None
 
     return HealthDecision.SCREENING, AF_real, None
-
-
-# --- Main Prediction (Algorithm 4) ---
 
 def run_algorithm4(
     user_idx: int,
@@ -545,9 +523,6 @@ def ten_fold_cv(data: np.ndarray,
     output._recompute_stats()
     return output
 
-
-# --- Reporting ---
-
 def print_results(output: Algorithm4Output) -> None:
     n = len(output.records)
     print(f"\n{'='*60}")
@@ -576,9 +551,6 @@ def print_results(output: Algorithm4Output) -> None:
             print(f"  {cls:6d} {len(recs):6d} {detected:9d} {pct:6.1f}%")
 
     print(f"{'='*60}")
-
-
-# --- FPGA Fixed-Point Range Profiling ---
 
 FPGA_TRACE_FIELDS: Tuple[str, ...] = (
     # Main PAC values
@@ -699,9 +671,6 @@ def profile_fixed_point_ranges(
 
     print(f"\n  Report written to: {output_path}")
     return ranges
-
-
-# --- Main ---
 
 if __name__ == "__main__":
     path = sys.argv[1] if len(sys.argv) > 1 else str(Path(__file__).parent / "data" / "arrhythmia.data")

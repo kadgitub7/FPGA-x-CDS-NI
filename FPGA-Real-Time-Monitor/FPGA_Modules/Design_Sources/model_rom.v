@@ -25,17 +25,6 @@ module model_rom(
     output wire signed [15:0] hr_bmax
 );
 
-    // ================================================================
-    // Healthy Ranges - two-level lookup
-    // ================================================================
-    // Level 1: hr_index BRAM  (59985 x 16-bit -> pair_id)
-    // Level 2: hr_pairs BRAM  (≤4096 x 32-bit -> {bmin, bmax})
-    //
-    // af_engine puts compact address on hr_read_addr.
-    // Cycle 1: index BRAM returns pair_id (registered inside bram_rom).
-    // Cycle 2: pair BRAM returns {bmin, bmax} (registered inside bram_rom).
-    // Total latency: 2 clock cycles from address to data.
-    // ================================================================
 
     wire [15:0] hr_pair_id;       // output of level-1 index BRAM
     wire [31:0] hr_data_wide;     // output of level-2 pair BRAM
@@ -59,10 +48,6 @@ module model_rom(
                .MEM_FILE("hr_pairs.mem"))
     u_hr_pair (.clk(clk), .addr(hr_pair_id[11:0]), .re(1'b1),
                .data(hr_data_wide), .valid());
-
-    // ================================================================
-    // Other BRAMs (unchanged)
-    // ================================================================
 
     bram_rom #(.ADDR_W(10), .DATA_W(16), .DEPTH(645),
                .MEM_FILE("tree_topology.mem"))

@@ -1,15 +1,11 @@
 """
-Algorithm 4: CDS User-Health Prediction Pipeline
+Algorithm 4: CDS User-Health Prediction Pipeline fixed point version
 
 Prediction/inference phase. For a single test user, applies cognitive actions
 (sensor activations), accumulates Assurance Factor (AF), and decides:
   UNHEALTHY  - feature value outside healthy range -> alarm
   HEALTHY    - rw = (1 - AF) <= threshold
   SCREENING  - all disease classes checked, AF insufficient
-
-Key equations:
-  Eq. 7: AF_t = P(h,f) * r_{j|h} / P(h>1,f) + AF_{t-1}
-  Eq. 8: rw_t = 1 - AF_t
 
 Includes LOOCV evaluation pipeline for accuracy measurement.
 """
@@ -40,8 +36,6 @@ from CDS_NI_Algorithms.action_normalRange import (
 from CDS_NI_Algorithms.action_pruning import Algorithm3Output, run_algorithm3
 
 
-# --- Fixed-Point Conversion Functions ---
-
 def to_fixed(value, int_bits, frac_bits):
     shift = 1 << frac_bits # This operation is equal to 2^(frac_bits). We want to know how much we are mulitplying by which we keep track of
     # The reason we subtract one bit is because it is a signed bit, therefore it does not provide numerical significance
@@ -61,20 +55,12 @@ def fixed_divide(num, den, frac_bits):
     # This is how fixed point division works. We need to divide the numerator by 2^(fractional bits) and then integer divide by the denominator to get our answer
     return (num << frac_bits) // den
 
-
-# --- Fixed-Point Constants (defined after to_fixed so they can use it) ---
-
 ONE_Q2_30       = 1 << 30                   # 1.0 in Q s2.30 = 1073741824
 THRESHOLD_Q2_30 = to_fixed(0.025, 2, 30)    # 0.025 in Q s2.30 = 26843546
 MAX_INT_Q2_30   = (1 << 31) - 1             # "infinity" for best_rw init
 
 
-# --- Constants ---
-
 ALL_DISEASE_CLASSES: Tuple[int, ...] = (2, 3, 4, 5, 6, 7, 8, 9, 10, 14, 15, 16)
-
-
-# --- Data Structures ---
 
 class HealthDecision(Enum):
     HEALTHY = "Healthy"
@@ -94,33 +80,29 @@ class FPGATraceStep:
       "branch_route"    — node routing comparison
       "threshold_check" — final rw vs threshold comparison
     """
-    # --- Main PAC values (stored as fixed-point integers) ---
+
     raw_value: int = 0    # BD_m^k(o,u) — sensor reading (Q s9.4)
-    b_min: int = 0        # Eq. 5 — lower healthy boundary (Q s9.4)
-    b_max: int = 0        # Eq. 5 — upper healthy boundary (Q s9.4)
+    b_min: int = 0        # lower healthy boundary (Q s9.4)
+    b_max: int = 0        # upper healthy boundary (Q s9.4)
     r_j_h: int = 0        # Algorithm 3 — action weight (Q s1.15)
     p_h_f: int = 0        # P(h, f^k_m) — disease prevalence in node (Q s1.15)
     p_h_gt1_f: int = 0    # P(h>1, f^k_m) — denominator term (Q s1.15)
     numerator: int = 0    # p_h_f * r_j_h — intermediate product (Q s2.30)
     delta_AF: int = 0     # numerator / p_h_gt1_f — AF increment this step (Q s2.30)
-    AF_real: int = 0      # Eq. 7 cumulative — running assurance factor (Q s2.30)
-    rw_real: int = 0      # Eq. 8: 1 - AF — remaining risk (Q s2.30)
+    AF_real: int = 0      # cumulative — running assurance factor (Q s2.30)
+    rw_real: int = 0      # 1 - AF — remaining risk (Q s2.30)
 
-    # --- RL lookahead values (lines 11-17 of Algorithm 4) ---
     AF_sim: int = 0       # simulated AF increment for candidate (Q s2.30)
     rw_sim: int = 0       # 1 - (AF_sim + AF_real) — can go negative (Q s2.30)
     best_rw: int = 0      # running minimum rw_sim across candidates (Q s2.30)
 
-    # --- Node routing values (BranchDef.contains) ---
     branch_val: int = 0   # sensor value used for tree routing (Q s11.4)
     branch_low: int = 0   # tree partition lower bound (Q s11.4)
     branch_high: int = 0  # tree partition upper bound (Q s11.4)
 
-    # --- Threshold comparison ---
     rw_final: int = 0     # final 1 - AF compared to threshold (Q s2.30)
     threshold: int = 0    # DIAGNOSTIC_THRESHOLD constant (Q s2.30)
 
-    # --- Metadata (not profiled, just for traceability) ---
     feature_idx: int = -1
     disease_class: int = -1
     node_id: str = ""
@@ -184,9 +166,6 @@ class Algorithm4Output:
 
         n_fa = sum(1 for r in self.records if r.true_is_healthy and r.decision == HealthDecision.UNHEALTHY)
         self.false_alarm_rate = n_fa / self.n_healthy_total if self.n_healthy_total else 0.0
-
-
-# --- Helper Functions ---
 
 def _is_outside_healthy_range(value: int, b_min: int, b_max: int) -> bool:
     """All inputs are already fixed-point integers (Q s9.4).
@@ -325,9 +304,6 @@ def _rl_select_best_action(
 
     return best_action
 
-
-# --- Core Prediction (Single Node) ---
-
 def _predict_at_node(
     user_idx: int,
     node: TreeNode,
@@ -418,9 +394,6 @@ def _predict_at_node(
 
     return HealthDecision.SCREENING, AF_real, None
 
-
-# --- Main Prediction (Algorithm 4) ---
-
 def run_algorithm4(
     user_idx: int,
     data: np.ndarray,
@@ -458,7 +431,7 @@ def run_algorithm4(
         for active_node in applicable_nodes:
             # Process ALL 12 disease classes, matching FPGA's af_engine
             # which iterates disease_offset 0-11 unconditionally.
-            # (Diseases with no actions get action_count=0 → skipped in FPGA)
+            # (Diseases with no actions get action_count=0 skipped in FPGA)
             node_diseases = list(all_disease_classes)
 
             pac_counter = [0]
@@ -551,9 +524,6 @@ def ten_fold_cv(data: np.ndarray,
     output._recompute_stats()
     return output
 
-
-# --- Reporting ---
-
 def print_results(output: Algorithm4Output) -> None:
     n = len(output.records)
     print(f"\n{'='*60}")
@@ -582,9 +552,6 @@ def print_results(output: Algorithm4Output) -> None:
             print(f"  {cls:6d} {len(recs):6d} {detected:9d} {pct:6.1f}%")
 
     print(f"{'='*60}")
-
-
-# --- FPGA Fixed-Point Range Profiling ---
 
 FPGA_TRACE_FIELDS: Tuple[str, ...] = (
     # Main PAC values
@@ -721,8 +688,6 @@ def profile_fixed_point_ranges(
 
     print(f"\n  Report written to: {output_path}")
     return ranges
-
-# --- Main ---
 
 if __name__ == "__main__":
     path = sys.argv[1] if len(sys.argv) > 1 else str(Path(__file__).parent.parent / "CDS_NI_Algorithms" / "data" / "arrhythmia.data")

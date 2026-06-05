@@ -1,17 +1,9 @@
 """
-Algorithm 3: CDS Executive Actions Refining (FA = 0 Policy)
+Algorithm 3: CDS Executive Actions Refining
 
 Greedy set-cover pass over the executive action library from Algorithm 2.
 Prunes features that add no new discriminating information about unhealthy
 users beyond what higher-weight features already cover.
-
-Key logic (per node):
-  - For each disease class h (outer loop, line 1)
-  - For each feature o sorted by r_{o|h} descending (middle loop, line 4)
-  - For each user u: flag if raw value outside healthy range (inner loop, lines 5-8)
-  - s = cumulative flagged users (line 10)
-  - If s <= buffer: prune feature (line 11-13)
-  - Buffer = s (line 15)
 """
 
 from __future__ import annotations

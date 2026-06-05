@@ -179,7 +179,115 @@ Start bit (always 0): Signals "a byte is coming." The falling edge from idle (1)
 Stop bit (always 1): Signals "byte is done." Returns the line to idle state.
 Each bit is held on the wire for exactly 1/baud_rate seconds. At 115200 baud, each bit lasts ~8.68 microseconds.
 
+## 5. Top-Level Integration (cds_top.v)
 
+This was the hardest part of the project by far. Taking all the individual modules and connecting them together under one master controller that actually works end-to-end. The cds_top module is a 14-state FSM that orchestrates the entire pipeline: receiving patient data over UART, running tree traversal, executing the AF engine on matched nodes, and sending results back.
+
+The states are:
+- S_IDLE to S_WAIT_LOAD: Waits for UART to finish loading a patient's 279 features into the sensor interface BRAM
+- S_START_TREE to S_SCAN_TREE to S_CHECK_NODES to S_FIND_NODE: Runs tree traversal across all 215 nodes and collects which nodes the patient belongs to
+- S_START_AF to S_WAIT_AF to S_CHECK_AF to S_NEXT_NODE: For each matched node, fires the AF engine which iterates through all disease classes and actions, computing the assurance factor
+- S_OUTPUT →toS_WAIT_SEND to S_NEXT_SEND to S_DONE: Serializes the result (decision + AF + alarm class) back through UART TX
+
+The biggest issue during integration was timing. Each sub-module (tree traversal, AF engine, model ROM) has its own internal latency BRAM reads take 1-2 clock cycles, the multiplier and divider have pipeline stages. Getting the handshake signals right between the master FSM and each module took a lot of debugging. I had to add wait states and careful signal sequencing to make sure data was actually valid before the next module consumed it.
+
+Another challenge was the address muxing for the sensor interface. Both tree_traversal and af_engine need to read patient feature values from the same BRAM, but at different times. I used a mux controlled by the master FSM state (sensor_mux_sel) to switch the address bus between the two modules.
+
+## 6. FPGA-Python Communication Pipeline
+
+Once the Verilog was working in simulation, the next step was getting it to talk to the Python side over UART. This involved two things:
+
+ a. The result_sender module on the FPGA side, it takes the final decision (2 bits), the accumulated AF value (32 bits), and the alarm class (4 bits) and serializes them into 5 bytes that get clocked out through the UART TX one byte at a time.
+
+ b. The Python side (fpga_uart_validator.py), this script handles the full conversation: packing a patient's 279 features into bytes with a header byte (0xAA), sending them over the serial port, and then reading back the 5-byte response.
+
+The protocol is straightforward: Python sends 0xAA followed by 558 bytes (279 features × 2 bytes each, big-endian), then waits for 5 bytes back. Getting this to work reliably was harder than expected: there were issues with timing between when the FPGA finished processing and when Python expected a response. I had to add proper synchronization so neither side got out of step.
+
+## 7. Validation Framework (10-Fold Cross-Validation)
+
+I built a full validation pipeline to prove the FPGA produces the same results as Python. The fpga_uart_validator.py script has two modes:
+
+ a. Software mode (--mode software): Trains 10 separate models using 10-fold cross-validation. For each fold, it runs Algorithms 1-3 on the training set, then runs Algorithm 4 (fixed-point inference) on the test set as the golden model. It exports 7 .mem files per fold (for FPGA synthesis) plus golden_results.csv with the expected outputs.
+
+ b. FPGA mode (--mode fpga --fold N): Takes the test users from fold N, sends them to the FPGA in batches of 4, reads back the results, and compares against the golden model with 5 metrics:
+  1. Bit-Exact Match Rate does the FPGA decision match the Python decision for every user?
+  2. AF Value Deviation how far off are the actual assurance factor numbers?
+  3. Per-User Latency UART round-trip time with estimated FPGA compute portion
+  4. Throughput users per second for FPGA vs Python
+  5. Binary Confusion Matrix accuracy, sensitivity, specificity
+
+The goal was 100% match rate the FPGA should produce identical decisions to the fixed-point Python model. Not "close enough", identical. If the fixed-point math is implemented correctly in Verilog, there should be zero deviation.
+
+## 8. Scaling to 4-Lane Parallel Processing
+
+Initially everything was single-lane one patient at a time. The move to 4 patients in parallel was a big architectural change. I had to think carefully about which hardware gets shared and which gets replicated.
+
+The key insight: the model parameters (BRAMs for tree topology, actions, probabilities, healthy ranges) are identical for every patient. The multiply and divide operations depend only on model parameters, not on patient data. So those stay as single shared instances. What does change per patient is the sensor data, the AF accumulator, and the range comparator. Those get replicated 4 times.
+
+In cds_top, I added a load_lane counter that cycles through lanes 0-3 during the UART loading phase. Each lane has its own sensor_interface BRAM. During tree traversal, all 4 sensor BRAMs are read with the same feature address simultaneously so 4 comparisons happen at no extra cost. Same thing in the AF engine: the multiplier and divider compute once, and the result gets broadcast to 4 accumulators and 4 range comparators.
+
+The result: processing 4 patients takes essentially the same number of clock cycles as processing 1. The UART loading time is 4x longer (since we still have a single serial link), but the compute time stays nearly flat. If you replaced UART with something faster like SPI, the parallelism would actually matter a lot.
+
+| Component | Instances | Why |
+|-----------|-----------|-----|
+| model_rom (7 BRAMs) | 1 shared | Model parameters are the same for all patients |
+| fixedMultiply | 1 shared | delta_AF depends only on model params, not sensor data |
+| fixedDivide | 1 shared | Same reason |
+| sensor_interface | 4 copies | Each patient has different feature values |
+| af_accumulator | 4 copies | Each patient accumulates its own AF |
+| rangeComparator | 4 copies | Each patient's values compared against same range |
+
+## 9. BRAM Optimization Two-Level Healthy Range Lookup
+
+One problem I ran into during synthesis was the healthy range table. The direct mapping would be node_idx × 279 features × 2 values (bmin, bmax) = about 131,000 entries. On the Basys 3, each BRAM18 block holds around 1,024 entries at 16 bits. That would need over 100 BRAM blocks, but the Basys 3 only has 100 total and the rest of the model needs BRAMs too.
+
+The solution was pair deduplication. Many nodes share the same healthy range boundaries for a given feature. So instead of storing the full table, I implemented a two-level lookup in model_rom:
+
+ Level 1: An index table (hr_index.mem) that maps each (node, feature) pair to a pair_id. ~60,000 entries of 16-bit IDs.
+ Level 2: A pair table (hr_pairs.mem) that maps each pair_id to {bmin, bmax}. Only ~4,096 unique pairs.
+
+This creates a 2-cycle read pipeline (one cycle for the index lookup, one for the pair lookup), but it cuts BRAM usage roughly in half. The tradeoff is an extra clock cycle of latency per healthy range read, which the AF engine FSM accounts for with an additional wait state.
+
+## 10. Real-Time Monitor (Deployment Mode)
+
+After validation proved the FPGA works, I built a standalone deployment system. The FPGA-Real-Time-Monitor directory is self-contained it has its own copy of the Verilog modules, its own .mem files trained on all 452 users (not a 90/10 split), and its own Python CLI.
+
+The setup is:
+ - python fpga_realtime_monitor.py --setup trains on the full dataset and exports .mem files
+ - Load those into Vivado, synthesize, program the board
+ - python fpga_realtime_monitor.py --run --port COM3 opens an interactive session
+
+From the CLI you can:
+ - diagnose <user_id> send one patient from the dataset
+ - diagnose 10 20 30 40 send 4 in parallel
+ - diagnose all run all 452 patients in batches of 4
+ - load patient_data.csv + diagnose me diagnose a new patient from CSV
+
+This is the "product" mode. No golden model comparison, no validation metrics just send data, get a diagnosis. The idea is that you could plug an ECG sensor into this and have a bedside arrhythmia detector.
+
+## 11. Power and Energy Measurement
+
+The last thing I added was energy tracking using CodeCarbon. The fpga_uart_validator.py wraps Algorithm 4 inference (the part the FPGA replaces) in an EmissionsTracker. For each fold, it measures:
+ - Total energy consumed (kWh)
+ - Average power draw (watts)
+ - CPU and RAM energy breakdown
+ - Duration of inference
+
+This gets saved per-fold in the emissions CSV files and aggregated in cv_summary.json. The point is to have a fair comparison: the FPGA running at 100 MHz and ~0.5W vs the laptop CPU running at 4 GHz and ~15-45W. At this scale with UART bottlenecking everything, the FPGA doesn't win on raw speed. But it wins massively on power which matters if you're putting this in a portable device.
+
+## Summary of Roadblocks and Lessons
+
+Throughout this project the biggest challenges were:
+
+ 1. Fixed-point precision choosing the right Q format for each variable required profiling every value across all 452 patients. Getting this wrong silently corrupts results. The reciprocal probability table (prob_pgt1) was the worst Q s2.14 would have clamped 78% of values, so I had to use Q s3.13 and accept slightly less fractional precision.
+
+ 2. BRAM fitting the Basys 3 has limited block RAM. The healthy range table almost didn't fit. Two-level lookup with pair deduplication was the solution.
+
+ 3. Integration timing every module has its own latency profile. BRAM reads are registered (1 cycle), the divider is pipelined (2 cycles), the multiplier uses a DSP slice. The top-level FSM has to account for all of these, and getting the handshakes wrong causes subtle data corruption that only shows up on certain patients.
+
+ 4. UART reliability serial communication at 115200 baud with 558 bytes per patient is slow and fragile. Synchronization between Python and the FPGA was a recurring source of bugs.
+
+ 5. Parallel architecture the jump from 1 lane to 4 lanes required rethinking every module's interface. But once you separate "what depends on the model" from "what depends on the patient", the partitioning becomes clear.
 
 
 

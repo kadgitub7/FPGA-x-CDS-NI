@@ -15,7 +15,7 @@ module decision_logic(
     
     reg [1:0] state;
 
-    reg decision_made_prev;
+    reg decision_made_prev; // to protect against contamination accross clock cycles
 
     always @(posedge clk) begin
         if (reset)

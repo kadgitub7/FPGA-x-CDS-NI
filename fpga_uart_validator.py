@@ -1,39 +1,3 @@
-"""
-fpga_uart_validator.py — 10-Fold CV with per-fold FPGA validation
-
-=== TWO OPERATING MODES ===
-
-  SOFTWARE MODE (run once first):
-    python fpga_uart_validator.py --mode software
-
-    - Runs 10-fold CV in Python (fixed-point golden model)
-    - Prints per-fold AND aggregate accuracy/sensitivity/specificity
-    - Exports 10 sets of .mem files (one per fold) for FPGA synthesis
-    - Saves golden predictions per fold so FPGA mode can compare later
-
-    After this completes, you have:
-      fpga_cv_output/
-        fold_0/   <- .mem files + golden_results.csv + test_vectors.mem
-        fold_1/
-        ...
-        fold_9/
-
-  FPGA MODE (run once per fold, after synthesizing with that fold's .mem files):
-    python fpga_uart_validator.py --mode fpga --fold 0 --port COM3
-
-    - Loads fold 0's saved golden predictions (from software mode)
-    - Sends ONLY fold 0's test users to the FPGA via UART
-    - Compares FPGA response against the saved golden predictions
-    - Reports match rate and accuracy
-
-  FULL WORKFLOW:
-    1. Run software mode once (generates everything)
-    2. For fold 0: copy fold_0/*.mem into Vivado, synthesize, program FPGA
-    3. Run: python fpga_uart_validator.py --mode fpga --fold 0 --port COM3
-    4. Repeat steps 2-3 for folds 1-9
-    5. Compare per-fold results between Python and FPGA
-"""
-
 from __future__ import annotations
 
 import argparse
@@ -51,9 +15,7 @@ from typing import Dict, List, Optional, Tuple
 import numpy as np
 from codecarbon import EmissionsTracker
 
-# ---------------------------------------------------------------------------
-# Import paths
-# ---------------------------------------------------------------------------
+
 PROJECT_ROOT = Path(__file__).parent
 sys.path.insert(0, str(PROJECT_ROOT))
 sys.path.insert(0, str(PROJECT_ROOT / "FixedPoint_decision_pipeline.py"))
@@ -77,10 +39,6 @@ from FixedPoint_pipeline.parameter_export import (
     export_golden_predictions, export_af_trace,
 )
 
-
-# ===========================================================================
-# Constants
-# ===========================================================================
 HEADER_BYTE = 0xAA
 N_FEAT = N_FEATURES  # 279
 
@@ -102,10 +60,6 @@ DECISION_TO_CODE = {
     HealthDecision.UNKNOWN:   3,
 }
 
-
-# ===========================================================================
-# Fold Splitting — deterministic, must match parameter_export.py
-# ===========================================================================
 
 def compute_fold_splits(
     n_total: int, rng_seed: int = 42,
@@ -132,10 +86,6 @@ def compute_fold_splits(
 
     return folds
 
-
-# ===========================================================================
-# Per-Fold Statistics
-# ===========================================================================
 
 def compute_fold_stats(records: List[PredictionRecord]) -> Dict:
     """Compute accuracy/sensitivity/specificity for one fold's records."""
@@ -177,10 +127,6 @@ def compute_fold_stats(records: List[PredictionRecord]) -> Dict:
         'n_diseased_correct': n_diseased_correct,
     }
 
-
-# ===========================================================================
-# Golden Results Save/Load
-# ===========================================================================
 
 def save_golden_results(
     records: List[PredictionRecord],
@@ -252,11 +198,6 @@ def load_golden_results(filepath: str) -> List[Dict]:
                     entry[col] = float(row[col])
             results.append(entry)
     return results
-
-
-# ===========================================================================
-# UART Functions (same as before, unchanged)
-# ===========================================================================
 
 def features_to_uart_bytes(data: np.ndarray, user_idx: int) -> bytes:
     """Convert one user's feature vector into 558 UART payload bytes."""
@@ -360,10 +301,6 @@ def send_batch_to_fpga(
 
     return results
 
-
-# ===========================================================================
-# SOFTWARE MODE — 10-Fold CV + Export
-# ===========================================================================
 
 def run_software_mode(
     data: np.ndarray,
@@ -476,7 +413,6 @@ def run_software_mode(
         }
         fold_energy_list.append(fold_energy)
 
-        # ---- Export golden predictions (.mem format for Verilog testbench) ----
         golden_records = export_golden_predictions(
             data, labels, test_indices, tree_i, alg2_i, alg3_i,
             os.path.join(fold_dir, "expected_output.mem"),
@@ -486,7 +422,6 @@ def run_software_mode(
         export_af_trace(golden_records, test_indices,
                         os.path.join(fold_dir, "af_trace.mem"))
 
-        # ---- Save golden results as CSV (for FPGA mode comparison) ----
         save_golden_results(
             fold_records, test_indices,
             os.path.join(fold_dir, "golden_results.csv"),
@@ -494,7 +429,6 @@ def run_software_mode(
             fold_energy=fold_energy,
         )
 
-        # ---- Compute per-fold stats ----
         stats = compute_fold_stats(fold_records)
         fold_stats_list.append(stats)
         all_records.extend(fold_records)
@@ -505,9 +439,6 @@ def run_software_mode(
         print(f"  Energy: {fold_energy_kwh*1e6:.4f} uWh  "
               f"({fold_power_watts:.2f} W avg over {fold_duration_s:.1f}s)\n")
 
-    # ================================================================
-    # Print per-fold summary table
-    # ================================================================
     print(f"\n{'='*90}")
     print("PER-FOLD RESULTS")
     print(f"{'='*90}")
@@ -527,9 +458,6 @@ def run_software_mode(
               f"{e['energy_kwh']*1e6:11.4f}  "
               f"{e['power_watts']:8.2f}")
 
-    # ================================================================
-    # Print aggregate results
-    # ================================================================
     agg = compute_fold_stats(all_records)
     total_energy_kwh = sum(e['energy_kwh'] for e in fold_energy_list)
     avg_power_watts = sum(e['power_watts'] for e in fold_energy_list) / len(fold_energy_list) if fold_energy_list else 0
@@ -605,9 +533,6 @@ def run_software_mode(
     print(f"  Summary saved to: {summary_path}")
 
 
-# ===========================================================================
-# FPGA MODE — Validate one fold against saved golden predictions
-# ===========================================================================
 
 def run_fpga_mode(
     data: np.ndarray,
@@ -640,7 +565,6 @@ def run_fpga_mode(
         print("\nERROR: pyserial is required. Install with: pip install pyserial")
         return
 
-    # ---- Load saved golden results for this fold ----
     golden_path = os.path.join(output_dir, f"fold_{fold_idx}", "golden_results.csv")
     if not os.path.exists(golden_path):
         print(f"\nERROR: Golden results not found at: {golden_path}")
@@ -662,7 +586,6 @@ def run_fpga_mode(
     print(f"  Decision mode:    Binary (Healthy vs Unhealthy)")
     print(f"{'='*70}")
 
-    # ---- Open serial port ----
     print(f"\n  Opening {port} at {baud} baud...")
     try:
         ser = serial.Serial(port, baud, timeout=2.0)
@@ -673,12 +596,10 @@ def run_fpga_mode(
 
     time.sleep(1.0)  # let FPGA reset settle
 
-    # ---- Helper: map raw decision to binary ----
     # 0=HEALTHY, 1=UNHEALTHY, 2=SCREENING  -->  binary: 1=UNHEALTHY, else=HEALTHY
     def to_binary(dec_code: int) -> int:
         return 1 if dec_code == 1 else 0  # only UNHEALTHY counts as positive
 
-    # ---- Collect per-user data (batches of 4) ----
     n_batches = (n_test + N_LANES - 1) // N_LANES
     print(f"  Sending {n_test} test users in {n_batches} batches "
           f"of {N_LANES}...\n")
@@ -750,9 +671,6 @@ def run_fpga_mode(
 
     ser.close()
 
-    # ================================================================
-    # REPORT — All 5 Metrics
-    # ================================================================
     n_responded = n_match + n_mismatch
     if n_responded == 0:
         print("\n  ERROR: No FPGA responses received. Cannot compute metrics.")
@@ -766,7 +684,6 @@ def run_fpga_mode(
     print(f"  Test users: {n_test}   Responded: {n_responded}   "
           f"Timeouts: {n_timeout}")
 
-    # ------ Metric 1: Bit-Exact Match Rate ------
     print(f"\n  ---- METRIC 1: Bit-Exact Match Rate (Binary: H vs U) ----")
     print(f"  Matching:    {n_match}/{n_responded}  ({match_rate:.1f}%)")
     print(f"  Mismatches:  {n_mismatch}")
@@ -775,7 +692,7 @@ def run_fpga_mode(
     else:
         print(f"  FAIL — FPGA diverges from golden model on {n_mismatch} users")
 
-    # ------ Metric 2: AF Value Deviation ------
+
     print(f"\n  ---- METRIC 2: AF Value Deviation (Q s2.30) ----")
     if af_deviations:
         mean_dev = sum(af_deviations) / len(af_deviations)
@@ -789,7 +706,6 @@ def run_fpga_mode(
         print(f"  Exact AF matches:        {n_zero}/{len(af_deviations)}  "
               f"({n_zero / len(af_deviations) * 100:.1f}%)")
 
-    # ------ Metric 3: Per-User Latency ------
     print(f"\n  ---- METRIC 3: Per-User Latency (ms) ----")
     fpga_processing = 0.0
     if fpga_latencies_ms:
@@ -819,7 +735,6 @@ def run_fpga_mode(
         print(f"  Python inference:   min={sw_min:.1f}  median={sw_med:.1f}  "
               f"max={sw_max:.1f} ms")
 
-    # ------ Metric 4: Throughput ------
     print(f"\n  ---- METRIC 4: Throughput ----")
     if fpga_latencies_ms:
         fpga_throughput = 1000.0 / lat_mean
@@ -838,7 +753,6 @@ def run_fpga_mode(
                 print(f"  Note: FPGA compute alone ~{fpga_processing:.1f} ms vs "
                       f"Python {sw_med:.1f} ms")
 
-    # ------ Metric 5: Binary Confusion Matrix ------
     print(f"\n  ---- METRIC 5: Binary Confusion Matrix (H vs U) ----")
 
     # Helper to print one confusion matrix and derive stats
@@ -864,7 +778,6 @@ def run_fpga_mode(
     print_binary_confusion("FPGA", confusion)
     print_binary_confusion("Python (golden model)", py_confusion)
 
-    # ------ Final Verdict ------
     print(f"\n  {'='*50}")
     if n_mismatch == 0 and n_responded > 0:
         print(f"  PASS: All {n_responded} binary decisions match!")
@@ -873,10 +786,6 @@ def run_fpga_mode(
     print(f"  {'='*50}")
     print(f"{'='*70}\n")
 
-
-# ===========================================================================
-# Main
-# ===========================================================================
 
 def main():
     parser = argparse.ArgumentParser(
@@ -915,7 +824,6 @@ Step-by-step workflow:
                         help="RNG seed (default: 42)")
     args = parser.parse_args()
 
-    # ---- Load dataset ----
     data_path = args.data or str(
         PROJECT_ROOT / "CDS_NI_Algorithms" / "data" / "arrhythmia.data"
     )
@@ -925,7 +833,6 @@ Step-by-step workflow:
 
     output_dir = args.output or str(PROJECT_ROOT / "fpga_cv_output")
 
-    # ---- Run selected mode ----
     if args.mode == "software":
         run_software_mode(
             data, labels, output_dir,

@@ -12,7 +12,7 @@ module af_accumulator(
 );
 
     // define ONE as a constant in Q s2.30 format
-    localparam signed [31:0] ONE = 32'sh40000000; // 1.0 in Q s2.30
+    localparam signed [31:0] ONE = 32'sh40000000;
 
     reg signed [32:0] sum; // Use an extra bit to detect overflow
 
@@ -27,6 +27,7 @@ module af_accumulator(
             // Perform accumulation
             sum = {{1{AF_real[31]}}, AF_real} + {{1{delta_AF[31]}}, delta_AF};
 
+            // cases if we exceed the range of [0.0, 1.0] in Q s2.30 format
             if (sum > 33'sh40000000) begin
                 AF_real <= ONE; // Clamp to 1.0
             end

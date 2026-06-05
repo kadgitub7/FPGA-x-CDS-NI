@@ -32,7 +32,6 @@ from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 
-# --- Import project modules ---
 sys.path.insert(0, str(Path(__file__).parent.parent))
 sys.path.insert(0, str(Path(__file__).parent))  # so sibling imports (decision_pipeline_fixedPoint) work
 from CDS_NI_Algorithms.build_decision_tree import (
@@ -44,16 +43,11 @@ from CDS_NI_Algorithms.action_normalRange import (
 )
 from CDS_NI_Algorithms.action_pruning import Algorithm3Output, run_algorithm3
 
-# --- Import fixed-point functions and Algorithm 4 from the golden model ---
 from decision_pipeline_fixedPoint import (
     to_fixed, fixed_divide,
     run_algorithm4, HealthDecision, PredictionRecord,
 )
 
-
-# =====================================================================
-# Constants
-# =====================================================================
 
 # Disease classes in the arrhythmia dataset (non-healthy)
 # Mapped to contiguous offsets 0-11 for efficient BRAM addressing
@@ -72,10 +66,6 @@ SENTINEL_16: int = 0xFFFF    # for 16-bit fields
 SENTINEL_9: int = 0x1FF      # for 9-bit feature indices (max valid = 278)
 
 
-# =====================================================================
-# Hex formatting
-# =====================================================================
-
 def to_hex_16(val: int) -> str:
     """Convert a signed 16-bit fixed-point integer to 4-digit hex string.
     Uses two's complement for negative values."""
@@ -89,11 +79,6 @@ def to_hex_32(val: int) -> str:
     if val < 0:
         val = val + (1 << 32)
     return format(val & 0xFFFFFFFF, '08X')
-
-
-# =====================================================================
-# Node indexing
-# =====================================================================
 
 def build_node_index(tree: DecisionTree, nodes_filter: List[str]) -> Dict[str, int]:
     """Assign each active tree node a sequential integer index.
@@ -122,10 +107,6 @@ def build_node_index(tree: DecisionTree, nodes_filter: List[str]) -> Dict[str, i
     return index_map
 
 
-# =====================================================================
-# Export 1: Tree Topology
-# =====================================================================
-
 def export_tree_topology(
     tree: DecisionTree,
     node_index: Dict[str, int],
@@ -140,7 +121,7 @@ def export_tree_topology(
         Word 1: branch_low  in Q s11.4 (16 bits)
         Word 2: branch_high in Q s11.4 (16 bits)
 
-    Total: 3 words × 16 bits = 48 bits per node.
+    Total: 3 words x 16 bits = 48 bits per node.
     Address width: ceil(log2(n_nodes * 3)) bits.
     """
     n_nodes = len(node_index)
@@ -176,10 +157,7 @@ def export_tree_topology(
 
     print(f"  Tree topology: {n_nodes} nodes x 3 words = {n_nodes * 3} entries -> {output_path}")
 
-
-# =====================================================================
 # Export 2: Healthy Ranges (two-level lookup: index table + pair table)
-# =====================================================================
 #
 # BRAM OPTIMIZATION: The original direct-addressed scheme used
 #   addr = {node_idx[7:0], feature_idx[8:0]} → 131,072 × 32-bit = 228 RAMB18s
@@ -283,7 +261,7 @@ def export_healthy_ranges(
     print(f"  HR index table: {compact_depth} entries, "
           f"{n_populated} populated -> {index_path}")
 
-    # --- Step 3: write hr_pairs.mem ---
+    # step 3
     # Invert pair_to_id to get id_to_pair
     id_to_pair: Dict[int, Tuple[int, int]] = {v: k for k, v in pair_to_id.items()}
 
@@ -302,9 +280,7 @@ def export_healthy_ranges(
     print(f"  HR pair table:  {n_unique_pairs} unique pairs -> {pairs_path}")
 
 
-# =====================================================================
 # Export 3a: Action Header BRAM
-# =====================================================================
 
 def _build_action_groups(
     alg3_output: Algorithm3Output,
@@ -391,9 +367,7 @@ def export_action_hdr(
           f"({populated} active groups) -> {output_path}")
 
 
-# =====================================================================
 # Export 3b: Action Data BRAM
-# =====================================================================
 
 def export_action_data(
     alg3_output: Algorithm3Output,
@@ -433,9 +407,7 @@ def export_action_data(
           f"({len(data_words)} actions, max {max_actions}/group) -> {output_path}")
 
 
-# =====================================================================
 # Export 4a: P(h,f) BRAM
-# =====================================================================
 
 def export_prob_phf(
     tree: DecisionTree,
@@ -477,10 +449,7 @@ def export_prob_phf(
 
     print(f"  prob_phf: {n_nodes * N_DISEASES} entries -> {output_path}")
 
-
-# =====================================================================
 # Export 4b: 1/P(h>1,f) Reciprocal BRAM
-# =====================================================================
 
 def export_prob_pgt1(
     tree: DecisionTree,
@@ -526,9 +495,7 @@ def export_prob_pgt1(
     print(f"  prob_pgt1: {n_nodes} entries -> {output_path}")
 
 
-# =====================================================================
 # Export Constants
-# =====================================================================
 
 def export_constants(
     node_index: Dict[str, int],
@@ -538,6 +505,8 @@ def export_constants(
 
     Not a .mem file — this is a .vh (Verilog header) that defines
     localparam constants for the FPGA design.
+
+    This file is not directly used, you can import it into Vivado if you want but not necessary
     """
     n_nodes = len(node_index)
     threshold_fixed = to_fixed(0.025, 2, 30)
@@ -570,9 +539,7 @@ def export_constants(
     print(f"  Constants header -> {output_path}")
 
 
-# =====================================================================
-# Master export function
-# =====================================================================
+# main export function
 
 def export_model_parameters(
     tree: DecisionTree,
@@ -636,9 +603,7 @@ def export_model_parameters(
     return node_index
 
 
-# =====================================================================
 # Export Test Vectors (stimulus for FPGA testbench)
-# =====================================================================
 
 def export_test_vectors(
     data: np.ndarray,
@@ -677,9 +642,7 @@ def export_test_vectors(
     print(f"  Test vectors: {n_test} users -> {output_path}")
 
 
-# =====================================================================
 # Export Golden Predictions (expected FPGA output)
-# =====================================================================
 
 # Decision encoding for .mem file (matches what FPGA FSM should output)
 DECISION_ENCODING = {
@@ -846,9 +809,7 @@ def export_af_trace(
     print(f"  AF trace: {total_steps} steps across {len(records)} users -> {output_path}")
 
 
-# =====================================================================
 # 10-Fold Cross Validation Export
-# =====================================================================
 
 def export_all_folds(
     data: np.ndarray,
@@ -974,9 +935,7 @@ def export_all_folds(
     print(f"{'='*60}\n")
 
 
-# =====================================================================
 # Standalone entry point
-# =====================================================================
 
 if __name__ == "__main__":
     import argparse

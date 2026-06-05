@@ -1,18 +1,5 @@
 `timescale 1ns / 1ps
 
-// ============================================================================
-// tree_traversal.v - Scans all tree nodes, reports per-lane matches
-// ============================================================================
-// 4-LANE PARALLEL VERSION:
-//   Same FSM as single-lane, but accepts 4 sensor data inputs (one per
-//   patient lane) and produces 4 independent match signals.
-//
-//   feature_read_addr is BROADCAST to all 4 sensor_interfaces.
-//   All 4 return their data on the same cycle (parallel reads).
-//   4 comparisons are combinational (no extra cycles).
-//
-// BRAM TIMING: unchanged from single-lane version.
-// ============================================================================
 
 module tree_traversal (
     input wire        clk,
@@ -38,7 +25,6 @@ module tree_traversal (
     output reg        all_done
 );
 
-    // ── State encoding (unchanged) ──────────────────────────────────
     localparam [3:0]
         S_IDLE         = 4'd0,
         S_ROOT_EMIT    = 4'd1,
@@ -56,7 +42,6 @@ module tree_traversal (
         S_NEXT         = 4'd13,
         S_DONE         = 4'd14;
 
-    // ── Internal registers ──────────────────────────────────────────
     reg [3:0]  state;
     reg [7:0]  node_counter;
     reg [8:0]  branch_feat_idx;

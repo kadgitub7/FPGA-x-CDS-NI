@@ -1,6 +1,5 @@
-## ============================================================================
 ## cds_tops.xdc - Pin constraints for CDS-NI on Digilent Basys 3 (XC7A35T)
-## ============================================================================
+## you can set many of the LED and other elements to different ports if you want
 
 ## Clock (100 MHz oscillator)
 set_property PACKAGE_PIN W5 [get_ports clk]

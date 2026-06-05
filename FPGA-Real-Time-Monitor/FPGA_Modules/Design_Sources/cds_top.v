@@ -1,21 +1,3 @@
-// ============================================================================
-// cds_top.v - 4-Lane Parallel CDS Algorithm 4 FPGA Implementation
-// ============================================================================
-//
-// 4-LANE PARALLEL DATA FLOW:
-//   1. UART RX receives 4 patients sequentially (4 x [0xAA + 558 bytes])
-//   2. Dispatcher routes bytes to sensor_interface_0..3
-//   3. tree_traversal scans 215 nodes, comparing all 4 patients per node
-//   4. af_engine processes matched nodes with 4 parallel datapaths
-//   5. Results sent back as 4 x 5-byte packets over UART TX
-//
-// RESOURCE SHARING:
-//   - model_rom (all BRAMs): 1 shared instance, read once per action
-//   - fixedMultiply, fixedDivide: 1 shared instance inside af_engine
-//   - sensor_interface: 4 instances (each stores 279 features for 1 patient)
-//   - af_accumulator: 4 instances inside af_engine
-//   - rangeComparator: 4 instances inside af_engine (combinational)
-// ============================================================================
 
 module cds_top(
     input  wire clk,
@@ -33,9 +15,6 @@ module cds_top(
                      DEC_UNHEALTHY = 2'b01,
                      DEC_SCREENING = 2'b10;
 
-    // ========================================================================
-    // INTER-MODULE WIRES
-    // ========================================================================
 
     // UART RX
     wire [7:0] rx_byte;
@@ -99,17 +78,11 @@ module cds_top(
     wire         sender_tx_start;
     wire         sender_done;
 
-    // ========================================================================
-    // SENSOR READ PORT MUX
-    // ========================================================================
     reg sensor_mux_sel;  // 0 = tree, 1 = af_engine
 
     wire [8:0] sensor_addr_mux = sensor_mux_sel ? af_feature_addr
                                                   : tree_feature_addr;
 
-    // ========================================================================
-    // UART BYTE ROUTING — dispatch to active sensor lane
-    // ========================================================================
     reg [1:0] load_lane;  // which sensor is currently being loaded (0..3)
 
     wire sensor_byte_valid_0 = rx_byte_valid & (load_lane == 2'd0);
@@ -117,9 +90,6 @@ module cds_top(
     wire sensor_byte_valid_2 = rx_byte_valid & (load_lane == 2'd2);
     wire sensor_byte_valid_3 = rx_byte_valid & (load_lane == 2'd3);
 
-    // ========================================================================
-    // MODULE INSTANTIATIONS
-    // ========================================================================
 
     uart_rx #(.CLKS_PER_BIT(CLKS_PER_BIT)) u_uart_rx (
         .i_Clock(clk), .i_Rx_Serial(rx_pin),
@@ -131,7 +101,7 @@ module cds_top(
         .o_Tx_Active(tx_active), .o_Tx_Serial(tx_serial), .o_Tx_Done(tx_done)
     );
 
-    // --- 4 Sensor Interfaces ------------------------------------------------
+
     sensor_interface u_sensor_0 (
         .clk(clk), .reset(reset), .uart_byte(rx_byte),
         .uart_byte_valid(sensor_byte_valid_0),
@@ -157,7 +127,7 @@ module cds_top(
         .load_complete(sensor_load_complete_3), .dataOutB(sensor_data_out_3)
     );
 
-    // --- Model ROM (1 shared instance) ----------------------------------------
+
     model_rom u_model_rom (
         .clk(clk),
         .tree_read_addr(tree_rom_addr), .tree_re(1'b1),
@@ -174,7 +144,7 @@ module cds_top(
         .hr_bmin(rom_hr_bmin), .hr_bmax(rom_hr_bmax)
     );
 
-    // --- Tree Traversal (4-lane) ---------------------------------------------
+
     tree_traversal u_tree_trav (
         .clk(clk), .reset(reset), .start(tree_start),
         .user_feature_value_0(sensor_data_out_0),
@@ -192,7 +162,7 @@ module cds_top(
         .node_done(), .all_done(tree_all_done)
     );
 
-    // --- AF Engine (4-lane) --------------------------------------------------
+
     af_engine u_af_engine (
         .clk(clk), .reset(reset), .start(af_start),
         .node_idx(af_node_idx), .lane_mask(af_lane_mask),
@@ -222,7 +192,6 @@ module cds_top(
         .done(af_done)
     );
 
-    // --- Decision Logic + Result Sender (shared, called 4 times) ----------
     decision_logic u_decision_logic (
         .clk(clk), .reset(reset),
         .decision_made(trigger_decision),
@@ -248,9 +217,6 @@ module cds_top(
     assign led_decision = dl_final_decision;
     assign led_done     = (state == S_DONE);
 
-    // ========================================================================
-    // MASTER FSM
-    // ========================================================================
     localparam [4:0]
         S_IDLE        = 5'd0,
         S_WAIT_LOAD   = 5'd1,   // wait for current lane to load
@@ -269,7 +235,7 @@ module cds_top(
 
     reg [4:0] state;
 
-    // ── Per-lane node matching (215-bit bitmaps) ────────────────────
+
     reg [214:0] node_matched_0, node_matched_1,
                 node_matched_2, node_matched_3;
     reg [7:0]   current_node;        // 0..214, iterating during AF phase
@@ -311,10 +277,6 @@ module cds_top(
 
             case (state)
 
-                // ────────────────────────────────────────────────────
-                // LOADING: wait for all 4 sensors to load sequentially
-                // Python sends: [0xAA+558] [0xAA+558] [0xAA+558] [0xAA+558]
-                // ────────────────────────────────────────────────────
                 S_IDLE: begin
                     load_lane <= 2'd0;
                     state     <= S_WAIT_LOAD;
@@ -350,9 +312,6 @@ module cds_top(
                     end
                 end
 
-                // ────────────────────────────────────────────────────
-                // TREE TRAVERSAL: scan 215 nodes, record per-lane matches
-                // ────────────────────────────────────────────────────
                 S_START_TREE: begin
                     tree_start <= 1'b1;
                     state      <= S_SCAN_TREE;
@@ -373,9 +332,6 @@ module cds_top(
                         state <= S_CHECK_NODES;
                 end
 
-                // ────────────────────────────────────────────────────
-                // AF PROCESSING: iterate nodes, process active lanes
-                // ────────────────────────────────────────────────────
                 S_CHECK_NODES: begin
                     current_node   <= 8'd0;
                     sensor_mux_sel <= 1'b1;  // af_engine controls sensors
@@ -500,9 +456,6 @@ module cds_top(
                     end
                 end
 
-                // ────────────────────────────────────────────────────
-                // OUTPUT: send 4 results sequentially via UART
-                // ────────────────────────────────────────────────────
                 S_OUTPUT: begin
                     send_lane <= 2'd0;
                     // Set up lane 0's result

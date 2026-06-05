@@ -2,15 +2,10 @@
 Algorithm 2: CDS Perceptor and Executive Training
 
 For each tree node and feature, computes:
-  - Discretization into bins (lines 4-7)
-  - Bayesian probability tables P(B_hat|h), P(h,f), P(B_hat), P(h|B_hat) (lines 8-10)
-  - Healthy range [b_min, b_max] via Eq. 5 (lines 11-14)
-  - Executive action weights r_{o|h} for each disease class (lines 15-23)
-
-Key equations:
-  Eq. 4: P(h|B_hat) = P(B_hat|h) * P(h,f) / P(B_hat)
-  Eq. 5: All healthy users fall within [b_min, b_max]
-  Line 19: r_{o|h} = P(B_hat < b_min|h) + P(B_hat > b_max|h)
+  - Discretization into bins
+  - Bayesian probability tables P(B_hat|h), P(h,f), P(B_hat), P(h|B_hat)
+  - Healthy range [b_min, b_max] via
+  - Executive action weights r_{o|h} for each disease class
 """
 
 from __future__ import annotations
@@ -31,14 +26,9 @@ from build_decision_tree import (
 )
 
 
-# --- Constants ---
-
 DEFAULT_N_BINS: int = 10
 LAPLACE_EPSILON: float = 0.0
 ALL_DISEASE_CLASSES: Tuple[int, ...] = (2, 3, 4, 5, 6, 7, 8, 9, 10, 14, 15, 16)
-
-
-# --- Data Structures ---
 
 @dataclass
 class DiscretizationResult:
@@ -161,7 +151,6 @@ class Algorithm2Output:
         return sorted(acts, key=lambda e: e.action_weight, reverse=True)[:top_k]
 
 
-# --- Discretization (Lines 4-7) ---
 # This is where we calculate the number of bins, 2 for binary and we use sturges rule for continuous
 def _n_bins_for_node(n_valid: int, is_binary: bool) -> int:
     if is_binary:
@@ -223,9 +212,6 @@ def compute_discretization(
         valid_mask=valid_mask, valid_user_rows=valid_rows,
         bin_counts_all=bin_counts, is_binary=is_binary, is_degenerate=False,
     )
-
-
-# --- Bayesian Tables (Lines 8-10) ---
 
 def compute_bayesian_tables(
     disc: DiscretizationResult,
@@ -289,9 +275,6 @@ def compute_bayesian_tables(
         n_users_per_class=dict(zip(class_labels, users_per_class.tolist())),
     )
 
-
-# --- Healthy Range (Lines 11-14, Eq. 5) ---
-
 def compute_healthy_range(
     disc: DiscretizationResult,
     node: TreeNode,
@@ -313,9 +296,6 @@ def compute_healthy_range(
     return HealthyRangeResult(
         disc.b_raw_min, disc.b_raw_max, float(disc.n_bins), 0, fallback_used=True,
     )
-
-
-# --- Executive Actions (Lines 15-23) ---
 
 def compute_executive_actions(
     disc: DiscretizationResult,
@@ -370,8 +350,6 @@ def compute_executive_actions(
     return actions
 
 
-# --- Per-Node Execution ---
-
 def run_algorithm2_for_node(
     node: TreeNode,
     data: np.ndarray,
@@ -410,8 +388,6 @@ def run_algorithm2_for_node(
 
     return perceptor_entries, executive_entries
 
-
-# --- Main Entry Point ---
 
 def run_algorithm2(
     tree: DecisionTree,

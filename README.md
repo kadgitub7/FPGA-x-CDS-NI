@@ -228,6 +228,9 @@ UCI Cardiac Arrhythmia Database: 452 patients, 279 features from 12-lead ECG rec
 - **Features 15-278**: 12 ECG channels (DI, DII, DIII, AVR, AVL, AVF, V1-V6), each with wave widths, deflections, and amplitudes
 - **Label**: 1 = healthy, 2-16 = 15 arrhythmia classes
 
+The original algorithms credit goes to the following. If you want to learn more about the CDS, NI algorithms see: 
+
+Naghshvarianjahromi, Mahdi, Shiva Kumar, and M. Jamal Deen. "Brain-inspired intelligence for real-time health situation understanding in smart e-health home applications." IEEE Access 7 (2019): 180106-180126.
 ---
 
 ## Key Files Reference

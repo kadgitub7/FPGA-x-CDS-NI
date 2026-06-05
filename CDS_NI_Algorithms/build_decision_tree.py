@@ -2,13 +2,10 @@
 Algorithm 1: CDS Decision Tree Construction
 
 Builds a multi-level decision tree that partitions users into sub-groups
-based on Eq. 2 branching condition and feature-ordering exclusion (line 9).
+based on minimum number of users per branch condition and feature-ordering exclusion.
 Sex feature forces a top-level split into male/female subtrees.
 
-Key equations:
-  Eq. 2: ceil(|U_{m-1}| * P_f) >= u_min
-  Eq. 3: u_min = 5 / threshold = 200
-  Line 9: O_m = O_{m-1} - {1,...,k}  (m > 2 only)
+These algorithms were not contructed by myself. They were used from other research done by past researchers. The novelty in this proejct is bringing it to the FPGA
 """
 
 from __future__ import annotations
@@ -37,6 +34,7 @@ class FeatureKind(Enum):
     CONTINUOUS = auto()
 
 # This is a function that is built to map the dataset
+# If you want to use a different dataset you need to modify this and how the algorithm processes data
 def _build_feature_names() -> Dict[int, str]:
     names: Dict[int, str] = {
         0: "Age", 1: "Sex", 2: "Height", 3: "Weight",
@@ -65,8 +63,6 @@ def _build_feature_names() -> Dict[int, str]:
 
 FEATURE_NAMES: Dict[int, str] = _build_feature_names()
 
-
-# --- Data Structures ---
 
 @dataclass
 class BranchDef:
@@ -144,9 +140,6 @@ class ForcedSexForest:
     female_indices: np.ndarray
     n_users: int
     threshold: float
-
-
-# --- Core Functions ---
 
 def load_dataset(path: str) -> Tuple[np.ndarray, np.ndarray]:
     df = pd.read_csv(path, header=None, na_values="?")
@@ -235,12 +228,9 @@ def compute_branch_probability(branch_users: int, parent_users: int) -> float:
     return branch_users / parent_users if parent_users > 0 else 0.0
 
 
-# --- Tree Building ---
-
 def _compute_child_features(
     parent_features: List[int], branching_k: int, child_level: int
 ) -> List[int]:
-    # Line 9: at m > 2, remove features with index <= k
     # This is to remove redundant branches
     if child_level <= 2:
         return list(parent_features)
@@ -276,7 +266,7 @@ def _try_split(parent, feature_k, kind, data, labels, threshold):
 
     if len(created) == 1:
         created[0].is_leaf = True
-        created[0].prune_reason = "Only one branch passed Eq.2"
+        created[0].prune_reason = "Only one branch passed"
 
     return created, n_pruned
 
@@ -296,7 +286,7 @@ def _expand_node(parent, data, labels, kinds, threshold, tree):
 
     if n_created == 0:
         parent.is_leaf = True
-        parent.prune_reason = f"No feature passed Eq.2 at m={m_child}"
+        parent.prune_reason = f"No feature passed at m={m_child}"
 
     return n_created
 

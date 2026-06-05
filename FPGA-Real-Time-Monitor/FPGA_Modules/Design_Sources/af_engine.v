@@ -1,24 +1,5 @@
 `timescale 1ns / 1ps
 
-// ============================================================================
-// af_engine.v - 4-Lane Parallel Anomaly Factor computation
-// ============================================================================
-//
-// PARALLELISM STRATEGY:
-//   - BRAM reads (action_hdr, action_data, prob, healthy range) are SHARED
-//     across all 4 lanes — done once per action.
-//   - Multiply and divide are SHARED — delta_AF is computed once since it
-//     only depends on model parameters (r_j_h, P(h,f), P(h>1,f)), not
-//     on sensor data.
-//   - Sensor reads are BROADCAST — same address to all 4 sensor_interfaces,
-//     4 different data values returned simultaneously.
-//   - Range comparisons are REPLICATED — 4 rangeComparators, one per lane.
-//   - Accumulations are REPLICATED — 4 af_accumulators, conditionally updated.
-//
-// Per-lane state: accumulator, alarm flag, alarm class, decision.
-// Lane processing is gated by lane_mask (which lanes matched this tree node).
-// ============================================================================
-
 module af_engine(
     input wire clk,
     input wire reset,
@@ -68,7 +49,6 @@ module af_engine(
     localparam [3:0] N_DISEASES = 4'd12;
     localparam signed [31:0] THRESHOLD_FP = 32'sh0199999A;
 
-    // ── State encoding (same states as single-lane) ──────────────────
     localparam [5:0]
         S_IDLE           = 6'd0,
         S_LOAD_DISEASE   = 6'd1,
@@ -137,7 +117,6 @@ module af_engine(
                                 + {6'd0, node_idx, 2'd0} + {7'd0, node_idx, 1'd0}
                                 + {8'd0, node_idx};
 
-    // ── Shared multiply/divide (1 instance each) ─────────────────────
     reg  signed [15:0] mul_a, mul_b;
     reg                mul_valid;
     wire signed [31:0] mul_product;
@@ -161,7 +140,6 @@ module af_engine(
         .valid(div_valid), .quotient(div_quotient), .result_valid(div_result_valid)
     );
 
-    // ── 4 accumulators ───────────────────────────────────────────────
     reg  signed [31:0] accum_delta;         // shared delta value
     reg  [3:0]         accum_delta_valid;    // per-lane pulse
     reg  [3:0]         accum_clear;          // per-lane clear
@@ -189,7 +167,6 @@ module af_engine(
         .AF_real(accum_AF_real[3]), .rw_real(accum_rw_real[3])
     );
 
-    // ── 4 range comparators (combinational) ──────────────────────────
     // All share the same bmin/bmax (from model BRAM), differ on raw_value
     reg                rc_valid;
     wire [3:0]         rc_triggered;
@@ -303,7 +280,6 @@ module af_engine(
                     state <= S_LOAD_HDR_W0;
                 end
 
-                // ═══ ACTION HEADER READ (unchanged) ═══════════════════
                 S_LOAD_HDR_W0: begin
                     action_hdr_addr <= {node_times_12 + {8'd0, disease_offset}, 1'b0};
                     state <= S_WAIT_HDR_W0;
@@ -326,7 +302,6 @@ module af_engine(
                     else state <= S_NEXT_DISEASE;
                 end
 
-                // ═══ ACTION DATA READ (unchanged) ═════════════════════
                 S_LOAD_ACT_W0: begin
                     action_data_addr <= {action_base_addr + {8'd0, action_idx}, 1'b0};
                     state <= S_WAIT_ACT_W0;
@@ -343,7 +318,6 @@ module af_engine(
                     state <= S_LOAD_PROBS;
                 end
 
-                // ═══ PROBABILITY READS (unchanged) ════════════════════
                 S_LOAD_PROBS: begin
                     prob_phf_addr <= node_times_12 + disease_offset;
                     prob_pgt1_addr <= node_idx;
@@ -356,7 +330,6 @@ module af_engine(
                     state <= S_LOAD_SENSOR;
                 end
 
-                // ═══ SENSOR READ — broadcast to all 4 lanes ═══════════
                 S_LOAD_SENSOR: begin
                     feature_read_addr <= latched_feature_idx;
                     state <= S_WAIT_SENSOR;
@@ -389,7 +362,6 @@ module af_engine(
                     end
                 end
 
-                // ═══ HEALTHY RANGE LOOKUP (unchanged) ═════════════════
                 S_LOAD_RANGE: begin
                     hr_read_addr <= node_times_279 + {7'd0, latched_feature_idx};
                     state <= S_WAIT_RANGE_L1;
@@ -402,7 +374,6 @@ module af_engine(
                     state <= S_COMPUTE_MUL;
                 end
 
-                // ═══ SHARED COMPUTE (1 multiply, 1 divide) ════════════
                 S_COMPUTE_MUL: begin
                     mul_a <= latched_phf;
                     mul_b <= latched_r_j_h;
@@ -428,7 +399,6 @@ module af_engine(
                     end
                 end
 
-                // ═══ PER-LANE ACCUMULATE ══════════════════════════════
                 // delta_AF is shared; only non-NaN, non-alarmed, active
                 // lanes accumulate.
                 S_ACCUMULATE: begin
@@ -437,7 +407,6 @@ module af_engine(
                     state <= S_CHECK_RANGE;
                 end
 
-                // ═══ PER-LANE RANGE CHECK ════════════════════════════
                 S_CHECK_RANGE: begin
                     // rangeComparators already have latched_sensor_i and
                     // latched_bmin/bmax wired. Just pulse valid.
@@ -468,7 +437,7 @@ module af_engine(
                     state <= S_NEXT_ACTION;
                 end
 
-                // ═══ ITERATION (unchanged logic) ══════════════════════
+
                 S_NEXT_ACTION: begin
                     if (action_idx < action_count - 1) begin
                         action_idx <= action_idx + 1;
@@ -485,7 +454,6 @@ module af_engine(
                     else state <= S_THRESHOLD;
                 end
 
-                // ═══ PER-LANE FINAL DECISION ══════════════════════════
                 S_THRESHOLD: begin
                     // Lane 0
                     AF_out_0 <= accum_AF_real[0];

@@ -53,6 +53,9 @@
      cardiolog's as a gold standard we aim to minimise this difference
      by means of machine learning tools."
 
+     Here we do a slightly different thing. We are not diagnosing the specific disease classes, there is far too little data for that
+     In our case we are simply diagnosing healthy vs unhealthy. Screening is directed to healthy for validation purposes.
+
      The names and id numbers of the patients were recently 
      removed from the database.
 
