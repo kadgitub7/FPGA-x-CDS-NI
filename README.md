@@ -133,23 +133,23 @@ FPGA-x-CDS-NI/
 This trains 10 models, runs Python golden inference, exports `.mem` files per fold,
 then sends test users to the FPGA and compares results with 5 metrics.
 
-**Step 1 — Generate golden data + .mem files (run once)**
+**Step 1 - Generate golden data + .mem files (run once)**
 
 ```bash
 python fpga_uart_validator.py --mode software
 ```
 
-**Step 2 — Load fold 0 into Vivado**
+**Step 2 - Load fold 0 into Vivado**
 
 1. Create a Vivado project with all 14 `.v` files from `FPGA_Files/CDS-NI_files/Design_Sources/`
 2. Add `FPGA_Files/CDS-NI_files/Constraint_Sources/cds_top.xdc`
 3. Copy the 7 `.mem` files from `fpga_cv_output/fold_0/` into the Vivado project directory
 
-**Step 3 — Synthesize + program the FPGA**
+**Step 3 - Synthesize + program the FPGA**
 
 Run Synthesis → Implementation → Generate Bitstream → Program Device.
 
-**Step 4 — Run FPGA validation**
+**Step 4 - Run FPGA validation**
 
 ```bash
 python fpga_uart_validator.py --mode fpga --fold 0 --port COM3
@@ -157,30 +157,30 @@ python fpga_uart_validator.py --mode fpga --fold 0 --port COM3
 
 Sends ~46 test users to the FPGA in batches of 4 and prints a 5-metric comparison report:
 
-1. **Bit-Exact Match Rate** — FPGA decision vs Python decision (binary: healthy/unhealthy)
-2. **AF Value Deviation** — mean/max difference in Assurance Factor
-3. **Per-User Latency** — UART round-trip timing with estimated FPGA compute time
-4. **Throughput** — users/sec comparison (FPGA vs Python)
-5. **Binary Confusion Matrix** — accuracy, sensitivity, specificity for both
+1. **Bit-Exact Match Rate** - FPGA decision vs Python decision (binary: healthy/unhealthy)
+2. **AF Value Deviation** - mean/max difference in Assurance Factor
+3. **Per-User Latency** - UART round-trip timing with estimated FPGA compute time
+4. **Throughput** - users/sec comparison (FPGA vs Python)
+5. **Binary Confusion Matrix** - accuracy, sensitivity, specificity for both
 
 ### Option B: Real-Time Interactive Diagnosis
 
 This trains on all 452 users and provides a live CLI for diagnosing patients.
 
-**Step 1 — Train + export**
+**Step 1 - Train + export**
 
 ```bash
 cd FPGA-Real-Time-Monitor
 python fpga_realtime_monitor.py --setup
 ```
 
-**Step 2 — Load into Vivado**
+**Step 2 - Load into Vivado**
 
 Use the Verilog files from `FPGA-Real-Time-Monitor/FPGA_Modules/` and the `.mem` files from `FPGA-Real-Time-Monitor/fpga_mem/`.
 
-**Step 3 — Synthesize + program the FPGA**
+**Step 3 - Synthesize + program the FPGA**
 
-**Step 4 — Run**
+**Step 4 - Run**
 
 ```bash
 python fpga_realtime_monitor.py --run --port COM3
