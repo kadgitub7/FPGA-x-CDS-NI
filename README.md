@@ -6,6 +6,8 @@ The FPGA processes **4 patients in parallel** using shared model BRAMs and repli
 
 ---
 
+## Here is a quick demo video to understand how the project works
+[![Watch the video](https://img.youtube.com/vi/AOe1tF_W6hg/maxresdefault.jpg)](https://www.youtube.com/watch?v=AOe1tF_W6hg)
 ## How It Works
 
 ```
